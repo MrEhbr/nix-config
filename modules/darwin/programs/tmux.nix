@@ -33,17 +33,6 @@ let
     '';
 
   };
-  tmux-floax = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "floax";
-    version = "30-08-2024";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "omerxx";
-      repo = "tmux-floax";
-      rev = "1f35df835a4f5984512a95f568340954f1869f69";
-      sha256 = "sha256-i8qAcqosezyDl2mMPHMLwUHQqX0OonHNUOr4UzCWsSU=";
-    };
-  };
 in 
 {
   programs.tmux = {
@@ -54,18 +43,6 @@ in
       tmux-fzf
       yank
       cpu
-      {
-        plugin = tmux-floax;
-        extraConfig = ''
-set -g @floax-bind '-n M-i'
-set -g @floax-bind-menu '-n M-I'
-set -g @floax-width '80%'
-set -g @floax-height '80%'
-set -g @floax-border-color 'magenta'
-set -g @floax-text-color 'blue'
-set -g @floax-change-path 'true'
-        '';
-      }
       {
         plugin = tmux-sessionx;
         extraConfig = ''
@@ -99,6 +76,10 @@ set -g @sessionx-bind-kill-session 'ctrl-d'
     extraConfig = ''
 set-option -g default-terminal 'screen-256color'
 set-option -g terminal-overrides ',xterm-256color:RGB'
+set-option -ga terminal-overrides ",*256col*:Tc"
+set-option -ga terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
+set-option -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'
+set-option -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours
 
 set -g message-style 'bg=default,fg=yellow,bold'
 set -g status-style  'bg=default'
@@ -159,6 +140,19 @@ bind-key -T copy-mode-vi v send-keys -X begin-selection
 
 bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w80% -h90% -E lazygit
 
+# Floating window
+# Set up a hook to run the handle_pane command on pane closed or exited
+set-hook -g pane-died 'run-shell "~/.config/tmux/scripts/floating_close.sh pane-died floating_pane_#{hook_pane}"'
+set-hook -g pane-exited 'run-shell "~/.config/tmux/scripts/floating_close.sh pane-exited floating_pane_#{hook_pane}"'
+
+# Toggle popup window with Alt-i for the current pane
+bind-key -n -N 'Toggle floating window' M-i if-shell -F '#{m:floating_pane_*,#{session_name},}' {
+    detach-client
+} {
+    # Create a new window and start the floating session
+    display-popup -d "#{pane_current_path}" -xC -yC -w 80% -h 75% -E "tmux new-session -e 'PANE_NAME' -A -s $(tmux display-message -p 'floating_pane_#{pane_id}') 'tmux set status off; $SHELL'"
+}
+
 # Rebind zoom pane to Alt-z
 unbind z
 bind -n M-z resize-pane -Z
@@ -189,5 +183,24 @@ if '[ -e ~/.tmux.local.conf ]' 'source ~/.tmux.local.conf'
       set -ga status-right " CPU: #{cpu_fg_color}#{cpu_percentage} #[fg=default]RAM: #{ram_fg_color}#{ram_percentage} #[bg=default,fg=gray]| #[bg=default,fg=gray]%Y-%m-%d %H:%M"
       set -ga status-right-length 150
     '';
+    "tmux/scripts/floating_close.sh" = {
+      text = ''
+        #!/bin/bash
+        tmux wait -L pane_wait
+        hook_name=$1
+        session_name=$2
+
+        # Check if the session exists
+        if tmux has-session -t "$session_name" 2>/dev/null; then
+            # Kill the session
+            tmux kill-session -t "$session_name"
+            tmux display-message "$hook_name: Session '$session_name' killed."
+        fi
+        tmux wait -U pane_wait
+      '';
+      executable = true;
+    };
   };
 }
+
+

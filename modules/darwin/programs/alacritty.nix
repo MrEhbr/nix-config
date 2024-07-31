@@ -4,9 +4,6 @@
     enable = true;
     settings = {
       shell.program = "${pkgs.fish}/bin/fish";
-      env = {
-        TERM = "xterm-256color";
-      };
       window = {
         option_as_alt = "Both";
         decorations = "full";
@@ -22,17 +19,21 @@
       scrolling.history = 10000;
 
       font = {
-        normal = {
-          family = "JetBrainsMono Nerd Font Mono";
-          style = "Regular";
-        };
         bold = {
-          family = "JetBrainsMono Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Propo";
           style = "Bold";
         };
+        bold_italic = {
+          family = "JetBrainsMono Nerd Font Propo";
+          style = "Bold Italic";
+        };
         italic = {
-          family = "JetBrainsMono Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Propo";
           style = "Italic";
+        };
+        normal = {
+          family = "JetBrainsMono Nerd Font Propo";
+          style = "Regular";
         };
         size = lib.mkMerge [
           (lib.mkIf pkgs.stdenv.hostPlatform.isLinux 10)

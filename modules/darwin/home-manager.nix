@@ -73,7 +73,7 @@ in
 
         stateVersion = "23.11";
       };
-      imports = [ ./programs/alacritty.nix ./programs/wezterm.nix ./programs/tmux.nix ] ++ import ../shared/home-manager.nix;
+      imports = [ ./programs/alacritty.nix ./programs/tmux.nix ] ++ import ../shared/home-manager.nix;
 
       # Marked broken Oct 20, 2022 check later to remove this
       # https://github.com/nix-community/home-manager/issues/3344
@@ -91,7 +91,7 @@ in
         { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
         { path = "/System/Applications/Music.app/"; }
         { path = "/Applications/Obsidian.app/"; }
-        { path = "${pkgs.wezterm}/Applications/WezTerm.app/"; }
+        { path = "${pkgs.alacritty}/Applications/Alacritty.app/"; }
         { path = "/Applications/Telegram.app/"; }
         { path = "/Applications/Slack.app/"; }
         { path = "/System/Applications/System Settings.app/"; }

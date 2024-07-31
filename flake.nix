@@ -65,13 +65,18 @@
         '')}/bin/${scriptName}";
       };
       mkLinuxApps = system: {
+        "apply" = mkApp "apply" system;
         "build-switch" = mkApp "build-switch" system;
+        "copy-keys" = mkApp "copy-keys" system;
         "create-keys" = mkApp "create-keys" system;
         "check-keys" = mkApp "check-keys" system;
+        "install-with-secrets" = mkApp "install-with-secrets" system;
       };
       mkDarwinApps = system: {
+        "apply" = mkApp "apply" system;
         "build" = mkApp "build" system;
         "build-switch" = mkApp "build-switch" system;
+        "copy-keys" = mkApp "copy-keys" system;
         "create-keys" = mkApp "create-keys" system;
         "check-keys" = mkApp "check-keys" system;
         "rollback" = mkApp "rollback" system;
@@ -112,6 +117,7 @@
         modules = [
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
+          "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           {
             home-manager = {
               useGlobalPkgs = true;

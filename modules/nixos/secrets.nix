@@ -25,4 +25,11 @@ let user = "ehbr"; in
     owner = "${user}";
     group = "wheel";
   };
+
+  age.secrets."wifi" = {
+    file = "${secrets}/wifi.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
 }

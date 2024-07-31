@@ -22,9 +22,9 @@ in
       };
       efi.canTouchEfiVariables = true;
     };
-    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod", "sdhci_pci" ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "uinput", "kvm-intel" ];
+    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sdhci_pci" ];
+    kernelModules = [ "uinput" "kvm-intel" "v4l2loopback" ];
+    extraModulePackages = [ pkgs.linuxPackages.v4l2loopback ];
   };
 
   # Set your time zone.
@@ -34,9 +34,18 @@ in
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking = {
-    hostName = "ehbr.cloud"; # Define your hostname.
+    hostName = "ehbr"; # Define your hostname.
     useDHCP = false;
     interfaces."enp2s0".useDHCP = true;
+    wireless = {
+      enable = true;
+      environmentFile = config.age.secrets.wifi.path;
+      networks = {
+        "IoT" = {
+          psk = "@PKS_IOT@";
+        };
+      };
+    };
   };
 
   # Turn on flag for proprietary software
@@ -64,7 +73,7 @@ in
 
   # Video support
   hardware = {
-    opengl.enable = true;
+    graphics.enable = true;
     cpu = {
       intel = {
         updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

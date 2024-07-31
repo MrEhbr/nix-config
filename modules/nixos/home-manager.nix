@@ -3,7 +3,6 @@
 let
   user = "ehbr";
   xdg_configHome = "/home/${user}/.config";
-  shared-programs = import ../shared/home-manager.nix { inherit config pkgs lib; };
   shared-files = import ../shared/files.nix { inherit user config pkgs; };
 
 in
@@ -13,7 +12,7 @@ in
     username = "${user}";
     homeDirectory = "/home/${user}";
     packages = pkgs.callPackage ./packages.nix { };
-    file = shared-files // import ./files.nix { inherit user; };
+    file = shared-files // import ./files.nix { inherit user pkgs; };
     stateVersion = "21.05";
   };
 
@@ -23,6 +22,9 @@ in
     udiskie.enable = true;
   };
 
-  programs = shared-programs // { gpg.enable = true; };
+  programs = { gpg.enable = true; };
+
+  imports = import ../shared/home-manager.nix;
+
 
 }
