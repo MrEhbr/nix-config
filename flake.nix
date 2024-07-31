@@ -117,7 +117,6 @@
         modules = [
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
-          "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           {
             home-manager = {
               useGlobalPkgs = true;
