@@ -24,6 +24,7 @@ in
     };
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sdhci_pci" ];
     kernelModules = [ "uinput" "kvm-intel" "v4l2loopback" ];
+    kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = [ pkgs.linuxPackages.v4l2loopback ];
   };
 
@@ -36,7 +37,6 @@ in
   networking = {
     hostName = "ehbr"; # Define your hostname.
     useDHCP = false;
-    interfaces."enp2s0".useDHCP = true;
     wireless = {
       enable = true;
       environmentFile = config.age.secrets.wifi.path;
@@ -86,6 +86,10 @@ in
   virtualisation.docker.enable = true;
   virtualisation.docker.logDriver = "json-file";
 
+  users.groups.storage = {
+    gid = 3000;
+  };
+
   # It's me, it's you, it's everyone
   users.users = {
     ${user} = {
@@ -93,6 +97,7 @@ in
       extraGroups = [
         "wheel" # Enable ‘sudo’ for the user.
         "docker"
+        "storage"
       ];
       shell = pkgs.fish;
       openssh.authorizedKeys.keys = keys;
@@ -100,6 +105,7 @@ in
 
     root = {
       openssh.authorizedKeys.keys = keys;
+      shell = pkgs.fish;
     };
   };
 
@@ -109,7 +115,7 @@ in
     extraRules = [{
       commands = [
         {
-          command = "${pkgs.systemd}/bin/reboot";
+          command = "ALL";
           options = [ "NOPASSWD" ];
         }
       ];
@@ -117,12 +123,22 @@ in
     }];
   };
 
-  fonts.packages = with pkgs; [
-    jetbrains-mono
-    font-awesome
-    noto-fonts
-    noto-fonts-emoji
-  ];
+  # Fonts
+  fonts = {
+    packages = with pkgs; [
+      # icon fonts
+      material-design-icons
+      font-awesome
+
+      # nerdfonts
+      (nerdfonts.override {
+        fonts = [
+          "FiraCode"
+          "JetBrainsMono"
+        ];
+      })
+    ];
+  };
 
   environment.systemPackages = with pkgs; [
     agenix.packages."${pkgs.system}".default # "x86_64-linux"

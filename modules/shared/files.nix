@@ -2,6 +2,9 @@
 
 let
   personalPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxk1quGRSKZkYR6tLHTFTLUJ+nyu+037Vzbjj7ZCZIq mr.ehbr@gmail.com";
+  home = builtins.getEnv "HOME";
+  xdg_configHome = "${home}/.config";
+
 in
 {
   ".ssh/id_github.pub" = {
@@ -9,7 +12,7 @@ in
   };
 
   # my nvim config
-  # ".config/nvim".source = pkgs.fetchFromGitHub {
+  # "${xdg_configHome}.nvim".source = pkgs.fetchFromGitHub {
   #   owner = "MrEhbr";
   #   repo = "nvim-config";
   #   rev = "main";

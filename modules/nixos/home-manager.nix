@@ -14,6 +14,15 @@ in
     packages = pkgs.callPackage ./packages.nix { };
     file = shared-files // import ./files.nix { inherit user pkgs; };
     stateVersion = "21.05";
+    sessionVariables = {
+      LC_ALL = "en_US.UTF-8";
+      EDITOR = "nvim";
+      GOPATH = "$HOME/Go";
+      GOBIN = "$HOME/Go/bin";
+      BUN_INSTALL = "$HOME/.bun";
+      DIRENV_WARN_TIMEOUT = "5m";
+      DIRENV_LOG_FORMAT = "";
+    };
   };
 
   # Screen lock

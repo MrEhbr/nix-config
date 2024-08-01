@@ -48,7 +48,6 @@ with pkgs; [
   httpie
   ripgrep
   tree
-  tmux
   eza
   zoxide
   atuin

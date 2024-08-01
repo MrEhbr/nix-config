@@ -49,6 +49,8 @@
               statix
               vulnix
               nixd
+              nixpkgs-fmt
+              nil
             ];
             shellHook = with pkgs; ''
               export EDITOR=vim

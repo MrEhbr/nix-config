@@ -1,4 +1,5 @@
-_: {
+{ config, ... }:
+{
   # This formats the disk with the ext4 filesystem
   # Other examples found here: https://github.com/nix-community/disko/tree/master/example
   disko.devices = {
@@ -46,6 +47,17 @@ _: {
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/mnt/storage";
+                mountOptions = [
+                  "defaults"
+                  "uid=0"
+                  "gid=${toString config.users.groups.storage.gid}"
+                  "gid=3000"
+                  "mode=0770"
+                  "noatime"
+                  "nodiratime"
+                  "discard"
+                  "errors=remount-ro"
+                ];
               };
             };
           };

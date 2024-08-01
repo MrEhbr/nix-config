@@ -37,7 +37,7 @@
       shell = "nix-shell -p";
     };
 
-    shellInit = ''
+    shellInit = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin ''
       source /nix/var/nix/profiles/default/etc/profile.d/nix.fish
       source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
     '';
@@ -54,10 +54,12 @@
       if type -q bat
         alias cat "bat --style=plain --paging=never"
       end
-      if not set -q TMUX
-        set -g TMUX tmux new-session -d -s base
-        eval $TMUX
-        tmux attach-session -d -t base
+      if type -q tmux
+        if not set -q TMUX
+          set -g TMUX tmux new-session -d -s base
+          eval $TMUX
+          tmux attach-session -d -t base
+        end
       end
       ${pkgs.any-nix-shell}/bin/any-nix-shell fish | source
 

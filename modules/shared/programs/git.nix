@@ -134,7 +134,7 @@ in
     userName = name;
     userEmail = email;
 
-    includes = [
+    includes = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [
       {
         # use diffrent email & name for work
         path = "/Users/${user}/Work/.gitconfig";
@@ -152,7 +152,7 @@ in
       pull.rebase = true;
       push.autoSetupRemote = true;
       rebase.autoStash = true;
-      url = {
+      url = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         "git@gitlab.mobbtech.com:".insteadOf = "https://gitlab.mobbtech.com/";
       };
     };

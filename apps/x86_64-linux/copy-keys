@@ -13,11 +13,14 @@ mount_usb() {
     echo -e "\e[0;32mUSB drive already mounted.\e[0m"
   else
     device_found=false
-    for dev in sda sdb sdc sdd sde sdf sdg sdh sdi sdj sdk sdl; do
+    for dev in sda1 sdb1 sdc1 sdd1 sde1 sdf1 sdg1 sdh1 sdi1 sdj1 sdk1 sdl1; do
       if sudo blkid /dev/$dev | grep -iq 'TYPE="vfat"'; then
         device_found=true
         mkdir -p /mnt/usb
-        sudo mount /dev/$dev /mnt/usb && { echo -e "\e[0;32mUSB drive mounted successfully on /dev/$dev.\e[0m"; break; } || echo -e "\e[0;31mFailed to mount /dev/$dev.\e[0m"
+        sudo mount /dev/$dev /mnt/usb && {
+          echo -e "\e[0;32mUSB drive mounted successfully on /dev/$dev.\e[0m"
+          break
+        } || echo -e "\e[0;31mFailed to mount /dev/$dev.\e[0m"
       fi
     done
     if [ "$device_found" = false ]; then

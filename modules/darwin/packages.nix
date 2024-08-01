@@ -3,6 +3,7 @@
 with pkgs;
 let shared-packages = import ../shared/packages.nix { inherit pkgs; }; in
 shared-packages ++ [
+  tmux
   reattach-to-user-namespace
   alacritty
   dockutil
