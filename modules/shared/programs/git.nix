@@ -155,8 +155,10 @@ in
       url = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         "git@gitlab.mobbtech.com:".insteadOf = "https://gitlab.mobbtech.com/";
       };
+      safe = {
+        directory = "/etc/nixos";
+      };
     };
-
     delta = {
       enable = true;
       options = {

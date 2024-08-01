@@ -53,9 +53,9 @@ _: {
                   "discard"
                   "errors=remount-ro"
                 ];
-                postMountCommands = ''
-                  chown root:storage /mnt/storage
-                  chmod 0770 /mnt/storage
+                postMountHook = ''
+                  chown 0:3000 /mnt/mnt/storage
+                  chmod 0770 /mnt/mnt/storage
                 '';
               };
             };

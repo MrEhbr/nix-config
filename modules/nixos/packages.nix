@@ -6,6 +6,9 @@ shared-packages ++ [
 
   # App and package management
   gnumake
+  libgcc
+  glibc
+  gcc
   cmake
   home-manager
 
@@ -24,4 +27,12 @@ shared-packages ++ [
   # File and system utilities
   inotify-tools # inotifywait, inotifywatch - For file system events
   libnotify
+  smartmontools
+  parted
+  ntfs3g
+  udevil
+  samba
+  cifs-utils
+  mergerfs
+  apparmor-pam
 ]

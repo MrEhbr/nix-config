@@ -2,7 +2,7 @@
 
 let
   user = "ehbr";
-  keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOk8iAnIaa1deoc7jw8YACPNVka1ZFJxhnU4G74TmS+p" ];
+  keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxk1quGRSKZkYR6tLHTFTLUJ+nyu+037Vzbjj7ZCZIq mr.ehbr@gmail.com" ];
 in
 {
   imports = [
@@ -24,7 +24,6 @@ in
     };
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sdhci_pci" ];
     kernelModules = [ "uinput" "kvm-intel" "v4l2loopback" ];
-    kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = [ pkgs.linuxPackages.v4l2loopback ];
   };
 
@@ -36,16 +35,7 @@ in
   # replicates the default behaviour.
   networking = {
     hostName = "ehbr"; # Define your hostname.
-    useDHCP = false;
-    wireless = {
-      enable = true;
-      environmentFile = config.age.secrets.wifi.path;
-      networks = {
-        "IoT" = {
-          psk = "@PKS_IOT@";
-        };
-      };
-    };
+    networkmanager.enable = true;
   };
 
   # Turn on flag for proprietary software
@@ -71,9 +61,10 @@ in
     gvfs.enable = true; # Mount, trash, and other functionalities
   };
 
-  # Video support
   hardware = {
     graphics.enable = true;
+    enableAllFirmware = true;
+    enableRedistributableFirmware = true;
     cpu = {
       intel = {
         updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

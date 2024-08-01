@@ -10,12 +10,4 @@ in
   ".ssh/id_github.pub" = {
     text = personalPublicKey;
   };
-
-  # my nvim config
-  # "${xdg_configHome}.nvim".source = pkgs.fetchFromGitHub {
-  #   owner = "MrEhbr";
-  #   repo = "nvim-config";
-  #   rev = "main";
-  #   sha256 = "V84QQsexxX99RS2Lhu1qH02z7bbWK/0jH56O8LLpBDs=";
-  # };
 }
