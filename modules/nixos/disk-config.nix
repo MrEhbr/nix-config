@@ -48,14 +48,15 @@ _: {
                 mountpoint = "/mnt/storage";
                 mountOptions = [
                   "defaults"
-                  "uid=0"
-                  "gid=3000"
-                  "mode=0770"
                   "noatime"
                   "nodiratime"
                   "discard"
                   "errors=remount-ro"
                 ];
+                postMountCommands = ''
+                  chown root:storage /mnt/storage
+                  chmod 0770 /mnt/storage
+                '';
               };
             };
           };
