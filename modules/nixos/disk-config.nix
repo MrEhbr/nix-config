@@ -52,9 +52,6 @@ _: {
                   "gid=3000"
                   "gid=3000"
                   "mode=0770"
-                  "noatime"
-                  "nodiratime"
-                  "discard"
                 ];
               };
             };
