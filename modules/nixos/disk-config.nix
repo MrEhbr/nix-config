@@ -55,7 +55,6 @@ _: {
                   "noatime"
                   "nodiratime"
                   "discard"
-                  "errors=remount-ro"
                 ];
               };
             };
