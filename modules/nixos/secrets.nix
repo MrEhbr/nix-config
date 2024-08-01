@@ -32,4 +32,36 @@ let user = "ehbr"; in
     owner = "${user}";
     group = "wheel";
   };
+
+  age.secrets."acme" = {
+    file = "${secrets}/acme.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+
+  age.secrets."homepage" = {
+    file = "${secrets}/homepage.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+  age.secrets."tailscale" = {
+    file = "${secrets}/tailscale.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+  age.secrets."rclone" = {
+    file = "${secrets}/rclone.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+  age.secrets."restic" = {
+    file = "${secrets}/restic.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
 }

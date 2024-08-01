@@ -67,11 +67,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722445220,
-        "narHash": "sha256-PW5FRqLhqg0xGpPjY2Poa464tyBQiyKd0tQGZ0HnMiU=",
+        "lastModified": 1722924007,
+        "narHash": "sha256-+CQDamNwqO33REJLft8c26NbUi2Td083hq6SvAm2xkU=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "7e08a9dd34314fb8051c28b231a68726c54daa7b",
+        "rev": "91010a5613ffd7ee23ee9263213157a1c422b705",
         "type": "github"
       },
       "original": {
@@ -88,11 +88,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722217815,
-        "narHash": "sha256-8r5AJ3n8WEDw3rsZLALSuFQ5kJyWOcssNZvPxYLr2yc=",
+        "lastModified": 1722821805,
+        "narHash": "sha256-FGrUPUD+LMDwJsYyNSxNIzFMldtCm8wXiQuyL2PHSrM=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "1e6f8a7b4634fc051cc9361959bf414fcf17e094",
+        "rev": "0257e44f4ad472b54f19a6dd1615aee7fa48ed49",
         "type": "github"
       },
       "original": {
@@ -145,11 +145,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1722462338,
-        "narHash": "sha256-ss0G8t8RJVDewA3MyqgAlV951cWRK6EtVhVKEZ7J5LU=",
+        "lastModified": 1723015306,
+        "narHash": "sha256-jQnFEtH20/OsDPpx71ntZzGdRlpXhUENSQCGTjn//NA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6e090576c4824b16e8759ebca3958c5b09659ee8",
+        "rev": "b3d5ea65d88d67d4ec578ed11d4d2d51e3de525e",
         "type": "github"
       },
       "original": {
@@ -161,11 +161,11 @@
     "homebrew-bundle": {
       "flake": false,
       "locked": {
-        "lastModified": 1722292432,
-        "narHash": "sha256-ePhGFCAsC7O1UPWyhnsPCK4a3gjQX8cUfl9SU3BT3HM=",
+        "lastModified": 1722933499,
+        "narHash": "sha256-3VDqZrNLrtWczCqzG7lP5QsfjosYXqZBDBKWQ+xNP4s=",
         "owner": "homebrew",
         "repo": "homebrew-bundle",
-        "rev": "260b3b482f39f92ccb4de1acecbb5bf081108d7c",
+        "rev": "c16d5c9c553be18b9c0d3832d7f46881ff23d941",
         "type": "github"
       },
       "original": {
@@ -177,11 +177,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1722467482,
-        "narHash": "sha256-duwIFQy3aTBI09HwFnJlSY6i40OZFGzqFJsN3pfp/To=",
+        "lastModified": 1723035495,
+        "narHash": "sha256-Jlbj9cxpYhCBlGxW97IbFAPakaFTN9bOvQyqOZLGgfY=",
         "owner": "homebrew",
         "repo": "homebrew-cask",
-        "rev": "d202f50b4cbed351af11fbfbc57f71dceac7b245",
+        "rev": "0aef0ff520b1ed766d94ce8cdd0d964ac35e38d3",
         "type": "github"
       },
       "original": {
@@ -193,11 +193,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1722469244,
-        "narHash": "sha256-7e+trsc74+mz+SaDj/l75Q+w82kXSy3R8mNXnDGYQA0=",
+        "lastModified": 1723036121,
+        "narHash": "sha256-IovzjJmZsuTKi8/wIE2YFP+D9BM2db9HiGUINfT0ALE=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "3c8f36cb94a24efeba47979343433b21ecf168f1",
+        "rev": "6ba6446ffba524797d2bf46c68ddc3ff7f27dec2",
         "type": "github"
       },
       "original": {
@@ -308,11 +308,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1722185531,
-        "narHash": "sha256-veKR07psFoJjINLC8RK4DiLniGGMgF3QMlS4tb74S6k=",
+        "lastModified": 1722813957,
+        "narHash": "sha256-IAoYyYnED7P8zrBFMnmp7ydaJfwTnwcnqxUElC1I26Y=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "52ec9ac3b12395ad677e8b62106f0b98c1f8569d",
+        "rev": "cb9a96f23c491c081b38eab96d22fa958043c9fa",
         "type": "github"
       },
       "original": {
@@ -339,11 +339,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1722441473,
-        "narHash": "sha256-TAoLBU5BdVP5g+yGrAzItgEXDAVHGvapetcrOCB/Lb4=",
+        "lastModified": 1723035000,
+        "narHash": "sha256-Es7pL6fWLJWhp2kx/kaq5D+wluzlmK8BEJPwHAN6dIY=",
         "ref": "refs/heads/main",
-        "rev": "0368341452b873b30decd7e7217e429ee30ca3a9",
-        "revCount": 4,
+        "rev": "902e1c0807d51ce58848ac37bd064b81546e97ed",
+        "revCount": 10,
         "type": "git",
         "url": "ssh://git@github.com/MrEhbr/nix-secrets.git"
       },
