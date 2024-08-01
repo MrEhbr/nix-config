@@ -50,8 +50,11 @@ _: {
                   "defaults"
                   "uid=0"
                   "gid=3000"
-                  "gid=3000"
                   "mode=0770"
+                  "noatime"
+                  "nodiratime"
+                  "discard"
+                  "errors=remount-ro"
                 ];
               };
             };
