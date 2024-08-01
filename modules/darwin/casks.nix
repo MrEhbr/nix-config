@@ -28,6 +28,7 @@ _:
   "numi"
   "tempbox"
   "the-unarchiver"
+  # "logitech-g-hub"
 
   # Productivity Tools
   "raycast"

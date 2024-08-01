@@ -32,4 +32,54 @@ let user = "ehbr"; in
     owner = "${user}";
     group = "wheel";
   };
+
+  age.secrets."acme" = {
+    file = "${secrets}/acme.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+
+  age.secrets."homepage" = {
+    file = "${secrets}/homepage.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+  age.secrets."tailscale" = {
+    file = "${secrets}/tailscale.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+  age.secrets."rclone" = {
+    file = "${secrets}/rclone.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+  age.secrets."restic" = {
+    file = "${secrets}/restic.age";
+    mode = "600";
+    owner = "${user}";
+    group = "wheel";
+  };
+  age.secrets."mqtt_root" = {
+    file = "${secrets}/mqtt_root.age";
+    mode = "600";
+    owner = "mosquitto";
+    group = "wheel";
+  };
+  age.secrets."mqtt_zigbee2mqtt" = {
+    file = "${secrets}/mqtt_zigbee2mqtt.age";
+    mode = "600";
+    owner = "mosquitto";
+    group = "wheel";
+  };
+  age.secrets."zigbee2mqtt.yaml" = {
+    file = "${secrets}/zigbee2mqtt.yaml.age";
+    mode = "600";
+    owner = "zigbee2mqtt";
+    group = "wheel";
+  };
 }

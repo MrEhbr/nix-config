@@ -18,9 +18,12 @@ shared-packages ++ [
 
   # Testing and development tools
   direnv
+  sqlite
 
   # Text and terminal utilities
   tree
+  rename
+  dust
   unixtools.ifconfig
   unixtools.netstat
 
@@ -28,11 +31,11 @@ shared-packages ++ [
   inotify-tools # inotifywait, inotifywatch - For file system events
   libnotify
   smartmontools
-  parted
-  ntfs3g
-  udevil
-  samba
-  cifs-utils
-  mergerfs
-  apparmor-pam
+  ethtool
+  mtr
+  iftop
+  tcpdump
+  pciutils
+  iperf
+  arp-scan
 ]
