@@ -5,7 +5,6 @@ _:
   "1password-cli"
   # Development Tools
   "zed"
-  "visual-studio-code"
   "postman"
   "datagrip"
   "goland"
@@ -16,25 +15,20 @@ _:
   "telegram"
   "zoom"
   "languagetool"
-  "deepl"
 
   # Utility Tools
-  "adguard"
   "appcleaner"
   "bartender"
   "stats"
   "betterdisplay"
-  "bartender"
   "numi"
   "tempbox"
   "the-unarchiver"
-  # "logitech-g-hub"
 
   # Productivity Tools
   "raycast"
   "obsidian"
-  "lm-studio"
 
   # Browsers
-  "google-chrome"
+  "firefox@developer-edition"
 ]

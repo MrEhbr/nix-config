@@ -105,7 +105,7 @@
                   "homebrew/homebrew-bundle" = homebrew-bundle;
                 };
                 mutableTaps = true;
-                autoMigrate = false;
+                autoMigrate = true;
               };
             }
             ./hosts/darwin

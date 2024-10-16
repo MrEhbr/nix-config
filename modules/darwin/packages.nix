@@ -4,6 +4,7 @@ with pkgs;
 let shared-packages = import ../shared/packages.nix { inherit pkgs; }; in
 shared-packages ++ [
   tmux
+  tmuxinator
   reattach-to-user-namespace
   alacritty
   dockutil
@@ -12,4 +13,7 @@ shared-packages ++ [
   darwin.libiconv
   glab
   gh
+  timetrace
+  bruno
+  timewarrior
 ]

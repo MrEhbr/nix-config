@@ -24,7 +24,7 @@ in
       autoUpdate = true;
       upgrade = true;
       # 'zap': uninstalls all formulae(and related files) not listed here.
-      # cleanup = "zap";
+      cleanup = "zap";
     };
 
 

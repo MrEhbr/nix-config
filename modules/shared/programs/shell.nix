@@ -22,13 +22,20 @@
       }
       {
         name = "plugin-git";
-        src = pkgs.fetchFromGitHub {
-          owner = "jhillyerd";
-          repo = "plugin-git";
-          rev = "c2b38f53f0b04bc67f9a0fa3d583bafb3f558718";
-          sha256 = "sha256-efKPbsXxjHm1wVWPJCV8teG4DgZN5dshEzX8PWuhKo4=";
-        };
+        inherit (pkgs.fishPlugins.plugin-git) src;
       }
+      {
+        name = "plugin-kubectl";
+        src =
+          pkgs.fetchFromGitHub
+            {
+              owner = "blackjid";
+              repo = "plugin-kubectl";
+              rev = "f3cc9003077a3e2b5f45e3988817a78e959d4131";
+              sha256 = "sha256-ABzVSzM135UeAJ97CUBb9rhK9Pc6ItLSmJQOacq09gQ=";
+            };
+      }
+
     ];
     shellAliases = {
       grep = "grep --color=auto";
@@ -118,7 +125,7 @@
         "$line_break"
         "$character"
       ];
-      right_format = "$cmd_duration $status";
+      right_format = "$cmd_duration $status $aws $kubernetes";
 
       character = {
         success_symbol = "[❯](purple)";
@@ -151,6 +158,28 @@
         format = "[$duration]($style) ";
         style = "yellow";
       };
+      aws = {
+        format = "on [$symbol($profile )]($style)";
+        style = "bold blue";
+        symbol = "🅰 ";
+      };
+      kubernetes = {
+        format = "on [⛵$context \($namespace\)]($style) ";
+        disabled = false;
+        contexts = [
+          {
+            context_pattern = ".*INT.*";
+            style = "dimmed green";
+            context_alias = "INT";
+          }
+          {
+            context_pattern = ".*PROD.*";
+            style = "dimmed red";
+            context_alias = "PROD";
+          }
+        ];
+      };
+
     };
   };
 
@@ -189,7 +218,7 @@
   programs.bat = {
     enable = true;
     themes = {
-    kanagawa = {
+      kanagawa = {
         src = pkgs.fetchFromGitHub {
           owner = "rebelot";
           repo = "kanagawa.nvim";

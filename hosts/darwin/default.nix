@@ -60,7 +60,7 @@ in
   environment.shells = [
     pkgs.fish
   ];
-    programs.fish.enable = true;
+  programs.fish.enable = true;
 
   # Load configuration that is shared across systems
   environment.systemPackages = with pkgs; [

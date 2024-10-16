@@ -15,6 +15,8 @@ with pkgs; [
   yai
   just
   yazi
+  httpie
+  hurl
 
   # Encryption and security tools
   age
@@ -38,8 +40,6 @@ with pkgs; [
   go
   rustc
   cargo
-  php
-
 
   # Text and terminal utilities
   just
