@@ -6,12 +6,12 @@ let
 in
 {
   imports = [
+    ../../services/nixos
     ../../modules/nixos/secrets.nix
     ../../modules/nixos/disk-config.nix
+    ../../modules/nixos/services
     ../../modules/shared
-    ../../modules/shared/cachix
     agenix.nixosModules.default
-    ./services.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -90,10 +90,10 @@ in
 
     wireless = {
       enable = true;
-      environmentFile = config.age.secrets.wifi.path;
+      secretsFile = config.age.secrets.wifi.path;
       networks = {
         "IoT" = {
-          psk = "@PKS_IOT@";
+          pskRaw = "ext:PKS_IOT";
         };
       };
     };
@@ -229,5 +229,5 @@ in
     inetutils
   ];
 
-  system.stateVersion = "21.05"; # Don't change this
+  system.stateVersion = "25.05"; # Don't change this
 }

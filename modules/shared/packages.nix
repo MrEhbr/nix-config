@@ -4,22 +4,30 @@ with pkgs; [
   # General packages for development and system management
   git
   lazygit
-  act
+  lazydocker
+  act # Github Actions local runner
   bat
   btop
-  jless
+  jless #  pager for JSON (or YAML) data
   coreutils
   delta
   wget
   ansible
-  yai
   just
   yazi
   httpie
-  hurl
+  unzip
+  postman
+  bruno
+  gh
+  tlrc
+  dua
+  dust
+
 
   # Encryption and security tools
   age
+  openssl
 
   # Cloud-related tools and SDKs
   docker
@@ -40,18 +48,18 @@ with pkgs; [
   go
   rustc
   cargo
+  lua5_4
 
   # Text and terminal utilities
   just
   htop
   jq
-  httpie
   ripgrep
   tree
   eza
   zoxide
   atuin
-  unzip
 
-  dev-env # from overlay
+  # Custom tools
+  dev-env
 ]

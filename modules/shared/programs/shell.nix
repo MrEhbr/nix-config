@@ -114,6 +114,8 @@
     enableFishIntegration = true;
 
     settings = {
+      add_newline = true;
+
       format = lib.concatStrings [
         "$username"
         "$hostname"
@@ -159,13 +161,14 @@
         style = "yellow";
       };
       aws = {
+        disabled = true;
         format = "on [$symbol($profile )]($style)";
         style = "bold blue";
         symbol = "🅰 ";
       };
       kubernetes = {
         format = "on [⛵$context \($namespace\)]($style) ";
-        disabled = false;
+        disabled = true;
         contexts = [
           {
             context_pattern = ".*INT.*";
@@ -179,7 +182,6 @@
           }
         ];
       };
-
     };
   };
 
@@ -197,7 +199,7 @@
     enable = true;
     enableFishIntegration = true;
     extraOptions = [ "--group-directories-first" "-g" ];
-    icons = true;
+    icons = "auto";
     git = true;
   };
 

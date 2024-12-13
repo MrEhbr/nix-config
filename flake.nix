@@ -32,7 +32,7 @@
       flake = false;
     };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, disko, agenix, secrets } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, disko, agenix, secrets, ... } @inputs:
     let
       user = "ehbr";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -52,11 +52,12 @@
               nixpkgs-fmt
               nil
             ];
-            shellHook = with pkgs; ''
+            shellHook = ''
               export EDITOR=vim
             '';
           };
         };
+
       mkApp = scriptName: system: {
         type = "app";
         program = "${(nixpkgs.legacyPackages.${system}.writeScriptBin scriptName ''
@@ -83,40 +84,51 @@
         "check-keys" = mkApp "check-keys" system;
         "rollback" = mkApp "rollback" system;
       };
+      overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
+        final: prev: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
     in
     {
+      overlays = overlays;
+      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       devShells = forAllSystems devShell;
       apps = nixpkgs.lib.genAttrs linuxSystems mkLinuxApps // nixpkgs.lib.genAttrs darwinSystems mkDarwinApps;
-
-      darwinConfigurations = nixpkgs.lib.genAttrs darwinSystems (system:
-        darwin.lib.darwinSystem {
-          inherit system;
-          specialArgs = inputs;
-          modules = [
-            home-manager.darwinModules.home-manager
-            nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                enable = true;
-                user = user;
-                taps = {
-                  "homebrew/homebrew-core" = homebrew-core;
-                  "homebrew/homebrew-cask" = homebrew-cask;
-                  "homebrew/homebrew-bundle" = homebrew-bundle;
+      darwinConfigurations = nixpkgs.lib.genAttrs darwinSystems
+        (system:
+          darwin.lib.darwinSystem {
+            inherit system;
+            specialArgs = inputs;
+            modules = [
+              {
+                nixpkgs.overlays = [ overlays.${system} ];
+              }
+              home-manager.darwinModules.home-manager
+              nix-homebrew.darwinModules.nix-homebrew
+              {
+                nix-homebrew = {
+                  enable = true;
+                  enableRosetta = true;
+                  user = user;
+                  taps = {
+                    "homebrew/homebrew-core" = homebrew-core;
+                    "homebrew/homebrew-cask" = homebrew-cask;
+                    "homebrew/homebrew-bundle" = homebrew-bundle;
+                  };
+                  mutableTaps = false;
+                  autoMigrate = true;
                 };
-                mutableTaps = true;
-                autoMigrate = true;
-              };
-            }
-            ./hosts/darwin
-          ];
-        }
-      );
+              }
+              ./hosts/darwin
+            ];
+          }
+        );
 
       nixosConfigurations = nixpkgs.lib.genAttrs linuxSystems (system: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = inputs;
         modules = [
+          {
+            nixpkgs.overlays = [ overlays.${system} ];
+          }
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
           {

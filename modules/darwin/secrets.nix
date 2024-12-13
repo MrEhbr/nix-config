@@ -9,7 +9,7 @@ let user = "ehbr"; in
 
     secrets = {
       "github-ssh-key" = {
-        symlink = true;
+        symlink = false;
         path = "/Users/${user}/.ssh/id_github";
         file = "${secrets}/github-ssh-key.age";
         mode = "600";
@@ -17,7 +17,7 @@ let user = "ehbr"; in
         group = "staff";
       };
       "work-ssh-key" = {
-        symlink = true;
+        symlink = false;
         path = "/Users/${user}/.ssh/id_work";
         file = "${secrets}/work-ssh-key.age";
         mode = "600";

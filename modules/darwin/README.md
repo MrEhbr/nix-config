@@ -1,8 +1,12 @@
 
 ## Layout
+
 ```
 .
+├── config             # Programs configuration that not defined as nix module
 ├── dock               # MacOS dock configuration
+├── programs           # Programs configurations
+├── services           # Services configurations
 ├── casks.nix          # List of homebrew casks
 ├── default.nix        # Defines module, system-level config
 ├── files.nix          # Non-Nix, static configuration files (now immutable!)

@@ -5,7 +5,6 @@ _:
   "1password-cli"
   # Development Tools
   "zed"
-  "postman"
   "datagrip"
   "goland"
   "chatgpt"
@@ -19,15 +18,16 @@ _:
   # Utility Tools
   "appcleaner"
   "bartender"
-  "stats"
   "betterdisplay"
   "numi"
   "tempbox"
   "the-unarchiver"
+  "ngrok"
 
   # Productivity Tools
   "raycast"
   "obsidian"
+  "amethyst"
 
   # Browsers
   "firefox@developer-edition"

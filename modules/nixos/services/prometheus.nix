@@ -131,7 +131,7 @@ in
       documentation = [ "https://github.com/danopstech/speedtest_exporter/blob/main/README.md" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ExecStart = "${pkgs.speedtest_exporter}/bin/speedtest_exporter -port 9862"; # -server_id 15152";
+        ExecStart = "${pkgs.speedtest-exporter}/bin/speedtest_exporter -port 9862"; # -server_id 15152";
         Restart = "on-failure";
         RestartSec = 5;
         NoNewPrivileges = true;

@@ -1,5 +1,11 @@
-[
-  ./programs/shell.nix
-  ./programs/git.nix
-  ./programs/ssh.nix
-]
+{ ... }:
+{
+  imports = [
+    ./programs/shell.nix
+    ./programs/git.nix
+    ./programs/ssh.nix
+    ./programs/tmux.nix
+    ./programs/kitty.nix
+    ./programs/alacritty.nix
+  ];
+}

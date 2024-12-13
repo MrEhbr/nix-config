@@ -2,18 +2,20 @@
 
 let
   user = "ehbr";
-  xdg_configHome = "/home/${user}/.config";
   shared-files = import ../shared/files.nix { inherit user config pkgs; };
 
 in
 {
+  imports = [
+    ../shared/home-manager.nix
+  ];
   home = {
     enableNixpkgsReleaseCheck = false;
     username = "${user}";
     homeDirectory = "/home/${user}";
     packages = pkgs.callPackage ./packages.nix { };
     file = shared-files // import ./files.nix { inherit user pkgs; };
-    stateVersion = "21.05";
+    stateVersion = "25.05";
     sessionVariables = {
       LC_ALL = "en_US.UTF-8";
       EDITOR = "nvim";
@@ -23,6 +25,7 @@ in
       DIRENV_WARN_TIMEOUT = "5m";
       DIRENV_LOG_FORMAT = "";
     };
+
   };
 
   # Screen lock
@@ -33,7 +36,8 @@ in
 
   programs = { gpg.enable = true; };
 
-  imports = import ../shared/home-manager.nix;
-
+  programs = {
+    tmux.enable = false;
+  };
 
 }

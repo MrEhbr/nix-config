@@ -1,66 +1,13 @@
-{ pkgs, lib, ... }:
-let
-  tmux-sessionx = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "sessionx";
-    version = "29-09-2024";
-    src = pkgs.fetchFromGitHub
-      {
-        owner = "omerxx";
-        repo = "tmux-sessionx";
-        rev = "264fda3f0b5a1c5a6f51961fc53f1b31e6184360";
-        sha256 = "sha256-Nu9BrmwA1cIlY5rfD5CWrD1LIxcddCNiuU2J7jhBqyY=";
-      };
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    postPatch = ''
-      substituteInPlace sessionx.tmux \
-        --replace "\$CURRENT_DIR/scripts/sessionx.sh" "$out/share/tmux-plugins/sessionx/scripts/sessionx.sh"
-      substituteInPlace scripts/sessionx.sh \
-        --replace "/tmux-sessionx/scripts/preview.sh" "$out/share/tmux-plugins/sessionx/scripts/preview.sh"
-      substituteInPlace scripts/sessionx.sh \
-        --replace "/tmux-sessionx/scripts/reload_sessions.sh" "$out/share/tmux-plugins/sessionx/scripts/reload_sessions.sh"
-    '';
-
-    postInstall = ''
-      chmod +x $target/scripts/sessionx.sh
-      wrapProgram $target/scripts/sessionx.sh \
-        --prefix PATH : ${with pkgs; lib.makeBinPath [ zoxide fzf gnugrep gnused coreutils ]}
-      chmod +x $target/scripts/preview.sh
-      wrapProgram $target/scripts/preview.sh \
-        --prefix PATH : ${with pkgs; lib.makeBinPath [ coreutils gnugrep gnused ]}
-      chmod +x $target/scripts/reload_sessions.sh
-      wrapProgram $target/scripts/reload_sessions.sh \
-        --prefix PATH : ${with pkgs; lib.makeBinPath [ coreutils gnugrep gnused ]}
-    '';
-
-  };
-in
+{ pkgs, lib, config, ... }:
 {
+
+
   programs.tmux = {
-    enable = true;
     plugins = with pkgs.tmuxPlugins; [
       vim-tmux-navigator
       tmux-fzf
       yank
       cpu
-      {
-        plugin = tmux-sessionx;
-        extraConfig = ''
-          set -g @sessionx-auto-accept 'off'
-          set -g @sessionx-bind 'l'
-          set -g @sessionx-window-height '85%'
-          set -g @sessionx-window-width '75%'
-          set -g @sessionx-zoxide-mode 'on'
-          set -g @sessionx-custom-paths-subdirectories 'false'
-          set -g @sessionx-filter-current 'false'
-          set -g @sessionx-preview-location 'right'
-          set -g @sessionx-preview-ratio '55%'
-          set -g @sessionx-filtered-sessions 'floating'
-
-          set -g @sessionx-bind-tree-mode 'ctrl-w'
-          set -g @sessionx-bind-new-window 'ctrl-c'
-          set -g @sessionx-bind-kill-session 'ctrl-d'
-        '';
-      }
     ];
 
     terminal = "tmux-256color";
@@ -97,14 +44,13 @@ in
       set -g status-interval 4
       set -g status-position bottom
 
-
-      set -g status-left '#{?client_prefix,#[bg=#d65c0d],#[bg=default]} #[fg=brightwhite,bold]#S#[fg=none]'
+      set -g status-left '#{?client_prefix,#[fg=#d65c0d]#[bg=#d65c0d],#[fg=default] }#[fg=brightwhite,bold]#S#[fg=none]'
       set -ga status-left '#[bg=default]#{?client_prefix,#[fg=#d65c0d] ,#[fg=default]  }'
       set -g status-left-length 80
 
       setw -g window-status-activity-style fg=yellow
       setw -g window-status-bell-style     fg=red
-      setw -g window-status-format         "#[fg=yellow]#I #[fg=green]#[fg=white]#{?#{==:#W,fish},#{b:pane_current_path},#W #{b:pane_current_path}} #{?window_zoomed_flag, , }"
+      setw -g window-status-format         "#[fg=yellow]#I: #[fg=green]#[fg=white]#{?#{==:#W,fish},#{b:pane_current_path},#W #{b:pane_current_path}} #{?window_zoomed_flag, , }"
       setw -g window-status-current-format "#[fg=brightyellow,bold,underscore]#I: #[fg=brightgreen]#[fg=brightwhite,bold,underscore]#{b:pane_current_path} #W#{?window_zoomed_flag, , }"
       setw -g window-status-separator      "#[fg=brightwhite,bold]  "
       set -g status-justify left
@@ -175,7 +121,7 @@ in
       if '[ -e ~/.tmux.local.conf ]' 'source ~/.tmux.local.conf'
     '';
   };
-  xdg.configFile = {
+  xdg.configFile = lib.mkIf config.programs.tmux.enable {
     "tmux/tmux.conf".text = lib.mkOrder 600 ''
       set -g status-right "#[bg=default,fg=brightblue] #{pane_current_path} #[bg=default,fg=gray]|"
       set -ga status-right "#[fg=gray,bold]#{?pane_mode,#[fg=default] #{pane_mode} #[bg=default]#[fg=gray]|,}"
