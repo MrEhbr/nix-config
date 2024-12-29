@@ -21,7 +21,6 @@ in
       "Thumbs.db"
       "*.log"
       "*.tmp"
-      "*.lock"
       "*.swp"
       "*.bak"
       "*.old"
@@ -150,6 +149,7 @@ in
       rebase.autoStash = true;
       url = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         "git@gitlab.mobbtech.com:".insteadOf = "https://gitlab.mobbtech.com/";
+        "git@github.com:".insteadOf = "https://github.com/";
       };
       safe = {
         directory = "/etc/nixos";

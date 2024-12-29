@@ -7,7 +7,8 @@ with pkgs; [
   lazydocker
   act # Github Actions local runner
   bat
-  btop
+  bottom
+  procs
   jless #  pager for JSON (or YAML) data
   coreutils
   delta
@@ -23,7 +24,8 @@ with pkgs; [
   tlrc
   dua
   dust
-
+  rainfrog # SQL TUI
+  timg # view images from the terminal
 
   # Encryption and security tools
   age
@@ -55,6 +57,7 @@ with pkgs; [
   htop
   jq
   ripgrep
+  repgrep
   tree
   eza
   zoxide

@@ -27,7 +27,7 @@ preset = "qwerty"
 
 [mode.main.binding]
 alt-0 = "workspace Main"
-alt-w = "workspace Web"
+alt-1 = "workspace Web"
 alt-e = "workspace Term"
 alt-3 = "workspace Chat"
 alt-2 = "workspace Notes"
@@ -106,6 +106,14 @@ run = ["move-node-to-workspace Dev"]
 
 [[on-window-detected]]
 if.app-id = "com.jetbrains.datagrip"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.outerbase.studio"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.mobbtech.Wheels"
 run = ["move-node-to-workspace Dev"]
 
 [[on-window-detected]]

@@ -24,7 +24,6 @@ let user = "ehbr"; in
         owner = "${user}";
         group = "staff";
       };
-
     };
   };
 }

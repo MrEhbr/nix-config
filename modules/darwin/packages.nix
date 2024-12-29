@@ -11,6 +11,7 @@ shared-packages ++ [
   pngpaste
   colima
 
+  iina
   # Custom packages
   macism
 ]
