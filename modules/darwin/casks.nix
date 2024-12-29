@@ -8,6 +8,7 @@ _:
   "datagrip"
   "goland"
   "chatgpt"
+  "ghostty"
 
   # Communication Tools
   "slack"
@@ -27,8 +28,8 @@ _:
   # Productivity Tools
   "raycast"
   "obsidian"
-  "amethyst"
 
   # Browsers
   "firefox@developer-edition"
+  "google-chrome"
 ]

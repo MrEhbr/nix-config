@@ -1,135 +1,142 @@
 { pkgs, lib, config, ... }:
 {
 
-
   programs.tmux = {
     plugins = with pkgs.tmuxPlugins; [
       vim-tmux-navigator
       tmux-fzf
       yank
-      cpu
     ];
 
-    terminal = "tmux-256color";
+    terminal = "screen-256color";
     prefix = "C-a";
     escapeTime = 0;
     baseIndex = 1;
-    keyMode = "vi";
-    clock24 = true;
     customPaneNavigationAndResize = true;
     mouse = true;
     historyLimit = 50000;
+
     extraConfig = ''
-      set-option -g default-terminal 'screen-256color'
-      set-option -g terminal-overrides ',xterm-256color:RGB'
-      set-option -ga terminal-overrides ",*256col*:Tc"
-      set-option -ga terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
-      set-option -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'
-      set-option -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours
+      #-----------------------------------------------------------
+      # Terminal & Color Settings
+      #-----------------------------------------------------------
+      set -ga terminal-overrides ",*256col*:Tc"
+      # Enable undercurl (both basic and with color support)
+      set -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'
+      set-option -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'
+      set -as terminal-features ",*:RGB"
+      # Use the current TERM, or consider "tmux-256color" if preferred
+      set -g default-terminal "''${TERM}"
+      set -ag terminal-overrides ",xterm-256color:RGB"
+      set -g xterm-keys on
 
+      #-----------------------------------------------------------
+      # Basic Options & Pane Settings
+      #-----------------------------------------------------------
+      setw -g mode-keys vi
+      set -g history-limit 50000
+      set -g base-index 1
+      setw -g pane-base-index 1
+      set -g allow-rename on
+      set -g renumber-windows on
+      set -g set-titles on
+      setw -g aggressive-resize on
+      set -g detach-on-destroy off
+      set -g bell-action any
+      set -g visual-bell off
+      set -g visual-activity off
+      set -g focus-events on
+      set -s escape-time 0
+
+      #-----------------------------------------------------------
+      # Appearance & Status Bar Settings
+      #-----------------------------------------------------------
       set -g message-style 'bg=default,fg=yellow,bold'
       set -g status-style  'bg=default'
-
-      # Appearance
-      set -g message-style 'bg=default,fg=yellow,bold'
-      set -g status-style  'bg=default'
-
-      set -g pane-border-status top
-      set -gF pane-border-style '#{?pane_synchronized,fg=red,fg=white}'
-      set -gF pane-active-border-style '#{?pane_synchronized,fg=brightred,fg=green}'
-      set -g pane-border-format " #{pane_current_path}#{?#{!=:#W,fish}, → #{pane_current_command},}#{?window_zoomed_flag, (), } "
-
-      setw -g mode-style 'bg=green, fg=black, bold'
-
       set -g status-interval 4
       set -g status-position bottom
+      set -g status-justify left
 
+      # Status Left: Session name with a colored segment when in prefix mode
       set -g status-left '#{?client_prefix,#[fg=#d65c0d]#[bg=#d65c0d],#[fg=default] }#[fg=brightwhite,bold]#S#[fg=none]'
       set -ga status-left '#[bg=default]#{?client_prefix,#[fg=#d65c0d] ,#[fg=default]  }'
       set -g status-left-length 80
 
+      # Status Right: Path, git branch (if available) and time
+      set -g status-right "#[bg=default,fg=brightblue] #{pane_current_path} #[bg=default,fg=gray]|"
+      set -ga status-right "#[fg=gray,bold]#{?pane_mode,#[fg=default] #{pane_mode} #[bg=default]#[fg=gray]|,}"
+      set -ga status-right "#(cd #{pane_current_path} && git rev-parse --abbrev-ref HEAD 2>/dev/null | sed '/./ s/.*/#[fg=green] & #[fg=default]|/')"
+      set -ga status-right " %Y-%m-%d %H:%M"
+      set -ga status-right-length 150
+
+      # Window Status: Format with pane path and zoom indicator
       setw -g window-status-activity-style fg=yellow
       setw -g window-status-bell-style     fg=red
       setw -g window-status-format         "#[fg=yellow]#I: #[fg=green]#[fg=white]#{?#{==:#W,fish},#{b:pane_current_path},#W #{b:pane_current_path}} #{?window_zoomed_flag, , }"
       setw -g window-status-current-format "#[fg=brightyellow,bold,underscore]#I: #[fg=brightgreen]#[fg=brightwhite,bold,underscore]#{b:pane_current_path} #W#{?window_zoomed_flag, , }"
       setw -g window-status-separator      "#[fg=brightwhite,bold]  "
-      set -g status-justify left
 
+      # Pane Border: Format with path, command and zoom indicator
+      set -g pane-border-status top
+      set -gF pane-border-style '#{?pane_synchronized,fg=red,fg=white}'
+      set -gF pane-active-border-style '#{?pane_synchronized,fg=brightred,fg=green}'
+      set -g pane-border-format " #{pane_current_path}#{?#{!=:#W,fish}, → #{pane_current_command},}#{?window_zoomed_flag, (), } "
 
-      set -g detach-on-destroy off     # don't exit from tmux when closing a session
-      set -g renumber-windows on       # renumber all windows when any window is closed
-      set -g set-clipboard on          # use system clipboard
-
-      # set vi-mode
-      set-window-option -g mode-keys vi
-
-      set -g allow-passthrough on
-      set -ga update-environment TERM
-      set -ga update-environment TERM_PROGRAM
-
-      set -g pane-active-border-style 'fg=magenta,bg=default'
-      set -g pane-border-style 'fg=brightblack,bg=default'
-
+      #-----------------------------------------------------------
       # Keybindings
-      bind * list-clients
+      #-----------------------------------------------------------
+      # List clients (bound to C to avoid conflict)
+      bind C list-clients
 
+      # Rename window on R (avoid conflict with reload)
       bind r command-prompt "rename-window %%"
       bind w list-windows
+
+      # Split panes with current directory
       bind - split-window -v -c "#{pane_current_path}"
       bind \\ split-window -h -c "#{pane_current_path}"
       bind '"' choose-window
       bind : command-prompt
+
+      # Toggle synchronize-panes with *
       bind * setw synchronize-panes
+
+      # Toggle pane border status with P
       bind P set pane-border-status
+
+      # Copy mode: Begin selection (vi mode)
       bind-key -T copy-mode-vi v send-keys -X begin-selection
 
-      bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w80% -h90% -E lazygit
+      # Open lazygit popup with key 'g'
+      bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w95% -h95% -E lazygit
 
-      # Floating window
-      # Set up a hook to run the handle_pane command on pane closed or exited
+      #-----------------------------------------------------------
+      # Floating Window Hooks & Toggle
+      #-----------------------------------------------------------
       set-hook -g pane-died 'run-shell "~/.config/tmux/scripts/floating_close.sh pane-died floating_pane_#{hook_pane}"'
       set-hook -g pane-exited 'run-shell "~/.config/tmux/scripts/floating_close.sh pane-exited floating_pane_#{hook_pane}"'
-
-      # Toggle popup window with Alt-i for the current pane
       bind-key -n -N 'Toggle floating window' M-i if-shell -F '#{m:floating_pane_*,#{session_name},}' {
           detach-client
       } {
           # Create a new window and start the floating session
-          display-popup -d "#{pane_current_path}" -xC -yC -w 80% -h 75% -E "tmux new-session -e 'PANE_NAME' -A -s $(tmux display-message -p 'floating_pane_#{pane_id}') 'tmux set status off; $SHELL'"
+          display-popup -d "#{pane_current_path}" -xC -yC -w 80% -h 75% -E "tmux new-session -e 'TMUX_POPUP=1' -A -s $(tmux display-message -p 'floating_pane_#{pane_id}') 'tmux set status off; $SHELL'"
       }
-
-      # Rebind zoom pane to Alt-z
       unbind z
       bind -n M-z resize-pane -Z
 
-      # Use Alt-arrow keys without prefix key to switch panes
+      # Navigation: Use Alt-arrow keys (no prefix) to switch panes
       bind -n M-Left select-pane -L
       bind -n M-Right select-pane -R
       bind -n M-Up select-pane -U
       bind -n M-Down select-pane -D
 
-      # Shift arrow to switch windows
+      # Navigation: Shift arrow keys and Alt-vim keys for window switching
       bind -n S-Left  previous-window
       bind -n S-Right next-window
-
-      # Shift Alt vim keys to switch windows
-      bind -n M-H previous-window
-      bind -n M-L next-window
-
-      # Reload tmux config
-      bind r source-file ~/.tmux.local.conf \; display-message "Config reloaded..."
-      if '[ -e ~/.tmux.local.conf ]' 'source ~/.tmux.local.conf'
     '';
   };
+
   xdg.configFile = lib.mkIf config.programs.tmux.enable {
-    "tmux/tmux.conf".text = lib.mkOrder 600 ''
-      set -g status-right "#[bg=default,fg=brightblue] #{pane_current_path} #[bg=default,fg=gray]|"
-      set -ga status-right "#[fg=gray,bold]#{?pane_mode,#[fg=default] #{pane_mode} #[bg=default]#[fg=gray]|,}"
-      set -ga status-right " CPU: #{cpu_fg_color}#{cpu_percentage} #[fg=default]RAM: #{ram_fg_color}#{ram_percentage} #[fg=default,bg=default]| #[fg=gray,bg=default]%Y-%m-%d %H:%M"
-      set -ga status-right-length 150
-      set -gu default-command
-      set -g default-shell "$SHELL"
-    '';
     "tmux/scripts/floating_close.sh" = {
       text = ''
         #!/bin/bash

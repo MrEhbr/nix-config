@@ -38,10 +38,24 @@
 
     ];
     shellAliases = {
+      cat = lib.mkIf config.programs.bat.enable "bat --style=plain --paging=never";
       grep = "grep --color=auto";
       groot = "cd (git rev-parse --show-cdup)";
       rg = "rg -p --glob '!node_modules/*' --color=auto";
       shell = "nix-shell -p";
+      exit = "exit_fn";
+    };
+
+    functions = {
+      exit_fn = ''
+        if test -n "$TMUX_POPUP"
+          set -l session_name (tmux display-message -p '#S')
+          tmux detach-client
+          tmux kill-session -t $session_name
+        else
+          command exit
+        end
+      '';
     };
 
     shellInit = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin ''
@@ -58,9 +72,6 @@
       fish_add_path -g $GOBIN
       fish_add_path -g $BUN_INSTALL/bin
 
-      if type -q bat
-        alias cat "bat --style=plain --paging=never"
-      end
       if type -q tmux
         if not set -q TMUX
           set -g TMUX tmux new-session -d -s base

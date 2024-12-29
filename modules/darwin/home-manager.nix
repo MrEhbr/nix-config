@@ -27,6 +27,7 @@ in
     };
 
 
+    brews = [ "openssl@3" ];
     casks = pkgs.callPackage ./casks.nix { };
 
     # These app IDs are from using the mas CLI app
@@ -83,8 +84,6 @@ in
       ];
 
       programs = {
-        kitty.enable = true;
-        alacritty.enable = true;
         tmux.enable = true;
       };
 
@@ -105,7 +104,7 @@ in
         { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
         { path = "/System/Applications/Music.app/"; }
         { path = "/Applications/Obsidian.app/"; }
-        { path = "${pkgs.kitty}/Applications/kitty.app/"; }
+        { path = "/Applications/Ghostty.app/"; }
         { path = "/Applications/Telegram.app/"; }
         { path = "/Applications/Slack.app/"; }
         { path = "/System/Applications/System Settings.app/"; }
