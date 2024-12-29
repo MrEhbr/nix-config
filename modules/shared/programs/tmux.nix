@@ -10,7 +10,7 @@
       cpu
     ];
 
-    terminal = "tmux-256color";
+    terminal = "screen-256color";
     prefix = "C-a";
     escapeTime = 0;
     baseIndex = 1;
@@ -20,12 +20,9 @@
     mouse = true;
     historyLimit = 50000;
     extraConfig = ''
-      set-option -g default-terminal 'screen-256color'
-      set-option -g terminal-overrides ',xterm-256color:RGB'
-      set-option -ga terminal-overrides ",*256col*:Tc"
-      set-option -ga terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
-      set-option -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'
+      set -ga terminal-overrides ",*256col*:Tc"
       set-option -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours
+      set-option -g focus-events on
 
       set -g message-style 'bg=default,fg=yellow,bold'
       set -g status-style  'bg=default'
