@@ -38,6 +38,8 @@
 
     ];
     shellAliases = {
+      cd = lib.mkIf config.programs.zoxide.enable "z";
+      cat = lib.mkIf config.programs.bat.enable "bat --style=plain --paging=never";
       grep = "grep --color=auto";
       groot = "cd (git rev-parse --show-cdup)";
       rg = "rg -p --glob '!node_modules/*' --color=auto";
@@ -58,9 +60,6 @@
       fish_add_path -g $GOBIN
       fish_add_path -g $BUN_INSTALL/bin
 
-      if type -q bat
-        alias cat "bat --style=plain --paging=never"
-      end
       if type -q tmux
         if not set -q TMUX
           set -g TMUX tmux new-session -d -s base

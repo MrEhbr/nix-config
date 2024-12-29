@@ -8,6 +8,7 @@ _:
   "datagrip"
   "goland"
   "chatgpt"
+  "ghostty"
 
   # Communication Tools
   "slack"

@@ -7,4 +7,8 @@ in
   ".ssh/id_work.pub" = {
     text = workPublicKey;
   };
+
+  ".config/ghostty/config" = {
+    text = builtins.readFile ./config/ghostty/config;
+  };
 }
