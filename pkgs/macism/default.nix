@@ -1,44 +1,26 @@
-{ lib, stdenv, fetchurl, unzip, darwin, swift }:
+{ stdenvNoCC, fetchurl, ... }:
 
-stdenv.mkDerivation (finalAttrs: {
+stdenvNoCC.mkDerivation {
   pname = "macism";
-  version = "1.4.6";
-
-  src = fetchurl {
-    url = "https://github.com/laishulu/macism/archive/refs/tags/v${finalAttrs.version}.zip";
-    hash = "sha256-wdRfKlBOrBmFNvP43SxZxldfsgWf9FZgeheXS0R8kWQ=";
-  };
-
-  dontConfigure = true;
-
-  nativeBuildInputs = [
-    swift
-    unzip
+  version = "latest";
+  srcs = [
+    (fetchurl {
+      url = "https://github.com/rennsax/macism/releases/download/latest/macism";
+      hash = "sha256-JxmlgmJmeFEqY8iSyFpeg1/zrF+94czJ0uB1E/p3Avk=";
+    })
   ];
-
-  buildInputs = with darwin.apple_sdk.frameworks; [
-    Carbon
-    Cocoa
-    Foundation
-  ];
-
-  buildPhase = ''
-    swiftc macism.swift
+  unpackPhase = ''
+    runHook preUnpack
+    for _src in $srcs; do
+      cp "$_src" $(stripHash "$_src")
+    done
+    runHook postUnpack
   '';
-
   installPhase = ''
     runHook preInstall
-
+    chmod +x macism
     mkdir -p $out/bin
-    cp macism $out/bin
-
+    cp macism $out/bin/
     runHook postInstall
   '';
-
-  meta = with lib; {
-    description = "Command line MacOS Input Source Manager";
-    license = licenses.mit;
-    platforms = platforms.darwin;
-    mainProgram = "macism";
-  };
-})
+}

@@ -6,6 +6,5 @@
     ./programs/ssh.nix
     ./programs/tmux.nix
     ./programs/kitty.nix
-    ./programs/alacritty.nix
   ];
 }
