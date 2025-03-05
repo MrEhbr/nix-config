@@ -72,6 +72,7 @@ in
           BUN_INSTALL = "$HOME/.bun";
           DIRENV_WARN_TIMEOUT = "5m";
           DIRENV_LOG_FORMAT = "";
+          RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
         };
 
         stateVersion = "25.05";

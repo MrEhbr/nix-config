@@ -25,7 +25,9 @@ with pkgs; [
   dua
   dust
   rainfrog # SQL TUI
-  timg # view images from the terminal
+  timg
+  sccache # Compilation cache
+
 
   # Encryption and security tools
   age
@@ -48,8 +50,7 @@ with pkgs; [
 
   # Common dev tools
   go
-  rustc
-  cargo
+  rustup
   lua5_4
 
   # Text and terminal utilities

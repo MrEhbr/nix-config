@@ -143,7 +143,7 @@
         "$line_break"
         "$character"
       ];
-      right_format = "$cmd_duration $status $aws $kubernetes";
+      right_format = "$cmd_duration $status $aws $kubernetes $docker_context ";
 
       character = {
         success_symbol = "[❯](purple)";
@@ -175,6 +175,11 @@
       cmd_duration = {
         format = "[$duration]($style) ";
         style = "yellow";
+      };
+      docker_context = {
+        format = "[$symbol $context]($style)";
+        symbol = " ";
+        detect_folders = [ ".docker" "docker" ];
       };
       aws = {
         disabled = true;
