@@ -31,6 +31,7 @@ with pkgs; [
 
   # Encryption and security tools
   age
+  sops
   openssl
 
   # Cloud-related tools and SDKs
