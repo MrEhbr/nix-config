@@ -14,6 +14,7 @@ shared-packages ++ [
   timewarrior
   pngpaste
   colima
+  darwin.trash
 
   iina
   # Custom packages

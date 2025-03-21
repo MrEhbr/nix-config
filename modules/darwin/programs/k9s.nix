@@ -6,13 +6,13 @@
         headless = false;
         logoless = true;
         noIcons = true;
-        skin = "kanagawa";
+        skin = "transparent";
       };
       skipLatestRevCheck = true;
     };
 
     skins = {
-      kanagawa = ../config/k9s/kanagawa.yaml;
+      transparent = ../config/k9s/transparent.yaml;
     };
 
     plugin.plugin = {

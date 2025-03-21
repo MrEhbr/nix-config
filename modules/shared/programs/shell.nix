@@ -12,30 +12,9 @@
     enable = true;
     plugins = [
       {
-        name = "z";
-        src = pkgs.fetchFromGitHub {
-          owner = "jethrokuan";
-          repo = "z";
-          rev = "85f863f20f24faf675827fb00f3a4e15c7838d76";
-          sha256 = "sha256-+FUBM7CodtZrYKqU542fQD+ZDGrd2438trKM0tIESs0=";
-        };
-      }
-      {
         name = "plugin-git";
-        inherit (pkgs.fishPlugins.plugin-git) src;
+        src = pkgs.fishPlugins.plugin-git.src;
       }
-      {
-        name = "plugin-kubectl";
-        src =
-          pkgs.fetchFromGitHub
-            {
-              owner = "blackjid";
-              repo = "plugin-kubectl";
-              rev = "f3cc9003077a3e2b5f45e3988817a78e959d4131";
-              sha256 = "sha256-ABzVSzM135UeAJ97CUBb9rhK9Pc6ItLSmJQOacq09gQ=";
-            };
-      }
-
     ];
     shellAliases = {
       cat = lib.mkIf config.programs.bat.enable "bat --style=plain --paging=never";
