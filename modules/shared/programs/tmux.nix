@@ -8,6 +8,7 @@
       yank
     ];
 
+    terminal = "${pkgs.fish}/bin/fish";
     prefix = "C-a";
     escapeTime = 0;
     baseIndex = 1;
