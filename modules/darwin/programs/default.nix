@@ -1,5 +1,5 @@
 {
   imports = [
-    # ./alacritty.nix
+    ./k9s.nix
   ];
 }
