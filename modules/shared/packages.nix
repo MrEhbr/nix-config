@@ -58,12 +58,14 @@ with pkgs; [
   just
   htop
   jq
+  yq
   ripgrep
   repgrep
   tree
   eza
   zoxide
   atuin
+  zk
 
   # Custom tools
   dev-env

@@ -6,6 +6,7 @@ shared-packages ++ [
   reattach-to-user-namespace
   dockutil
   k9s
+  sops
   kubectl
   kubernetes-helm
   tailscale
