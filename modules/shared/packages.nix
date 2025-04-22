@@ -13,7 +13,7 @@ with pkgs; [
   coreutils
   delta
   wget
-  ansible
+  # ansible
   just
   yazi
   httpie
