@@ -1,7 +1,8 @@
 {
   description = "Starter Configuration with secrets for MacOS and NixOS";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     agenix.url = "github:ryantm/agenix";
     home-manager.url = "github:nix-community/home-manager";
     darwin = {
@@ -32,7 +33,7 @@
       flake = false;
     };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, disko, agenix, secrets, ... } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, ... } @inputs:
     let
       user = "ehbr";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -44,13 +45,11 @@
             nativeBuildInputs = with pkgs; [
               git
               age
-              cachix
               nixfmt-classic
               statix
               vulnix
               nixd
               nixpkgs-fmt
-              nil
             ];
             shellHook = ''
               export EDITOR=vim
@@ -96,7 +95,7 @@
         (system:
           darwin.lib.darwinSystem {
             inherit system;
-            specialArgs = inputs;
+            specialArgs = inputs // { pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system}; };
             modules = [
               {
                 nixpkgs.overlays = [ overlays.${system} ];
