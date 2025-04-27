@@ -27,7 +27,7 @@ in
     };
 
 
-    brews = [ "openssl@3" ];
+    brews = [ "openssl@3" "ansible" ];
     casks = pkgs.callPackage ./casks.nix { };
 
     # These app IDs are from using the mas CLI app
@@ -46,6 +46,7 @@ in
       "Pixelmator Pro" = 1289583905;
       Infuse = 1136220934;
       TailScale = 1475387142;
+      "Refined github" = 1519867270;
     };
   };
   environment.shellInit = ''
@@ -73,6 +74,7 @@ in
           DIRENV_WARN_TIMEOUT = "5m";
           DIRENV_LOG_FORMAT = "";
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+          RAINFROG_CONFIG = "$HOME/.config/rainfrog";
         };
 
         stateVersion = "25.05";

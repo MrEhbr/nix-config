@@ -1,7 +1,7 @@
 {
   description = "Starter Configuration with secrets for MacOS and NixOS";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     agenix.url = "github:ryantm/agenix";
     home-manager.url = "github:nix-community/home-manager";
     darwin = {
@@ -44,13 +44,13 @@
             nativeBuildInputs = with pkgs; [
               git
               age
-              cachix
+              # cachix
               nixfmt-classic
               statix
               vulnix
               nixd
               nixpkgs-fmt
-              nil
+              # nil
             ];
             shellHook = ''
               export EDITOR=vim
