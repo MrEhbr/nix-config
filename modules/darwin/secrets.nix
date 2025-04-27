@@ -24,6 +24,14 @@ let user = "ehbr"; in
         owner = "${user}";
         group = "staff";
       };
+      "aichat_openai" = {
+        symlink = false;
+        path = "/Users/${user}/.config/openai/aichat_openai";
+        file = "${secrets}/aichat_openai.age";
+        mode = "600";
+        owner = "${user}";
+        group = "staff";
+      };
     };
   };
 }
