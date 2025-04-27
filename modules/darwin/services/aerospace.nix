@@ -6,7 +6,13 @@ in
 {
   services.aerospace = {
     enable = true;
-    package = pkgs.aerospace;
+    package = pkgs.aerospace.overrideAttrs (finalAttrs: _: {
+      version = "0.17.1-Beta";
+      src = pkgs.fetchzip {
+        url = "https://github.com/nikitabobko/AeroSpace/releases/download/v${finalAttrs.version}/AeroSpace-v${finalAttrs.version}.zip";
+        sha256 = "sha256-IMU0s57dpes7Vm2Wv191LwkRgiF+ZIqNWHzrl4a1Pm0=";
+      };
+    });
     settings = { };
   };
 

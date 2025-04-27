@@ -9,6 +9,7 @@ _:
   "goland"
   "chatgpt"
   "ghostty"
+  "yaak"
 
   # Communication Tools
   "slack"
@@ -28,8 +29,11 @@ _:
   # Productivity Tools
   "raycast"
   "obsidian"
+  "reader"
 
   # Browsers
   "firefox@developer-edition"
   "google-chrome"
+
+  "bambu-studio"
 ]

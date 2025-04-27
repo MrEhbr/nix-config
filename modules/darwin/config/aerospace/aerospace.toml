@@ -35,7 +35,7 @@ alt-d = "workspace Dev"
 alt-m = "workspace Music"
 alt-4 = "workspace Other"
 
-alt-tab = "workspace-back-and-forth"
+alt-tab = "focus --boundaries-action wrap-around-the-workspace left"
 
 alt-shift-0 = ["move-node-to-workspace Main", "workspace Main"]
 alt-shift-w = ["move-node-to-workspace Web", "workspace Web"]
@@ -106,6 +106,10 @@ run = ["move-node-to-workspace Dev"]
 
 [[on-window-detected]]
 if.app-id = "com.todesktop.230313mzl4w4u92"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.postmanlabs.mac"
 run = ["move-node-to-workspace Dev"]
 
 [[on-window-detected]]

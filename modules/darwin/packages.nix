@@ -16,8 +16,9 @@ shared-packages ++ [
   pngpaste
   colima
   darwin.trash
-
+  postman
   iina
+  code-cursor
   # Custom packages
   macism
 ]
