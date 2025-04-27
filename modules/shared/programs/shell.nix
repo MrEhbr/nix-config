@@ -55,6 +55,8 @@
       fish_add_path -g $HOME/.cargo/bin
       fish_add_path -g $GOBIN
       fish_add_path -g $BUN_INSTALL/bin
+      fish_add_path -g $HOME/.flutter/bin
+      fish_add_path -g $HOME/.pub-cache/bin
 
       if type -q tmux
         if not set -q TMUX
@@ -193,6 +195,9 @@
   programs.atuin = {
     enable = true;
     enableFishIntegration = true;
+    settings = {
+      enter_accept = false;
+    };
   };
 
   programs.eza = {

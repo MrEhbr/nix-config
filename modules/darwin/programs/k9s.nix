@@ -15,7 +15,7 @@
       transparent = ../config/k9s/transparent.yaml;
     };
 
-    plugin.plugin = {
+    plugins = {
       modify-secret = {
         shortCut = "Ctrl-X";
         description = "Edit Decoded Secret";

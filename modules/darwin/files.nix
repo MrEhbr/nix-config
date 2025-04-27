@@ -8,7 +8,8 @@ in
     text = workPublicKey;
   };
 
-  ".config/ghostty/config" = {
-    text = builtins.readFile ./config/ghostty/config;
+  ".config/ghostty" = {
+    source = ./config/ghostty;
+    recursive = true;
   };
 }

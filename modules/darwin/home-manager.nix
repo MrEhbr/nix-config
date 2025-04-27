@@ -1,4 +1,4 @@
-{ config, pkgs, lib, home-manager, ... }:
+{ config, pkgs, pkgsStable, lib, home-manager, ... }:
 
 let
   user = "ehbr";
@@ -9,6 +9,7 @@ in
   imports = [
     ./dock
     ./services
+    ./homebrew.nix
   ];
 
   users.users.${user} = {
@@ -18,47 +19,13 @@ in
     shell = pkgs.fish;
   };
 
-  homebrew = {
-    enable = true;
-    onActivation = {
-      autoUpdate = true;
-      upgrade = true;
-      cleanup = "zap";
-    };
-
-
-    brews = [ "openssl@3" ];
-    casks = pkgs.callPackage ./casks.nix { };
-
-    # These app IDs are from using the mas CLI app
-    # mas = mac app store
-    # https://github.com/mas-cli/mas
-    #
-    # $ nix shell nixpkgs#mas
-    # $ mas search <app name>
-    #
-    masApps = {
-      "1Password for Safari" = 1569813296;
-      Things = 904280696;
-      Hush = 1544743900;
-      Dato = 1470584107;
-      "iStat Menus" = 6499559693;
-      "Pixelmator Pro" = 1289583905;
-      Infuse = 1136220934;
-      TailScale = 1475387142;
-    };
-  };
-  environment.shellInit = ''
-    eval "$(${config.homebrew.brewPrefix}/brew shellenv)"
-  '';
-
   home-manager = {
     useGlobalPkgs = true;
     backupFileExtension = "backup";
     users.${user} = { pkgs, config, lib, ... }: {
       home = {
         enableNixpkgsReleaseCheck = false;
-        packages = pkgs.callPackage ./packages.nix { };
+        packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; };
         file = lib.mkMerge [
           sharedFiles
           additionalFiles
@@ -73,6 +40,7 @@ in
           DIRENV_WARN_TIMEOUT = "5m";
           DIRENV_LOG_FORMAT = "";
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+          RAINFROG_CONFIG = "$HOME/.config/rainfrog";
         };
 
         stateVersion = "25.05";
@@ -99,6 +67,7 @@ in
   local = {
     dock = {
       enable = true;
+      username = user;
       entries = [
         { path = "/System/Applications/Mail.app/"; }
         { path = "/System/Applications/Calendar.app/"; }

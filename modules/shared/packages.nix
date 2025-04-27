@@ -3,7 +3,6 @@
 with pkgs; [
   # General packages for development and system management
   git
-  lazygit
   lazydocker
   act # Github Actions local runner
   bat
@@ -15,11 +14,8 @@ with pkgs; [
   wget
   # ansible
   just
-  yazi
-  httpie
+  xh
   unzip
-  postman
-  bruno
   gh
   tlrc
   dua
@@ -28,6 +24,7 @@ with pkgs; [
   sccache # Compilation cache
   timg # view images from the terminal
   imagemagick
+  hyperfine # Benchmarking tool
 
   # Encryption and security tools
   age
@@ -46,8 +43,8 @@ with pkgs; [
   fzf
 
   # Node.js development tools
-  nodePackages.npm # globally install npm
-  nodejs
+  # nodePackages.npm # globally install npm
+  nodejs_20
 
   # Common dev tools
   go

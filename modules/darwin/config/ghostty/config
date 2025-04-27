@@ -23,3 +23,5 @@ macos-titlebar-style = "hidden"
 macos-option-as-alt = true
 
 confirm-close-surface=false
+
+custom-shader = "shaders/cursor_smear_fade.glsl"
