@@ -1,4 +1,4 @@
-{ config, pkgs, lib, home-manager, ... }:
+{ config, pkgs, pkgsStable, lib, home-manager, ... }:
 
 let
   user = "ehbr";
@@ -27,7 +27,7 @@ in
     };
 
 
-    brews = [ "openssl@3" ];
+    brews = [ "openssl@3" "ansible" "luajit" "luarocks" ];
     casks = pkgs.callPackage ./casks.nix { };
 
     # These app IDs are from using the mas CLI app
@@ -46,6 +46,7 @@ in
       "Pixelmator Pro" = 1289583905;
       Infuse = 1136220934;
       TailScale = 1475387142;
+      "Refined github" = 1519867270;
     };
   };
   environment.shellInit = ''
@@ -58,7 +59,7 @@ in
     users.${user} = { pkgs, config, lib, ... }: {
       home = {
         enableNixpkgsReleaseCheck = false;
-        packages = pkgs.callPackage ./packages.nix { };
+        packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; };
         file = lib.mkMerge [
           sharedFiles
           additionalFiles
@@ -73,6 +74,7 @@ in
           DIRENV_WARN_TIMEOUT = "5m";
           DIRENV_LOG_FORMAT = "";
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+          RAINFROG_CONFIG = "$HOME/.config/rainfrog";
         };
 
         stateVersion = "25.05";
@@ -99,6 +101,7 @@ in
   local = {
     dock = {
       enable = true;
+      username = user;
       entries = [
         { path = "/System/Applications/Mail.app/"; }
         { path = "/System/Applications/Calendar.app/"; }

@@ -1,7 +1,8 @@
 {
   description = "Starter Configuration with secrets for MacOS and NixOS";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     agenix.url = "github:ryantm/agenix";
     home-manager.url = "github:nix-community/home-manager";
     darwin = {
@@ -32,7 +33,7 @@
       flake = false;
     };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, disko, agenix, secrets, ... } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, ... } @inputs:
     let
       user = "ehbr";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -41,17 +42,15 @@
       devShell = system:
         let pkgs = nixpkgs.legacyPackages.${system}; in {
           default = with pkgs; mkShell {
-            nativeBuildInputs = with pkgs; [
-              git
-              age
-              cachix
-              nixfmt-classic
-              statix
-              vulnix
-              nixd
-              nixpkgs-fmt
-              nil
-            ];
+            # nativeBuildInputs = with pkgs; [
+            #   git
+            #   age
+            #   nixfmt-classic
+            #   statix
+            #   vulnix
+            #   nixd
+            #   nixpkgs-fmt
+            # ];
             shellHook = ''
               export EDITOR=vim
             '';
@@ -85,7 +84,22 @@
         "rollback" = mkApp "rollback" system;
       };
       overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
-        final: prev: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+        final: prev:
+          let
+            tbbFixed = prev.tbb_2021.overrideAttrs (old: rec {
+              version = "2021.12.0";
+              src = prev.fetchFromGitHub {
+                owner = "oneapi-src";
+                repo = "oneTBB";
+                rev = "v2021.12.0";
+                sha256 = "sha256-yG/Fs+3f9hNKzZ8le+W7+JDZk9hMzPsVAzbq0yTcUTc=";
+              };
+            });
+          in
+          import ./pkgs { pkgs = prev; } // {
+            tbb_2021 = tbbFixed;
+          }
+      );
     in
     {
       overlays = overlays;
@@ -96,7 +110,7 @@
         (system:
           darwin.lib.darwinSystem {
             inherit system;
-            specialArgs = inputs;
+            specialArgs = inputs // { pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system}; };
             modules = [
               {
                 nixpkgs.overlays = [ overlays.${system} ];

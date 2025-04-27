@@ -5,10 +5,13 @@ _:
   "1password-cli"
   # Development Tools
   "zed"
+  "visual-studio-code"
   "datagrip"
   "goland"
   "chatgpt"
   "ghostty"
+  "yaak"
+  "bruno"
 
   # Communication Tools
   "slack"
@@ -23,13 +26,15 @@ _:
   "numi"
   "tempbox"
   "the-unarchiver"
-  "ngrok"
 
   # Productivity Tools
   "raycast"
   "obsidian"
+  "reader"
 
   # Browsers
   "firefox@developer-edition"
   "google-chrome"
+
+  "bambu-studio"
 ]
