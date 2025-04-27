@@ -43,8 +43,6 @@ in
     '';
   };
 
-  # Turn off NIX_PATH warnings now that we're using flakes
-  system.checks.verifyNixPath = false;
 
   environment.variables.SHELL = "${pkgs.fish}/bin/fish";
   environment.shells = [
@@ -71,6 +69,9 @@ in
   };
 
   system = {
+    # Turn off NIX_PATH warnings now that we're using flakes
+    checks.verifyNixPath = false;
+    primaryUser = user;
     stateVersion = 5;
     defaults = {
       menuExtraClock.Show24Hour = true; # show 24 hour clock

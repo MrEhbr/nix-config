@@ -3,7 +3,6 @@
 with pkgs; [
   # General packages for development and system management
   git
-  lazygit
   lazydocker
   act # Github Actions local runner
   bat
@@ -15,11 +14,8 @@ with pkgs; [
   wget
   # ansible
   just
-  yazi
-  httpie
+  xh
   unzip
-  postman
-  bruno
   gh
   tlrc
   dua

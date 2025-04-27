@@ -3,6 +3,13 @@
 let
   user = "ehbr";
   keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxk1quGRSKZkYR6tLHTFTLUJ+nyu+037Vzbjj7ZCZIq mr.ehbr@gmail.com" ];
+  olderNixpkgs = import
+    (fetchTarball {
+      url = "https://github.com/NixOS/nixpkgs/archive/5fc58c6b7a27f7705453643254ec1a090bfe649b.tar.gz";
+      sha256 = "1w7jixmzsw4h4z6ah0jxnbr29yqdkyjpmhrwf43ckjv5akzb1as8";
+    })
+    { system = "${pkgs.system}"; };
+
 in
 {
   imports = [
@@ -25,7 +32,7 @@ in
     };
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "sdhci_pci" ];
     kernelModules = [ "uinput" "kvm-intel" "v4l2loopback" ];
-    extraModulePackages = [ pkgs.linuxPackages_latest.v4l2loopback ];
+    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
@@ -214,12 +221,8 @@ in
       font-awesome
 
       # nerdfonts
-      (nerdfonts.override {
-        fonts = [
-          "FiraCode"
-          "JetBrainsMono"
-        ];
-      })
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
     ];
   };
 
