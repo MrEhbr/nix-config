@@ -1,0 +1,42 @@
+#!/bin/sh -e
+
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+RED='\033[1;31m'
+NC='\033[0m'
+
+# Accept configuration as argument
+CONFIG="$1"
+
+if [ -z "$CONFIG" ]; then
+    echo "${RED}Usage: nix run .#rollback <config>${NC}"
+    AVAILABLE=$(nix --extra-experimental-features 'nix-command flakes' eval --json .#darwinConfigurations --apply builtins.attrNames | jq -r '.[]' | tr '\n' ', ' | sed 's/,$//')
+    echo "${YELLOW}Available configs: $AVAILABLE${NC}"
+    exit 1
+fi
+
+# Validate configuration exists
+if ! nix --extra-experimental-features 'nix-command flakes' eval .#darwinConfigurations.$CONFIG >/dev/null 2>&1; then
+    echo "${RED}Configuration '$CONFIG' not found${NC}"
+    AVAILABLE=$(nix --extra-experimental-features 'nix-command flakes' eval --json .#darwinConfigurations --apply builtins.attrNames | jq -r '.[]' | tr '\n' ', ' | sed 's/,$//')
+    echo "${YELLOW}Available configs: $AVAILABLE${NC}"
+    exit 1
+fi
+
+echo "${GREEN}Using configuration: $CONFIG${NC}"
+
+echo "${YELLOW}Available generations:${NC}"
+sudo /run/current-system/sw/bin/darwin-rebuild --list-generations
+
+read -p "Generation number: " GEN_NUM
+
+if [ -z "$GEN_NUM" ]; then
+    echo "${RED}No generation entered${NC}"
+    exit 1
+fi
+
+echo "${YELLOW}Rolling back to generation $GEN_NUM...${NC}"
+sudo /run/current-system/sw/bin/darwin-rebuild switch --flake .#$CONFIG --switch-generation $GEN_NUM
+
+echo "${GREEN}Rollback complete!${NC}"
+

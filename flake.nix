@@ -39,7 +39,6 @@
   };
   outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-sst, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, ... } @inputs:
     let
-      user = "ehbr";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
       darwinSystems = [ "aarch64-darwin" "x86_64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) f;
@@ -61,31 +60,13 @@
           };
         };
 
-      mkApp = scriptName: system: {
+      mkApp = system: osType: scriptName: {
         type = "app";
         program = "${(nixpkgs.legacyPackages.${system}.writeScriptBin scriptName ''
           #!/usr/bin/env bash
           PATH=${nixpkgs.legacyPackages.${system}.git}/bin:$PATH
-          echo "Running ${scriptName} for ${system}"
-          exec ${self}/apps/${system}/${scriptName}
+          exec ${self}/apps/${osType}/${scriptName} "$@"
         '')}/bin/${scriptName}";
-      };
-      mkLinuxApps = system: {
-        "apply" = mkApp "apply" system;
-        "build-switch" = mkApp "build-switch" system;
-        "copy-keys" = mkApp "copy-keys" system;
-        "create-keys" = mkApp "create-keys" system;
-        "check-keys" = mkApp "check-keys" system;
-        "install-with-secrets" = mkApp "install-with-secrets" system;
-      };
-      mkDarwinApps = system: {
-        "apply" = mkApp "apply" system;
-        "build" = mkApp "build" system;
-        "build-switch" = mkApp "build-switch" system;
-        "copy-keys" = mkApp "copy-keys" system;
-        "create-keys" = mkApp "create-keys" system;
-        "check-keys" = mkApp "check-keys" system;
-        "rollback" = mkApp "rollback" system;
       };
       overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
         final: prev: import ./pkgs { pkgs = prev; }
@@ -95,41 +76,83 @@
       overlays = overlays;
       packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       devShells = forAllSystems devShell;
-      apps = nixpkgs.lib.genAttrs linuxSystems mkLinuxApps // nixpkgs.lib.genAttrs darwinSystems mkDarwinApps;
-      darwinConfigurations = nixpkgs.lib.genAttrs darwinSystems
-        (system:
-          darwin.lib.darwinSystem {
-            inherit system;
-            specialArgs = inputs // { pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system}; inherit user; };
-            modules = [
-              {
-                nixpkgs.overlays = [ overlays.${system} ];
-              }
-              home-manager.darwinModules.home-manager
-              nix-homebrew.darwinModules.nix-homebrew
-              {
-                nix-homebrew = {
-                  enable = true;
-                  enableRosetta = false;
-                  user = user;
-                  taps = {
-                    "homebrew/homebrew-core" = homebrew-core;
-                    "homebrew/homebrew-cask" = homebrew-cask;
-                    "homebrew/homebrew-bundle" = homebrew-bundle;
-                    "sst/homebrew-tap" = homebrew-sst;
-                  };
-                  mutableTaps = true;
-                  autoMigrate = true;
+      apps = forAllSystems (system:
+        let
+          osType = if nixpkgs.lib.hasSuffix "darwin" system then "darwin" else "nixos";
+        in
+        {
+          "build-switch" = mkApp system osType "build-switch";
+          "rollback" = mkApp system osType "rollback";
+          "switch" = mkApp system osType "switch";
+        });
+      darwinConfigurations = {
+        ehbr = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = inputs // {
+            pkgsStable = inputs.nixpkgs-stable.legacyPackages."aarch64-darwin";
+            user = "ehbr";
+          };
+          modules = [
+            {
+              nixpkgs.overlays = [ overlays."aarch64-darwin" ];
+            }
+            home-manager.darwinModules.home-manager
+            nix-homebrew.darwinModules.nix-homebrew
+            {
+              nix-homebrew = {
+                enable = true;
+                enableRosetta = false;
+                user = "ehbr";
+                taps = {
+                  "homebrew/homebrew-core" = homebrew-core;
+                  "homebrew/homebrew-cask" = homebrew-cask;
+                  "homebrew/homebrew-bundle" = homebrew-bundle;
+                  "sst/homebrew-tap" = homebrew-sst;
                 };
-              }
-              ./hosts/darwin
-            ];
-          }
-        );
+                mutableTaps = true;
+                autoMigrate = true;
+              };
+            }
+            ./hosts/darwin
+          ];
+        };
+        work = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = inputs // {
+            pkgsStable = inputs.nixpkgs-stable.legacyPackages."aarch64-darwin";
+            user = "aleksey.burmistrov";
+          };
+          modules = [
+            {
+              nixpkgs.overlays = [ overlays."aarch64-darwin" ];
+            }
+            home-manager.darwinModules.home-manager
+            nix-homebrew.darwinModules.nix-homebrew
+            {
+              nix-homebrew = {
+                enable = true;
+                enableRosetta = false;
+                user = "aleksey.burmistrov";
+                taps = {
+                  "homebrew/homebrew-core" = homebrew-core;
+                  "homebrew/homebrew-cask" = homebrew-cask;
+                  "homebrew/homebrew-bundle" = homebrew-bundle;
+                  "sst/homebrew-tap" = homebrew-sst;
+                };
+                mutableTaps = true;
+                autoMigrate = true;
+              };
+            }
+            ./hosts/darwin
+          ];
+        };
+
+
+      };
 
       nixosConfigurations = nixpkgs.lib.genAttrs linuxSystems (system: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = inputs // { inherit user; };
+        specialArgs = inputs // { user = "ehbr"; }; # You can change this username as needed
         modules = [
           {
             nixpkgs.overlays = [ overlays.${system} ];
@@ -141,8 +164,8 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "backup";
-              extraSpecialArgs = { inherit user; };
-              users.${user} = import ./modules/nixos/home-manager.nix;
+              extraSpecialArgs = { user = "ehbr"; }; # You can change this username as needed
+              users.ehbr = import ./modules/nixos/home-manager.nix; # Update this if you change the username
             };
           }
           ./hosts/nixos
