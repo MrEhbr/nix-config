@@ -24,6 +24,7 @@ shared-packages ++ (with pkgs; [
   macism
   tailspin # Terminal-based log viewer
   claude-code # AI code assistant
+  ccusage # Claude Code usage statistics
   gemini-cli # AI code assistant
   plantuml
   imagemagick

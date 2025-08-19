@@ -1,8 +1,4 @@
-{ agenix, pkgs, ... }:
-
-let
-  user = "ehbr";
-in
+{ agenix, pkgs, user, ... }:
 {
 
   imports = [

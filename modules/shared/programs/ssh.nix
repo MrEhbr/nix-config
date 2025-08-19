@@ -1,8 +1,4 @@
-{ config, pkgs, lib, ... }:
-
-let
-  user = "ehbr";
-in
+{ config, pkgs, lib, user, ... }:
 {
   programs.ssh = {
     enable = true;

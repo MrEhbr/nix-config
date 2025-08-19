@@ -1,7 +1,6 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, user, ... }:
 let
   name = "Aleksei Burmistrov";
-  user = "ehbr";
   email = "mr.ehbr@gmail.com";
 in
 {

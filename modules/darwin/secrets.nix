@@ -1,6 +1,4 @@
-{ config, pkgs, agenix, secrets, ... }:
-
-let user = "ehbr"; in
+{ config, pkgs, agenix, secrets, user, ... }:
 {
   age = {
     identityPaths = [

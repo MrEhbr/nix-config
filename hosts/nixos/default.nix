@@ -1,7 +1,6 @@
-{ config, lib, inputs, pkgs, agenix, ... }:
+{ config, lib, inputs, pkgs, agenix, user, ... }:
 
 let
-  user = "ehbr";
   keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxk1quGRSKZkYR6tLHTFTLUJ+nyu+037Vzbjj7ZCZIq mr.ehbr@gmail.com" ];
   olderNixpkgs = import
     (fetchTarball {

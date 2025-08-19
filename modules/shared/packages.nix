@@ -38,7 +38,6 @@ with pkgs; [
 
   # Media-related packages
   ffmpeg
-  fd
   glow
   fzf
 
@@ -58,6 +57,7 @@ with pkgs; [
   jq
   yq
   ripgrep
+  fd
   repgrep
   tree
   eza

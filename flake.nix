@@ -100,7 +100,7 @@
         (system:
           darwin.lib.darwinSystem {
             inherit system;
-            specialArgs = inputs // { pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system}; };
+            specialArgs = inputs // { pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system}; inherit user; };
             modules = [
               {
                 nixpkgs.overlays = [ overlays.${system} ];
@@ -129,7 +129,7 @@
 
       nixosConfigurations = nixpkgs.lib.genAttrs linuxSystems (system: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = inputs;
+        specialArgs = inputs // { inherit user; };
         modules = [
           {
             nixpkgs.overlays = [ overlays.${system} ];
@@ -141,6 +141,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "backup";
+              extraSpecialArgs = { inherit user; };
               users.${user} = import ./modules/nixos/home-manager.nix;
             };
           }

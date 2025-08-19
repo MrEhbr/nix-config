@@ -1,11 +1,12 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, user, ... }:
 
 let
-  user = "ehbr";
   shared-files = import ../shared/files.nix { inherit user config pkgs; };
 
 in
 {
+  _module.args.user = user;
+  
   imports = [
     ../shared/home-manager.nix
   ];

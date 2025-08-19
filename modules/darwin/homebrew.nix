@@ -11,7 +11,7 @@
 
 
     taps = [ ];
-    brews = [ "openssl@3" "ansible" "luajit" "luarocks" "sst/tap/opencode" "code2prompt" "colima" ];
+    brews = [ "openssl@3" "ansible" "luajit" "luarocks" "code2prompt" "colima" ];
     casks = [
       "1password"
       "1password-cli"

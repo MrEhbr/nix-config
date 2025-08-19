@@ -1,7 +1,6 @@
-{ config, pkgs, pkgsStable, lib, home-manager, ... }:
+{ config, pkgs, pkgsStable, lib, home-manager, user, ... }:
 
 let
-  user = "ehbr";
   sharedFiles = import ../shared/files.nix { inherit user config pkgs; };
   additionalFiles = import ./files.nix { inherit user config pkgs lib; };
 in
@@ -23,6 +22,8 @@ in
     useGlobalPkgs = true;
     backupFileExtension = "backup";
     users.${user} = { pkgs, config, lib, ... }: {
+      _module.args.user = user;
+      
       home = {
         enableNixpkgsReleaseCheck = false;
         packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; };
