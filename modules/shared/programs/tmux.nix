@@ -110,6 +110,14 @@
       # Copy mode: Begin selection (vi mode)
       bind-key -T copy-mode-vi v send-keys -X begin-selection
 
+      if-shell "uname | grep -q Darwin" {
+        bind-key -T copy-mode-vi 'y' send -X copy-pipe-and-cancel 'reattach-to-user-namespace pbcopy'
+        bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel 'reattach-to-user-namespace pbcopy'
+      } {
+        bind-key -T copy-mode-vi 'y' send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
+        bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
+      }
+
       # Open lazygit popup with key 'g'
       bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w95% -h95% -E lazygit
 

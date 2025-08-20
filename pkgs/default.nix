@@ -5,5 +5,4 @@
   homebridge = pkgs.callPackage ./homebridge { };
   homebridge-config-ui-x = pkgs.callPackage ./homebridge-ui-x { };
   speedtest-exporter = pkgs.callPackage ./speedtest-exporter { };
-  ccusage = pkgs.callPackage ./ccusage { };
 }

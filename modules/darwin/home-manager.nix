@@ -23,7 +23,7 @@ in
     backupFileExtension = "backup";
     users.${user} = { pkgs, config, lib, ... }: {
       _module.args.user = user;
-      
+
       home = {
         enableNixpkgsReleaseCheck = false;
         packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; };
@@ -38,8 +38,6 @@ in
           GOPATH = "$HOME/Go";
           GOBIN = "$HOME/Go/bin";
           BUN_INSTALL = "$HOME/.bun";
-          DIRENV_WARN_TIMEOUT = "5m";
-          DIRENV_LOG_FORMAT = "";
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
           RAINFROG_CONFIG = "$HOME/.config/rainfrog";
         };

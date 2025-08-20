@@ -57,6 +57,7 @@
       fish_add_path -g $BUN_INSTALL/bin
       fish_add_path -g $HOME/.flutter/bin
       fish_add_path -g $HOME/.pub-cache/bin
+      fish_add_path -g $HOME/.bun/bin
 
       if type -q tmux
         if not set -q TMUX
@@ -200,6 +201,7 @@
       enter_accept = false;
       auto_sync = true;
       auto_sync_interval = "1h";
+      keymap_mode = "vim-insert";
       sync_address = "https://atuin.ehbr.cloud";
       sync.records = true;
     };
@@ -215,7 +217,14 @@
 
   programs.direnv = {
     enable = true;
+    silent = true;
     nix-direnv.enable = true;
+    config = {
+      global = {
+        warn_timeout = "5m";
+        log_format = "-";
+      };
+    };
     stdlib = ''
       declare -A direnv_layout_dirs
         direnv_layout_dir() {

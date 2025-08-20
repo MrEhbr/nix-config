@@ -24,10 +24,6 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-sst = {
-      url = "github:sst/homebrew-tap";
-      flake = false;
-    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,7 +33,7 @@
       flake = false;
     };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-sst, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, ... } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, ... } @inputs:
     let
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
       darwinSystems = [ "aarch64-darwin" "x86_64-darwin" ];
@@ -107,7 +103,6 @@
                   "homebrew/homebrew-core" = homebrew-core;
                   "homebrew/homebrew-cask" = homebrew-cask;
                   "homebrew/homebrew-bundle" = homebrew-bundle;
-                  "sst/homebrew-tap" = homebrew-sst;
                 };
                 mutableTaps = true;
                 autoMigrate = true;
@@ -137,7 +132,6 @@
                   "homebrew/homebrew-core" = homebrew-core;
                   "homebrew/homebrew-cask" = homebrew-cask;
                   "homebrew/homebrew-bundle" = homebrew-bundle;
-                  "sst/homebrew-tap" = homebrew-sst;
                 };
                 mutableTaps = true;
                 autoMigrate = true;
