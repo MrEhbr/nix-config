@@ -9,7 +9,7 @@ pkgs.buildNpmPackage rec {
     hash = "sha256-fkIIZ0JbF/wdBWUIxoCP2Csv0w0I/3Xi/A+s79vcNWU=";
   };
 
-  nodejs = pkgs.nodejs_20;
+  nodejs = pkgs.nodejs_24;
 
   npmDepsHash = "sha256-11f+RDrGtdbXX0U7oJT3Pp6w4ILCG36BPDXzmjkpppU=";
 }

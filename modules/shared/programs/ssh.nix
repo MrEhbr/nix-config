@@ -2,8 +2,7 @@
 {
   programs.ssh = {
     enable = true;
-    addKeysToAgent = "yes";
-    forwardAgent = true;
+    enableDefaultConfig = false;
     includes = [
       (lib.mkIf pkgs.stdenv.hostPlatform.isLinux
         "/home/${user}/.ssh/config_external"
@@ -13,6 +12,12 @@
       )
     ];
     matchBlocks = lib.mkMerge [
+      {
+        "*" = {
+          addKeysToAgent = "yes";
+          forwardAgent = true;
+        };
+      }
       {
         "github.com" = {
           identitiesOnly = true;

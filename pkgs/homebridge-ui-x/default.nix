@@ -20,7 +20,7 @@ buildNpmPackage {
   pname = "homebridge-config-ui-x";
   inherit version src;
 
-  nodejs = pkgs.nodejs_20;
+  nodejs = pkgs.nodejs_24;
 
   # Deps hash for the root package
   npmDepsHash = "sha256-Nrp5gZPMwHTm2FALYNpdz2q5fHFyvR3sSQ8hmesh+LQ=";

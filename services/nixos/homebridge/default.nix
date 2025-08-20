@@ -484,7 +484,7 @@ in
       path = with pkgs; [
         # Tools listed in homebridge's installation documentations:
         # https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Arch-Linux
-        nodejs_20
+        nodejs_24
         nettools
         gcc
         gnumake

@@ -52,6 +52,7 @@
   environment.systemPackages = [
     agenix.packages."${pkgs.system}".default
     pkgs.pam-reattach
+    pkgs.devenv
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
   # Fonts

@@ -121,6 +121,7 @@ in
       ".env"
       ".envrc"
       ".direnv/"
+      ".devenv/"
       ".env.*"
     ];
     lfs.enable = true;

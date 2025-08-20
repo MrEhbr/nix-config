@@ -4,33 +4,59 @@ let
   shared-packages = import ../shared/packages.nix { inherit pkgs; };
 in
 shared-packages ++ (with pkgs; [
-  reattach-to-user-namespace
+  # system integration
+  darwin.libiconv
+  darwin.trash
   dockutil
-  k9s
+  pngpaste
+  reattach-to-user-namespace
+
+  # Networking
+  tailscale
+
+  # Security 
   sops
+
+  # Kubernetes 
+  k9s
   kubectl
   kubernetes-helm
-  tailscale
-  darwin.libiconv
-  glab
-  timewarrior
-  pngpaste
-  darwin.trash
-  csvlens
-  postman
-  iina
+
+  # logs
+  tailspin
+  # gonzo
+
+  # code tooling
+  ast-grep
   code-cursor
-  # Custom packages
-  macism
-  tailspin # Terminal-based log viewer
-  claude-code # AI code assistant
-  ccusage # Claude Code usage statistics
-  gemini-cli # AI code assistant
+  glab
   plantuml
+
+  # AI assistants
+  (claude-code.override { nodejs_20 = nodejs_24; })
+  gemini-cli
+  codex
+
+  # API / HTTP clients
+  bruno
+  bruno-cli
+  postman
+
+  # graphics
+  iina
   imagemagick
   luajitPackages.magick
   kickstart
 
+  # Data 
+  csvlens
+
+  # Productivity 
+  timewarrior
+
+  # Custom packages
+  macism
 ]) ++ (with pkgsStable; [
+  # Presentation
   presenterm
 ])

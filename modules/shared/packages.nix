@@ -20,6 +20,7 @@ with pkgs; [
   tlrc
   dua
   dust
+  dua
   rainfrog # SQL TUI
   sccache # Compilation cache
   timg # view images from the terminal
@@ -43,7 +44,9 @@ with pkgs; [
 
   # Node.js development tools
   # nodePackages.npm # globally install npm
-  nodejs_20
+  nodejs_24
+  bun
+  uv
 
   # Common dev tools
   go
@@ -55,7 +58,7 @@ with pkgs; [
   just
   htop
   jq
-  yq
+  yq-go
   ripgrep
   fd
   repgrep

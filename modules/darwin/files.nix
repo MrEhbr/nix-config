@@ -8,10 +8,6 @@ in
     text = workPublicKey;
   };
 
-  ".claude/settings.json" = {
-    source = ./config/claude/settings.json;
-  };
-
   ".config/ghostty" = {
     source = ./config/ghostty;
     recursive = true;
