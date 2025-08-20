@@ -6,6 +6,6 @@ RED='\033[1;31m'
 NC='\033[0m'
 
 echo "${YELLOW}Building NixOS configuration...${NC}"
-sudo nixos-rebuild switch --extra-experimental-features 'nix-command flakes' --flake . "$@"
+sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK nixos-rebuild switch --flake .#x86_64-linux "$@"
 
 echo "${GREEN}Build and switch complete!${NC}"

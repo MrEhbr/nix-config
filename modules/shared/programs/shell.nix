@@ -190,6 +190,7 @@
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
+    options = [ "--cmd cd" ];
   };
 
   programs.atuin = {
@@ -197,6 +198,10 @@
     enableFishIntegration = true;
     settings = {
       enter_accept = false;
+      auto_sync = true;
+      auto_sync_interval = "1h";
+      sync_address = "https://atuin.ehbr.cloud";
+      sync.records = true;
     };
   };
 

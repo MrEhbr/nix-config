@@ -12,6 +12,7 @@ _: {
     ./ntfy.nix
     ./tailscale.nix
     ./restic.nix
+    ./atuin.nix
     # ./homebridge.nix
   ];
 }

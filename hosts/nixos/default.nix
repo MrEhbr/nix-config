@@ -127,14 +127,14 @@ in
     "vm.dirty_background_ratio" = 5;
     "vm.dirty_ratio" = 10;
   };
-  systemd.extraConfig = ''
-    DefaultLimitNOFILE=1048576
-    DefaultLimitNOFILESoft=1048576
-    DefaultLimitNPROC=1048576
-    DefaultLimitNPROCSoft=1048576
-    DefaultLimitFSIZE=infinity
-    DefaultLimitFSIZESoft=infinity
-  '';
+  systemd.settings.Manager = {
+    DefaultLimitNOFILE = 1048576;
+    DefaultLimitNOFILESoft = 1048576;
+    DefaultLimitNPROC = 1048576;
+    DefaultLimitNPROCSoft = 1048576;
+    DefaultLimitFSIZE = "infinity";
+    DefaultLimitFSIZESoft = "infinity";
+  };
 
   # Turn on flag for proprietary software
   nix = {

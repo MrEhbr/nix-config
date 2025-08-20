@@ -16,6 +16,7 @@ if [ -z "$GEN_NUM" ]; then
 fi
 
 echo "${YELLOW}Rolling back to generation $GEN_NUM...${NC}"
-sudo nixos-rebuild switch --rollback --switch-generation $GEN_NUM
+sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK nixos-rebuild switch --rollback --switch-generation $GEN_NUM
 
 echo "${GREEN}Rollback complete!${NC}"
+

@@ -44,6 +44,14 @@ in
           proxyWebsockets = true;
         };
       };
+      "atuin.${domain}" = {
+        forceSSL = true;
+        useACMEHost = domain;
+        locations."/" = {
+          proxyPass = "http://localhost:5000";
+          proxyWebsockets = true;
+        };
+      };
       "prometheus.${domain}" = {
         forceSSL = true;
         useACMEHost = domain;

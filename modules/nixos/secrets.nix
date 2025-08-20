@@ -62,22 +62,22 @@
     owner = "${user}";
     group = "wheel";
   };
-  age.secrets."mqtt_root" = {
-    file = "${secrets}/mqtt_root.age";
-    mode = "600";
-    owner = "mosquitto";
-    group = "wheel";
-  };
-  age.secrets."mqtt_zigbee2mqtt" = {
-    file = "${secrets}/mqtt_zigbee2mqtt.age";
-    mode = "600";
-    owner = "mosquitto";
-    group = "wheel";
-  };
-  age.secrets."zigbee2mqtt.yaml" = {
-    file = "${secrets}/zigbee2mqtt.yaml.age";
-    mode = "600";
-    owner = "zigbee2mqtt";
-    group = "wheel";
-  };
+  # age.secrets."mqtt_root" = {
+  #   file = "${secrets}/mqtt_root.age";
+  #   mode = "600";
+  #   owner = "mosquitto";
+  #   group = "wheel";
+  # };
+  # age.secrets."mqtt_zigbee2mqtt" = {
+  #   file = "${secrets}/mqtt_zigbee2mqtt.age";
+  #   mode = "600";
+  #   owner = "mosquitto";
+  #   group = "wheel";
+  # };
+  # age.secrets."zigbee2mqtt.yaml" = {
+  #   file = "${secrets}/zigbee2mqtt.yaml.age";
+  #   mode = "600";
+  #   owner = "zigbee2mqtt";
+  #   group = "wheel";
+  # };
 }

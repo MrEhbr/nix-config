@@ -7,6 +7,25 @@ NC='\033[0m'
 
 export NIXPKGS_ALLOW_UNFREE=1
 
+# Configuration lock check
+CONFIG_LOCK="$HOME/.nix-darwin-config-lock"
+
+check_config_lock() {
+    local config="$1"
+    
+    if [ -f "$CONFIG_LOCK" ]; then
+        local locked_config=$(cat "$CONFIG_LOCK")
+        if [ "$locked_config" != "$config" ]; then
+            echo "${RED}Configuration locked to '$locked_config'${NC}"
+            echo "${RED}Cannot switch to '$config'${NC}"
+            exit 1
+        fi
+    else
+        echo "$config" > "$CONFIG_LOCK"
+        echo "${YELLOW}Configuration locked to '$config'${NC}"
+    fi
+}
+
 # Accept configuration as argument
 CONFIG="$1"
 
@@ -16,6 +35,8 @@ if [ -z "$CONFIG" ]; then
     echo "${YELLOW}Available configs: $AVAILABLE${NC}"
     exit 1
 fi
+
+check_config_lock "$CONFIG"
 
 echo "${GREEN}Using configuration: $CONFIG${NC}"
 
