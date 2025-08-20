@@ -97,6 +97,10 @@ if.app-id = "com.tinyspeck.slackmacgap"
 run = ["move-node-to-workspace Chat"]
 
 [[on-window-detected]]
+if.app-name-regex-substring = 'Google Meet'
+run = ["move-node-to-workspace Chat"]
+
+[[on-window-detected]]
 if.app-id = "com.microsoft.VSCode"
 run = ["move-node-to-workspace Dev"]
 

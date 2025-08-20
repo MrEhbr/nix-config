@@ -36,7 +36,7 @@ let
     fixupPhase = ''
       find $out -name "*.sh" -delete
     '';
-    outputHash = "sha256-L9xvsIEHa5vFjEyCqNKbctw8BkePDH6KlKZTh8UiOes=";
+    outputHash = "sha256-zsXOLV3w8/019xlDMPoSu2ggK7va/pa0piyj+0YW4RA=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   });

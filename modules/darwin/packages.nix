@@ -29,6 +29,7 @@ shared-packages ++ (with pkgs; [
   plantuml
   imagemagick
   luajitPackages.magick
+  kickstart
 
 ]) ++ (with pkgsStable; [
   presenterm
