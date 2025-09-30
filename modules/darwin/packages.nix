@@ -54,6 +54,7 @@ shared-packages ++ (with pkgs; [
   # Productivity 
   timewarrior
 
+  # chromium
   # Custom packages
   macism
 ]) ++ (with pkgsStable; [

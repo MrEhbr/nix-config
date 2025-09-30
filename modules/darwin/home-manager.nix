@@ -59,8 +59,26 @@ in
       # https://github.com/nix-community/home-manager/issues/3344
       manual.manpages.enable = false;
     };
+    sharedModules = [
+      (
+        { config, pkgs, ... }:
+        {
+
+          targets.darwin.linkApps.enable = false;
+        }
+      )
+    ];
   };
 
+  system.build.applications = lib.mkForce (
+    pkgs.buildEnv {
+      name = "system-applications";
+      pathsToLink = "/Applications";
+      paths =
+        config.environment.systemPackages
+        ++ (lib.concatMap (x: x.home.packages) (lib.attrsets.attrValues config.home-manager.users));
+    }
+  );
 
   # Fully declarative dock using the latest from Nix Store
   local = {

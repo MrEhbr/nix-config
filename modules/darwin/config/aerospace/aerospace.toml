@@ -195,7 +195,6 @@ run = ["move-node-to-workspace Game"]
 
 [[on-window-detected]]
 if.app-id = "com.cisco.anyconnect.gui"
-if.window-title-regex-substring = "AnyConnect"
 run = ["layout floating", "move-node-to-workspace Other"]
 
 [[on-window-detected]]

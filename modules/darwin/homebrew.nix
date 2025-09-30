@@ -46,7 +46,7 @@
 
       # Browsers
       "firefox@developer-edition"
-      "google-chrome"
+      # "google-chrome"
 
       "bambu-studio"
     ];
