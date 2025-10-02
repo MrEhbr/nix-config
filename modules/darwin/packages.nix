@@ -33,9 +33,9 @@ shared-packages ++ (with pkgs; [
   plantuml
 
   # AI assistants
-  (claude-code.override { nodejs_20 = nodejs_24; })
-  gemini-cli
+  # claude-code # usefull updates ships to quickly
   codex
+  github-copilot-cli
 
   # API / HTTP clients
   bruno
@@ -50,6 +50,7 @@ shared-packages ++ (with pkgs; [
 
   # Data 
   csvlens
+  tabiew
 
   # Productivity 
   timewarrior
@@ -60,4 +61,4 @@ shared-packages ++ (with pkgs; [
 ]) ++ (with pkgsStable; [
   # Presentation
   presenterm
-])
+]) 

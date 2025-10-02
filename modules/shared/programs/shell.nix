@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ inputs, config, pkgs, lib, ... }:
 
 {
   programs.neovim = {
@@ -23,6 +23,7 @@
       rg = "rg -p --glob '!node_modules/*' --color=auto";
       shell = "nix-shell -p";
       exit = "exit_fn";
+      cc_serena = "claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)";
     };
 
     functions = {

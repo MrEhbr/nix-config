@@ -35,6 +35,7 @@ alt-d = "workspace Dev"
 alt-m = "workspace Music"
 alt-g = "workspace Game"
 alt-4 = "workspace Other"
+alt-5 = "workspace AI"
 
 alt-tab = "focus --boundaries-action wrap-around-the-workspace left"
 
@@ -78,6 +79,7 @@ Dev = "main"
 Music = "main"
 Game = "secondary"
 Other = "secondary"
+AI = "main"
 
 [[on-window-detected]]
 if.app-id = "com.apple.Safari"
@@ -158,10 +160,6 @@ if.app-id = "net.kovidgoyal.kitty"
 run = ["move-node-to-workspace Term"]
 
 [[on-window-detected]]
-if.app-id = "com.openai.chat"
-run = ["layout floating"]
-
-[[on-window-detected]]
 if.app-id = "com.apple.AppStore"
 run = ["layout floating"]
 
@@ -196,6 +194,14 @@ run = ["move-node-to-workspace Game"]
 [[on-window-detected]]
 if.app-id = "com.cisco.anyconnect.gui"
 run = ["layout floating", "move-node-to-workspace Other"]
+
+[[on-window-detected]]
+if.app-id = "com.anthropic.claudefordesktop"
+run = ["move-node-to-workspace AI"]
+
+[[on-window-detected]]
+if.app-id = "com.openai.chat"
+run = ["move-node-to-workspace AI"]
 
 [[on-window-detected]]
 run = ["layout floating"]
