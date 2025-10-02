@@ -1,4 +1,4 @@
-{ config, pkgs, pkgsStable, lib, home-manager, user, ... }:
+{ config, pkgs, pkgsStable, pkgsMaster, lib, home-manager, user, ... }:
 
 let
   sharedFiles = import ../shared/files.nix { inherit user config pkgs; };
@@ -26,7 +26,7 @@ in
 
       home = {
         enableNixpkgsReleaseCheck = false;
-        packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; };
+        packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; pkgsMaster = pkgsMaster; };
         file = lib.mkMerge [
           sharedFiles
           additionalFiles

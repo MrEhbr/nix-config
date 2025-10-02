@@ -3,6 +3,9 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs-master = {
+      url = "github:NixOS/nixpkgs/master";
+    };
     agenix.url = "github:ryantm/agenix";
     home-manager.url = "github:nix-community/home-manager";
     darwin = {
@@ -28,12 +31,13 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     secrets = {
       url = "git+ssh://git@github.com/MrEhbr/nix-secrets.git";
       flake = false;
     };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, ... } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, nixpkgs-stable, nixpkgs-master, disko, agenix, secrets, neovim-nightly-overlay, ... } @inputs:
     let
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
       darwinSystems = [ "aarch64-darwin" "x86_64-darwin" ];
@@ -65,7 +69,10 @@
         '')}/bin/${scriptName}";
       };
       overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
-        final: prev: import ./pkgs { pkgs = prev; }
+        nixpkgs.lib.composeManyExtensions [
+          (final: prev: import ./pkgs { pkgs = prev; })
+          neovim-nightly-overlay.overlays.default
+        ]
       );
     in
     {
@@ -86,6 +93,10 @@
           system = "aarch64-darwin";
           specialArgs = inputs // {
             pkgsStable = inputs.nixpkgs-stable.legacyPackages."aarch64-darwin";
+            pkgsMaster = import inputs.nixpkgs-master {
+              system = "aarch64-darwin";
+              config.allowUnfree = true;
+            };
             user = "ehbr";
           };
           modules = [
@@ -115,6 +126,10 @@
           system = "aarch64-darwin";
           specialArgs = inputs // {
             pkgsStable = inputs.nixpkgs-stable.legacyPackages."aarch64-darwin";
+            pkgsMaster = import inputs.nixpkgs-master {
+              system = "aarch64-darwin";
+              config.allowUnfree = true;
+            };
             user = "aleksey.burmistrov";
           };
           modules = [

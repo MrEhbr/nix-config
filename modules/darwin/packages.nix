@@ -1,4 +1,4 @@
-{ pkgs, pkgsStable, ... }:
+{ pkgs, pkgsStable, pkgsMaster, ... }:
 
 let
   shared-packages = import ../shared/packages.nix { inherit pkgs; };
@@ -33,9 +33,10 @@ shared-packages ++ (with pkgs; [
   plantuml
 
   # AI assistants
-  (claude-code.override { nodejs_20 = nodejs_24; })
+  (pkgsMaster.claude-code)
   gemini-cli
   codex
+  pkgsMaster.github-copilot-cli
 
   # API / HTTP clients
   bruno
@@ -50,6 +51,7 @@ shared-packages ++ (with pkgs; [
 
   # Data 
   csvlens
+  tabiew
 
   # Productivity 
   timewarrior
@@ -60,4 +62,4 @@ shared-packages ++ (with pkgs; [
 ]) ++ (with pkgsStable; [
   # Presentation
   presenterm
-])
+]) 
