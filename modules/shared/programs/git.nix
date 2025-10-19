@@ -126,9 +126,6 @@ in
     ];
     lfs.enable = true;
 
-    userName = name;
-    userEmail = email;
-
     includes = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [
       {
         # use diffrent email & name for work
@@ -137,7 +134,16 @@ in
       }
     ];
 
-    extraConfig = {
+    settings = {
+      user = {
+        name = name;
+        email = email;
+      };
+      alias = {
+        # common aliases
+        ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
+        ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
+      };
       init.defaultBranch = "main";
       core = {
         editor = "nvim";
@@ -155,25 +161,21 @@ in
         directory = "/etc/nixos";
       };
     };
-    delta = {
-      enable = true;
-      options = {
-        true-color = "always";
-        decorations = {
-          commit-decoration-style = "blue ol";
-          commit-style = "raw";
-          file-style = "omit";
-        };
-        interactive = {
-          keep-plus-minus-markers = false;
-        };
-      };
-    };
+  };
 
-    aliases = {
-      # common aliases
-      ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
-      ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      true-color = "always";
+      decorations = {
+        commit-decoration-style = "blue ol";
+        commit-style = "raw";
+        file-style = "omit";
+      };
+      interactive = {
+        keep-plus-minus-markers = false;
+      };
     };
   };
 }
