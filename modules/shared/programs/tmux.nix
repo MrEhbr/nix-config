@@ -69,7 +69,7 @@
       set -g status-right "#[bg=default,fg=brightblue] #{pane_current_path} #[bg=default,fg=gray]|"
       set -ga status-right "#[fg=gray,bold]#{?pane_mode,#[fg=default] #{pane_mode} #[bg=default]#[fg=gray]|,}"
       set -ga status-right "#(cd #{pane_current_path} && git rev-parse --abbrev-ref HEAD 2>/dev/null | sed '/./ s/.*/#[fg=green] & #[fg=default]|/')"
-      set -ga status-right " %Y-%m-%d %H:%M"
+      set -ga status-right " %Y-%m-%d %H:%M "
       set -ga status-right-length 150
 
       # Window Status: Format with pane path and zoom indicator

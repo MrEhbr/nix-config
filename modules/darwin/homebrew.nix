@@ -11,7 +11,7 @@
 
 
     taps = [ ];
-    brews = [ "openssl@3" "ansible" "luajit" "luarocks" "code2prompt" "colima" "gonzo" ];
+    brews = [ "openssl@3" "ansible" "luajit" "luarocks" "code2prompt" "colima" "gonzo" "openjdk" ];
     casks = [
       "1password"
       "1password-cli"
@@ -24,6 +24,7 @@
       "container"
       # "ghostty"
       "yaak"
+      "bruno"
 
       # Communication Tools
       "slack"

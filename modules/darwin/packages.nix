@@ -38,8 +38,8 @@ shared-packages ++ (with pkgs; [
   github-copilot-cli
 
   # API / HTTP clients
-  bruno
-  bruno-cli
+  # bruno
+  # bruno-cli
   postman
 
   # graphics

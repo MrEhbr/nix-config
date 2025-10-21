@@ -24,6 +24,7 @@
       shell = "nix-shell -p";
       exit = "exit_fn";
       cc_serena = "claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)";
+      claude = "claude --mcp-config $HOME/.claude/.mcp.json";
     };
 
     functions = {
@@ -126,7 +127,7 @@
         "$line_break"
         "$character"
       ];
-      right_format = "$cmd_duration $status $aws $kubernetes $docker_context ";
+      right_format = "$cmd_duration $status";
 
       character = {
         success_symbol = "[❯](purple)";
