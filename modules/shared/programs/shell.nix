@@ -69,6 +69,7 @@
         end
       end
       ${pkgs.any-nix-shell}/bin/any-nix-shell fish | source
+      ${pkgs.atuin}/bin/atuin init fish | sed 's/-k up/up/' | source
 
       # Kanagawa Fish shell theme
       # A template was taken and modified from Tokyonight:
@@ -198,7 +199,7 @@
 
   programs.atuin = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
     settings = {
       enter_accept = false;
       auto_sync = true;

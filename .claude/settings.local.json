@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/aleksey.burmistrov/.config/fish/completions/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
