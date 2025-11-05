@@ -163,19 +163,14 @@ in
     };
   };
 
-  programs.delta = {
+  programs.difftastic = {
     enable = true;
-    enableGitIntegration = true;
+    git = {
+      enable = true;
+      diffToolMode = true;
+    };
     options = {
-      true-color = "always";
-      decorations = {
-        commit-decoration-style = "blue ol";
-        commit-style = "raw";
-        file-style = "omit";
-      };
-      interactive = {
-        keep-plus-minus-markers = false;
-      };
+      # display = "inline";
     };
   };
 }

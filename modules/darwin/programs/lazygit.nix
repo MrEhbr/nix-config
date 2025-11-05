@@ -11,10 +11,11 @@
         commit = {
           signOff = true;
         };
-        paging = {
-          colorArg = "always";
-          pager = "delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format='lazygit-edit://{path}:{line}'";
-        };
+        pagers = [
+          {
+            externalDiffCommand = "difft --color=always";
+          }
+        ];
         branchLogCmd = "git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --";
       };
     };

@@ -6,11 +6,10 @@ with pkgs; [
   lazydocker
   act # Github Actions local runner
   bat
-  bottom
   procs
   jless #  pager for JSON (or YAML) data
   coreutils
-  delta
+  difftastic
   wget
   # ansible
   just

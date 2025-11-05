@@ -11,7 +11,7 @@
 
 
     taps = [ ];
-    brews = [ "openssl@3" "luajit" "luarocks" "code2prompt" "colima" "gonzo" "openjdk" ];
+    brews = [ "openssl@3" "luajit" "luarocks" "code2prompt" "colima" "gonzo" "openjdk" "mcat" ];
     casks = [
       "1password"
       "1password-cli"
@@ -66,7 +66,7 @@
       # Dato = 1470584107;
       # "iStat Menus" = 6499559693;
       "Pixelmator Pro" = 1289583905;
-      Infuse = 1136220934;
+      # Infuse = 1136220934;
       TailScale = 1475387142;
       "Refined github" = 1519867270;
     };

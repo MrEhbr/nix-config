@@ -23,8 +23,9 @@
       rg = "rg -p --glob '!node_modules/*' --color=auto";
       shell = "nix-shell -p";
       exit = "exit_fn";
-      cc_serena = "claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)";
+      cc_serena = "command claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)";
       claude = "claude --mcp-config $HOME/.claude/.mcp.json";
+      btop = "btop --preset 1";
     };
 
     functions = {
@@ -256,6 +257,16 @@
     config = {
       theme = "kanagawa";
       pager = "less -FR";
+    };
+  };
+
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "kanagawa-wave";
+      vim_keys = true;
+      proc_tree = true;
+      presets = "cpu:0:default,proc:1:default cpu:0:default,mem:0:tty,proc:1:default";
     };
   };
 }
