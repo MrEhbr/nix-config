@@ -28,7 +28,6 @@ shared-packages ++ (with pkgs; [
 
   # code tooling
   ast-grep
-  code-cursor
   glab
   plantuml
 

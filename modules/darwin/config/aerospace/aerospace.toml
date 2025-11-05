@@ -184,7 +184,15 @@ if.app-id = "com.apple.Music"
 run = ["move-node-to-workspace Music"]
 
 [[on-window-detected]]
+if.app-id = "com.apple.podcasts"
+run = ["move-node-to-workspace Music"]
+
+[[on-window-detected]]
 if.app-id = "md.obsidian"
+run = ["move-node-to-workspace Notes"]
+
+[[on-window-detected]]
+if.app-id = "com.chocoford.excalidraw"
 run = ["move-node-to-workspace Notes"]
 
 [[on-window-detected]]
