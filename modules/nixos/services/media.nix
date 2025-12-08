@@ -9,6 +9,7 @@ in
   systemd.tmpfiles.rules = [
     "L /mnt/storage/media - - - - ${mediaDir}"
     "d ${mediaDir}/library/Movies 2775 ${user} ${group} -"
+    "d ${mediaDir}/library/Cartoons 2775 ${user} ${group} -"
     "d ${mediaDir}/library/Shows 2775 ${user} ${group} -"
     "d ${mediaDir}/library/Doramas 2775 ${user} ${group} -"
     "d ${mediaDir}/library/Anime 2775 ${user} ${group} -"

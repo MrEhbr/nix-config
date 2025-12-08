@@ -60,15 +60,15 @@
     # $ mas search <app name>
     #
     masApps = {
-      "1Password for Safari" = 1569813296;
-      Things = 904280696;
-      Hush = 1544743900;
+      # "1Password for Safari" = 1569813296;
+      # Things = 904280696;
+      # Hush = 1544743900;
       # Dato = 1470584107;
       # "iStat Menus" = 6499559693;
-      "Pixelmator Pro" = 1289583905;
+      # "Pixelmator Pro" = 1289583905;
       # Infuse = 1136220934;
-      TailScale = 1475387142;
-      "Refined github" = 1519867270;
+      # TailScale = 1475387142;
+      # "Refined github" = 1519867270;
     };
   };
 
