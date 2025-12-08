@@ -92,7 +92,8 @@ in
           http-accept-gzip = true;
           content-disposition-default-utf8 = true;
           enable-rpc = true;
-          rpc-listen-all = true;
+          rpc-listen-port = 6800;
+          rpc-listen-all = false;  # Only localhost, nginx will proxy
           rpc-allow-origin-all = true;
           rpc-secure = false;
           check-certificate = false;

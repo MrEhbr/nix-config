@@ -122,13 +122,23 @@ in
         root = "${pkgs.ariang}/share/ariang";
         locations."/jsonrpc" = {
           recommendedProxySettings = true;
-          proxyPass = "http://localhost:6800";
+          proxyPass = "http://localhost:6800/jsonrpc";
           proxyWebsockets = true;
 
           extraConfig = ''
-            add_header Access-Control-Allow-Headers '*';
-            add_header Access-Control-Allow-Origin '*';
-            add_header Access-Control-Allow-Methods '*';
+            add_header Access-Control-Allow-Headers '*' always;
+            add_header Access-Control-Allow-Origin '*' always;
+            add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
+
+            # Handle preflight requests
+            if ($request_method = 'OPTIONS') {
+              add_header Access-Control-Allow-Headers '*';
+              add_header Access-Control-Allow-Origin '*';
+              add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+              add_header Content-Length 0;
+              add_header Content-Type text/plain;
+              return 204;
+            }
           '';
         };
       };
