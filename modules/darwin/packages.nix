@@ -33,7 +33,7 @@ shared-packages ++ (with pkgs; [
 
   # AI assistants
   # claude-code # usefull updates ships to quickly
-  codex
+  # codex
   github-copilot-cli
 
   # API / HTTP clients
