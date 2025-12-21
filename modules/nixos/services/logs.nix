@@ -13,7 +13,7 @@ let
     "victorialogs.service"
     "victoriametrics.service"
     "grafana.service"
-    "uptime-kuma.service"
+    "gatus.service"
     # Networking
     "nginx.service"
     "adguardhome.service"

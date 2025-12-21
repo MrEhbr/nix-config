@@ -115,14 +115,13 @@ in
             };
           }
           {
-            "Uptime Kuma" = {
-              icon = "uptime-kuma";
+            Gatus = {
+              icon = "gatus";
               href = "https://uptime.${domain}";
-              description = "Uptime monitor";
+              description = "Status page";
               widget = {
-                type = "uptimekuma";
+                type = "gatus";
                 url = "https://uptime.${domain}";
-                slug = "default";
               };
             };
           }

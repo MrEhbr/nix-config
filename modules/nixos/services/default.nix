@@ -8,7 +8,7 @@ _: {
     ./media.nix
     ./metrics.nix
     ./grafana
-    ./uptime-kuma.nix
+    ./gatus.nix
     ./fail2ban.nix
     ./ntfy.nix
     ./tailscale.nix
