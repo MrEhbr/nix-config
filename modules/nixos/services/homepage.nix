@@ -97,10 +97,10 @@ in
             };
           }
           {
-            VictoriaMetrics = {
+            Prometheus = {
               icon = "victoriametrics";
               href = "https://prometheus.${domain}";
-              description = "Metrics";
+              description = "Metrics (VictoriaMetrics)";
               widget = {
                 type = "prometheus";
                 url = "https://prometheus.${domain}";

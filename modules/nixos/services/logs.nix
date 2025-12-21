@@ -37,6 +37,7 @@ in
 
   services.vector = {
     enable = true;
+    journaldAccess = true;
     settings = {
       sources.journald = {
         type = "journald";
@@ -66,11 +67,4 @@ in
     requires = [ "victorialogs.service" ];
   };
 
-  # Vector needs access to journald
-  users.users.vector = {
-    isSystemUser = true;
-    group = "vector";
-    extraGroups = [ "systemd-journal" ];
-  };
-  users.groups.vector = {};
 }

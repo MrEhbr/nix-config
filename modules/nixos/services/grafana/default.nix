@@ -20,12 +20,11 @@ in
         enable = true;
         datasources.settings = {
           deleteDatasources = [
-            { name = "Prometheus"; orgId = 1; }
             { name = "VictoriaMetrics"; orgId = 1; }
           ];
           datasources = [
             {
-              name = "VictoriaMetrics";
+              name = "Prometheus";
               type = "prometheus";
               uid = "PBFA97CFB590B2093";
               url = "http://localhost:8428";
