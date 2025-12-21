@@ -53,7 +53,8 @@ in
       sinks.victorialogs = {
         type = "http";
         inputs = [ "filter_units" ];
-        uri = "http://localhost:9428/insert/jsonline";
+        uri = "http://localhost:9428/insert/jsonline?_msg_field=MESSAGE&_time_field=__REALTIME_TIMESTAMP&_stream_fields=UNIT,host";
+        compression = "gzip";
         encoding.codec = "json";
         framing.method = "newline_delimited";
         healthcheck.enabled = false;
