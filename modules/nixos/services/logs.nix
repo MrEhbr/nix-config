@@ -42,10 +42,23 @@ in
         include_units = monitoredUnits;
       };
 
+      transforms.clean = {
+        type = "remap";
+        inputs = [ "journald" ];
+        source = ''
+          . = {
+            "message": .message,
+            "timestamp": .timestamp,
+            "unit": ."_SYSTEMD_UNIT",
+            "priority": .PRIORITY,
+          }
+        '';
+      };
+
       sinks.victorialogs = {
         type = "http";
-        inputs = [ "journald" ];
-        uri = "http://localhost:9428/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=UNIT,host";
+        inputs = [ "clean" ];
+        uri = "http://localhost:9428/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=unit";
         compression = "gzip";
         encoding.codec = "json";
         framing.method = "newline_delimited";
