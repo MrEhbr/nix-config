@@ -18,6 +18,7 @@ shared-packages ++ [
   # Testing and development tools
   direnv
   sqlite
+  lazygit
 
   # Text and terminal utilities
   tree
