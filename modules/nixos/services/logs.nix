@@ -21,35 +21,48 @@ let
     "tailscaled.service"
     # Home Automation
     "ntfy-sh.service"
-    # "homebridge.service"
-    # "zigbee2mqtt.service"
     # Backup
     "restic-backups-homelab.service"
     # Shell
     "atuin.service"
   ];
+
+  # Build regex pattern for Vector filter
+  unitPattern = builtins.concatStringsSep "|" monitoredUnits;
 in
 {
   services.victorialogs = {
     enable = true;
   };
 
-  services.journald.upload = {
+  services.vector = {
     enable = true;
-    settings.Upload = {
-      URL = "http://localhost:9428/insert/journald";
+    settings = {
+      sources.journald = {
+        type = "journald";
+        current_boot_only = false;
+      };
+
+      transforms.filter_units = {
+        type = "filter";
+        inputs = [ "journald" ];
+        condition = ''.UNIT != null && match!(.UNIT, r'^(${unitPattern})$')'';
+      };
+
+      sinks.victorialogs = {
+        type = "http";
+        inputs = [ "filter_units" ];
+        uri = "http://localhost:9428/insert/jsonline";
+        encoding.codec = "json";
+        framing.method = "newline_delimited";
+        healthcheck.enabled = false;
+      };
     };
   };
 
-  # Filter to only upload logs from specific services
-  systemd.services.systemd-journal-upload = {
+  # Ensure vector starts after VictoriaLogs
+  systemd.services.vector = {
     after = [ "victorialogs.service" ];
     requires = [ "victorialogs.service" ];
-    serviceConfig.ExecStart = let
-      matches = builtins.concatStringsSep " " (map (u: "--match=_SYSTEMD_UNIT=${u}") monitoredUnits);
-    in [
-      ""  # Clear default ExecStart
-      "/run/current-system/systemd/lib/systemd/systemd-journal-upload --save-state ${matches}"
-    ];
   };
 }
