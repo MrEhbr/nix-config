@@ -22,6 +22,7 @@ in
           {
             name = "VictoriaMetrics";
             type = "prometheus";
+            uid = "PBFA97CFB590B2093";
             url = "http://localhost:8428";
             isDefault = true;
             editable = true;
