@@ -65,4 +65,12 @@ in
     after = [ "victorialogs.service" ];
     requires = [ "victorialogs.service" ];
   };
+
+  # Vector needs access to journald
+  users.users.vector = {
+    isSystemUser = true;
+    group = "vector";
+    extraGroups = [ "systemd-journal" ];
+  };
+  users.groups.vector = {};
 }

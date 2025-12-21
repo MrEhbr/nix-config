@@ -18,16 +18,22 @@ in
 
       provision = {
         enable = true;
-        datasources.settings.datasources = [
-          {
-            name = "VictoriaMetrics";
-            type = "prometheus";
-            uid = "PBFA97CFB590B2093";
-            url = "http://localhost:8428";
-            isDefault = true;
-            editable = true;
-          }
-        ];
+        datasources.settings = {
+          deleteDatasources = [
+            { name = "Prometheus"; orgId = 1; }
+            { name = "VictoriaMetrics"; orgId = 1; }
+          ];
+          datasources = [
+            {
+              name = "VictoriaMetrics";
+              type = "prometheus";
+              uid = "PBFA97CFB590B2093";
+              url = "http://localhost:8428";
+              isDefault = true;
+              editable = true;
+            }
+          ];
+        };
         dashboards.settings.providers = [
           {
             options.path = "/etc/dashboards";
