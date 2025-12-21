@@ -41,7 +41,7 @@ in
     settings = {
       sources.journald = {
         type = "journald";
-        current_boot_only = false;
+        current_boot_only = true;  # Only current boot, avoid backfill issues
       };
 
       transforms.filter_units = {
@@ -53,7 +53,7 @@ in
       sinks.victorialogs = {
         type = "http";
         inputs = [ "filter_units" ];
-        uri = "http://localhost:9428/insert/jsonline?_msg_field=MESSAGE&_time_field=__REALTIME_TIMESTAMP&_stream_fields=UNIT,host";
+        uri = "http://localhost:9428/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=UNIT,host";
         compression = "gzip";
         encoding.codec = "json";
         framing.method = "newline_delimited";
