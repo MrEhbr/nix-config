@@ -4,8 +4,9 @@ _: {
     ./homepage.nix
     ./adguard.nix
     ./nginx.nix
+    ./logs.nix
     ./media.nix
-    ./prometheus.nix
+    ./metrics.nix
     ./grafana
     ./uptime-kuma.nix
     ./fail2ban.nix

@@ -93,18 +93,25 @@ in
             Grafana = {
               icon = "grafana";
               href = "https://grafana.${domain}";
-              description = "Monitoring";
+              description = "Metrics dashboards";
             };
           }
           {
-            Prometheus = {
-              icon = "prometheus";
+            VictoriaMetrics = {
+              icon = "victoriametrics";
               href = "https://prometheus.${domain}";
-              description = "Monitoring";
+              description = "Metrics";
               widget = {
                 type = "prometheus";
                 url = "https://prometheus.${domain}";
               };
+            };
+          }
+          {
+            VictoriaLogs = {
+              icon = "victoriametrics";
+              href = "https://logs.${domain}/select/vmui";
+              description = "Logs";
             };
           }
           {

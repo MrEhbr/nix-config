@@ -96,6 +96,7 @@ in
           rpc-listen-all = false;  # Only localhost, nginx will proxy
           rpc-allow-origin-all = true;
           rpc-secure = false;
+          # rpc-secret = "your-secret-here";  # Uncomment and set if you want auth
           check-certificate = false;
         };
         conf = lib.generators.toKeyValue { } settings;

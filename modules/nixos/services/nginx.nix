@@ -56,7 +56,7 @@ in
         forceSSL = true;
         useACMEHost = domain;
         locations."/" = {
-          proxyPass = "http://localhost:9090";
+          proxyPass = "http://localhost:8428";
           proxyWebsockets = true;
         };
       };
@@ -65,6 +65,14 @@ in
         useACMEHost = domain;
         locations."/" = {
           proxyPass = "http://localhost:3100";
+          proxyWebsockets = true;
+        };
+      };
+      "logs.${domain}" = {
+        forceSSL = true;
+        useACMEHost = domain;
+        locations."/" = {
+          proxyPass = "http://localhost:9428";
           proxyWebsockets = true;
         };
       };
@@ -121,25 +129,8 @@ in
         useACMEHost = domain;
         root = "${pkgs.ariang}/share/ariang";
         locations."/jsonrpc" = {
-          recommendedProxySettings = true;
-          proxyPass = "http://localhost:6800/jsonrpc";
+          proxyPass = "http://localhost:6800";
           proxyWebsockets = true;
-
-          extraConfig = ''
-            add_header Access-Control-Allow-Headers '*' always;
-            add_header Access-Control-Allow-Origin '*' always;
-            add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
-
-            # Handle preflight requests
-            if ($request_method = 'OPTIONS') {
-              add_header Access-Control-Allow-Headers '*';
-              add_header Access-Control-Allow-Origin '*';
-              add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
-              add_header Content-Length 0;
-              add_header Content-Type text/plain;
-              return 204;
-            }
-          '';
         };
       };
       "uptime.${domain}" = {
