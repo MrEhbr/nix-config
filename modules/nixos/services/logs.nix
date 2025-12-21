@@ -1,34 +1,31 @@
 { ... }:
 let
-  # Services to collect logs from
+  # Services to collect logs from (without .service suffix)
   monitoredUnits = [
     # Media
-    "jellyfin.service"
-    "sonarr.service"
-    "radarr.service"
-    "prowlarr.service"
-    "transmission.service"
-    "aria2.service"
+    "jellyfin"
+    "sonarr"
+    "radarr"
+    "prowlarr"
+    "transmission"
+    "aria2"
     # Monitoring
-    "victorialogs.service"
-    "victoriametrics.service"
-    "grafana.service"
-    "gatus.service"
+    "victorialogs"
+    "victoriametrics"
+    "grafana"
+    "gatus"
     # Networking
-    "nginx.service"
-    "adguardhome.service"
-    "fail2ban.service"
-    "tailscaled.service"
+    "nginx"
+    "adguardhome"
+    "fail2ban"
+    "tailscaled"
     # Home Automation
-    "ntfy-sh.service"
+    "ntfy-sh"
     # Backup
-    "restic-backups-homelab.service"
+    "restic-backups-homelab"
     # Shell
-    "atuin.service"
+    "atuin"
   ];
-
-  # Build regex pattern for Vector filter
-  unitPattern = builtins.concatStringsSep "|" monitoredUnits;
 in
 {
   services.victorialogs = {
@@ -41,18 +38,13 @@ in
     settings = {
       sources.journald = {
         type = "journald";
-        current_boot_only = true;  # Only current boot, avoid backfill issues
-      };
-
-      transforms.filter_units = {
-        type = "filter";
-        inputs = [ "journald" ];
-        condition = ''.UNIT != null && match!(.UNIT, r'^(${unitPattern})$')'';
+        current_boot_only = true;
+        include_units = monitoredUnits;
       };
 
       sinks.victorialogs = {
         type = "http";
-        inputs = [ "filter_units" ];
+        inputs = [ "journald" ];
         uri = "http://localhost:9428/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=UNIT,host";
         compression = "gzip";
         encoding.codec = "json";
