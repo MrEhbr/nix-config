@@ -55,6 +55,18 @@
             targets = [ "127.0.0.1:9862" ];
           }];
         }
+        {
+          job_name = "victorialogs";
+          static_configs = [{
+            targets = [ "127.0.0.1:9428" ];
+          }];
+        }
+        {
+          job_name = "victoriametrics";
+          static_configs = [{
+            targets = [ "127.0.0.1:8428" ];
+          }];
+        }
       ];
     };
   };
