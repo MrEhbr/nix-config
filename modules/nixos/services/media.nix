@@ -70,58 +70,6 @@ in
   # Always prioritize other services wrt. I/O
   systemd.services.transmission.serviceConfig.IOSchedulingPriority = 7;
 
-  systemd.services.aria2 = {
-    description = "aria2 Service";
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    preStart =
-      let
-        path = "/var/lib/aria2";
-        settings = {
-          dir = "${mediaDir}/torrents";
-          disk-cache = "64M";
-          file-allocation = "none";
-          no-file-allocation-limit = "64M";
-          continue = true;
-          always-resume = false;
-          max-resume-failure-tries = 0;
-          remote-time = true;
-          input-file = "aria2.session";
-          save-session = "aria2.session";
-          save-session-interval = 1;
-          http-accept-gzip = true;
-          content-disposition-default-utf8 = true;
-          enable-rpc = true;
-          rpc-listen-port = 6800;
-          rpc-listen-all = false;  # Only localhost, nginx will proxy
-          rpc-allow-origin-all = true;
-          rpc-secure = false;
-          # rpc-secret = "your-secret-here";  # Uncomment and set if you want auth
-          check-certificate = false;
-        };
-        conf = lib.generators.toKeyValue { } settings;
-      in
-      ''
-        if [[ ! -e "${path}/${settings.save-session}" ]]
-        then
-          touch "${path}/${settings.save-session}"
-        fi
-        echo "${conf}" > aria2.conf
-      '';
-    serviceConfig = {
-      User = user;
-      Group = group;
-      StateDirectory = "aria2";
-      RuntimeDirectory = "aria2";
-      WorkingDirectory = "/var/lib/aria2";
-      ExecStart = ''
-        ${pkgs.aria2}/bin/aria2c --conf-path=/var/lib/aria2/aria2.conf
-      '';
-      ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
-      Restart = "on-abort";
-    };
-  };
-
   services.prowlarr = {
     enable = true;
   };

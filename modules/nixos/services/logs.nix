@@ -8,7 +8,6 @@ let
     "radarr"
     "prowlarr"
     "transmission"
-    "aria2"
     # Monitoring
     "victorialogs"
     "victoriametrics"

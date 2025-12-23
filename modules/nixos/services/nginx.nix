@@ -124,15 +124,6 @@ in
           proxyWebsockets = true;
         };
       };
-      "downloads.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        root = "${pkgs.ariang}/share/ariang";
-        locations."/jsonrpc" = {
-          proxyPass = "http://localhost:6800";
-          proxyWebsockets = true;
-        };
-      };
       "uptime.${domain}" = {
         forceSSL = true;
         useACMEHost = domain;

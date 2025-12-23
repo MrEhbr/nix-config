@@ -140,13 +140,6 @@ in
               };
             };
           }
-          {
-            Aria2 = {
-              icon = "ariang";
-              href = "https://downloads.${domain}";
-              description = "Download manager";
-            };
-          }
         ];
       }
       {
