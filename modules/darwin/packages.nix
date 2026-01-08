@@ -50,6 +50,7 @@ shared-packages ++ (with pkgs; [
   # Data 
   csvlens
   tabiew
+  sqlit-tui
 
   # Productivity 
   timewarrior
