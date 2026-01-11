@@ -1,0 +1,215 @@
+after-login-command = []
+after-startup-command = []
+default-root-container-layout = "accordion"
+default-root-container-orientation = "auto"
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+exec-on-workspace-change = []
+on-focus-changed = []
+on-focused-monitor-changed = ["move-mouse monitor-lazy-center"]
+start-at-login = false
+
+accordion-padding = 30
+
+
+[gaps.inner]
+horizontal = 10
+vertical = 10
+
+[gaps.outer]
+bottom = 5
+left = 5
+right = 5
+top = 5
+
+[key-mapping]
+preset = "qwerty"
+
+[mode.main.binding]
+alt-0 = "workspace Main"
+alt-1 = "workspace Web"
+alt-e = "workspace Term"
+alt-3 = "workspace Chat"
+alt-2 = "workspace Notes"
+alt-d = "workspace Dev"
+alt-m = "workspace Music"
+alt-g = "workspace Game"
+alt-4 = "workspace Other"
+alt-5 = "workspace AI"
+
+alt-tab = "focus --boundaries-action wrap-around-the-workspace left"
+
+alt-shift-0 = ["move-node-to-workspace Main", "workspace Main"]
+alt-shift-w = ["move-node-to-workspace Web", "workspace Web"]
+alt-shift-e = ["move-node-to-workspace Term", "workspace Term"]
+alt-shift-3 = ["move-node-to-workspace Chat", "workspace Chat"]
+alt-shift-2 = ["move-node-to-workspace Notes", "workspace Notes"]
+alt-shift-d = ["move-node-to-workspace Dev", "workspace Dev"]
+alt-shift-m = ["move-node-to-workspace Music", "workspace Music"]
+alt-shift-g = ["move-node-to-workspace Game", "workspace Game"]
+alt-shift-4 = ["move-node-to-workspace 9", "workspace Other"]
+
+alt-shift-h = "move left"
+alt-shift-l = "move right"
+cmd-ctrl-h = "focus --boundaries-action wrap-around-the-workspace left"
+cmd-ctrl-l = "focus --boundaries-action wrap-around-the-workspace right"
+
+cmd-shift-left = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace next'
+cmd-shift-right = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace prev'
+
+alt-shift-space = "layout floating tiling"
+alt-slash = 'layout tiles horizontal vertical'
+alt-comma = 'layout accordion horizontal vertical'
+
+alt-shift-tab = "move-workspace-to-monitor --wrap-around next"
+# Resize
+alt-shift-minus = 'resize smart -50'
+alt-shift-equal = 'resize smart +50'
+
+alt-f = 'fullscreen'
+
+
+[workspace-to-monitor-force-assignment]
+Main = "secondary"
+Web = "secondary"
+Term = "secondary"
+Chat = "main"
+Notes = "main"
+Dev = "main"
+Music = "main"
+Game = "secondary"
+Other = "secondary"
+AI = "main"
+
+[[on-window-detected]]
+if.app-id = "com.apple.Safari"
+run = ["move-node-to-workspace Web"]
+
+[[on-window-detected]]
+if.app-id = "org.mozilla.firefox"
+run = ["move-node-to-workspace Web"]
+
+[[on-window-detected]]
+if.app-id = "ru.keepcoder.Telegram"
+run = ["move-node-to-workspace Chat"]
+
+[[on-window-detected]]
+if.app-id = "com.apple.mail"
+run = ["move-node-to-workspace Chat"]
+
+[[on-window-detected]]
+if.app-id = "com.tinyspeck.slackmacgap"
+run = ["move-node-to-workspace Chat"]
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Google Meet'
+run = ["move-node-to-workspace Chat"]
+
+[[on-window-detected]]
+if.app-id = "com.microsoft.VSCode"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "dev.zed.Zed"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.usebruno.app"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.todesktop.230313mzl4w4u92"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.postmanlabs.mac"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.jetbrains.datagrip"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.outerbase.studio"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.mobbtech.Wheels"
+run = ["move-node-to-workspace Dev"]
+
+[[on-window-detected]]
+if.app-id = "com.apple.finder"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.mitchellh.ghostty"
+if.window-title-regex-substring = "Software Update"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.mitchellh.ghostty"
+if.window-title-regex-substring = "Updating Ghostty"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.mitchellh.ghostty"
+run = ["move-node-to-workspace Term"]
+
+[[on-window-detected]]
+if.app-id = "net.kovidgoyal.kitty"
+run = ["move-node-to-workspace Term"]
+
+[[on-window-detected]]
+if.app-id = "com.apple.AppStore"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.1password.1password"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.apple.ActivityMonitor"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.docker.docker"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.apple.systempreferences"
+run = ["layout floating"]
+
+[[on-window-detected]]
+if.app-id = "com.apple.Music"
+run = ["move-node-to-workspace Music"]
+
+[[on-window-detected]]
+if.app-id = "com.apple.podcasts"
+run = ["move-node-to-workspace Music"]
+
+[[on-window-detected]]
+if.app-id = "md.obsidian"
+run = ["move-node-to-workspace Notes"]
+
+[[on-window-detected]]
+if.app-id = "com.chocoford.excalidraw"
+run = ["move-node-to-workspace Notes"]
+
+[[on-window-detected]]
+if.app-id = "com.playstation.RemotePlay"
+run = ["move-node-to-workspace Game"]
+
+[[on-window-detected]]
+if.app-id = "com.cisco.anyconnect.gui"
+run = ["layout floating", "move-node-to-workspace Other"]
+
+[[on-window-detected]]
+if.app-id = "com.anthropic.claudefordesktop"
+run = ["move-node-to-workspace AI"]
+
+[[on-window-detected]]
+if.app-id = "com.openai.chat"
+run = ["move-node-to-workspace AI"]
+
+[[on-window-detected]]
+run = ["layout floating"]

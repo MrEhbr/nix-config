@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ inputs, config, pkgs, lib, ... }:
 
 {
   programs.neovim = {
@@ -12,32 +12,40 @@
     enable = true;
     plugins = [
       {
-        name = "z";
-        src = pkgs.fetchFromGitHub {
-          owner = "jethrokuan";
-          repo = "z";
-          rev = "85f863f20f24faf675827fb00f3a4e15c7838d76";
-          sha256 = "sha256-+FUBM7CodtZrYKqU542fQD+ZDGrd2438trKM0tIESs0=";
-        };
-      }
-      {
         name = "plugin-git";
-        src = pkgs.fetchFromGitHub {
-          owner = "jhillyerd";
-          repo = "plugin-git";
-          rev = "c2b38f53f0b04bc67f9a0fa3d583bafb3f558718";
-          sha256 = "sha256-efKPbsXxjHm1wVWPJCV8teG4DgZN5dshEzX8PWuhKo4=";
-        };
+        src = pkgs.fishPlugins.plugin-git.src;
       }
     ];
     shellAliases = {
+      cat = lib.mkIf config.programs.bat.enable "bat --style=plain --paging=never";
       grep = "grep --color=auto";
       groot = "cd (git rev-parse --show-cdup)";
       rg = "rg -p --glob '!node_modules/*' --color=auto";
       shell = "nix-shell -p";
+      exit = "exit_fn";
+      cc_serena = "command claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)";
+      claude = "claude --mcp-config $HOME/.claude/.mcp.json";
+      btop = "btop --preset 1";
     };
 
-    shellInit = ''
+    functions = {
+      exit_fn = ''
+        if test -n "$TMUX_POPUP"
+          set -l session_name (tmux display-message -p '#S')
+          set -l pane_count (tmux list-panes | wc -l)
+          if test $pane_count -eq 1
+            tmux detach-client
+            tmux kill-session -t $session_name
+          else
+            builtin exit
+          end
+        else
+          builtin exit
+        end
+      '';
+    };
+
+    shellInit = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin ''
       source /nix/var/nix/profiles/default/etc/profile.d/nix.fish
       source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
     '';
@@ -50,16 +58,19 @@
       fish_add_path -g $HOME/.cargo/bin
       fish_add_path -g $GOBIN
       fish_add_path -g $BUN_INSTALL/bin
+      fish_add_path -g $HOME/.flutter/bin
+      fish_add_path -g $HOME/.pub-cache/bin
+      fish_add_path -g $HOME/.bun/bin
 
-      if type -q bat
-        alias cat "bat --style=plain --paging=never"
-      end
-      if not set -q TMUX
-        set -g TMUX tmux new-session -d -s base
-        eval $TMUX
-        tmux attach-session -d -t base
+      if type -q tmux
+        if not set -q TMUX
+          set -g TMUX tmux new-session -d -s base
+          eval $TMUX
+          tmux attach-session -d -t base
+        end
       end
       ${pkgs.any-nix-shell}/bin/any-nix-shell fish | source
+      ${pkgs.atuin}/bin/atuin init fish | sed 's/-k up/up/' | source
 
       # Kanagawa Fish shell theme
       # A template was taken and modified from Tokyonight:
@@ -105,6 +116,8 @@
     enableFishIntegration = true;
 
     settings = {
+      add_newline = true;
+
       format = lib.concatStrings [
         "$username"
         "$hostname"
@@ -149,30 +162,73 @@
         format = "[$duration]($style) ";
         style = "yellow";
       };
+      docker_context = {
+        format = "[$symbol $context]($style)";
+        symbol = " ";
+        detect_folders = [ ".docker" "docker" ];
+      };
+      aws = {
+        disabled = true;
+        format = "on [$symbol($profile )]($style)";
+        style = "bold blue";
+        symbol = "🅰 ";
+      };
+      kubernetes = {
+        format = "on [⛵$context \($namespace\)]($style) ";
+        disabled = true;
+        contexts = [
+          {
+            context_pattern = ".*INT.*";
+            style = "dimmed green";
+            context_alias = "INT";
+          }
+          {
+            context_pattern = ".*PROD.*";
+            style = "dimmed red";
+            context_alias = "PROD";
+          }
+        ];
+      };
     };
   };
 
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
+    options = [ "--cmd cd" ];
   };
 
   programs.atuin = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
+    settings = {
+      enter_accept = false;
+      auto_sync = true;
+      auto_sync_interval = "1h";
+      keymap_mode = "vim-insert";
+      sync_address = "https://atuin.ehbr.cloud";
+      sync.records = true;
+    };
   };
 
   programs.eza = {
     enable = true;
     enableFishIntegration = true;
     extraOptions = [ "--group-directories-first" "-g" ];
-    icons = true;
+    icons = "auto";
     git = true;
   };
 
   programs.direnv = {
     enable = true;
+    silent = true;
     nix-direnv.enable = true;
+    config = {
+      global = {
+        warn_timeout = "5m";
+        log_format = "-";
+      };
+    };
     stdlib = ''
       declare -A direnv_layout_dirs
         direnv_layout_dir() {
@@ -187,7 +243,7 @@
   programs.bat = {
     enable = true;
     themes = {
-    kanagawa = {
+      kanagawa = {
         src = pkgs.fetchFromGitHub {
           owner = "rebelot";
           repo = "kanagawa.nvim";
@@ -201,6 +257,16 @@
     config = {
       theme = "kanagawa";
       pager = "less -FR";
+    };
+  };
+
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "kanagawa-wave";
+      vim_keys = true;
+      proc_tree = true;
+      presets = "cpu:0:default,proc:1:default cpu:0:default,mem:0:tty,proc:1:default";
     };
   };
 }

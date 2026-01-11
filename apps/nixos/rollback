@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+RED='\033[1;31m'
+NC='\033[0m'
+
+echo "${YELLOW}Available generations:${NC}"
+sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+
+read -p "Generation number: " GEN_NUM
+
+if [ -z "$GEN_NUM" ]; then
+    echo "${RED}No generation entered${NC}"
+    exit 1
+fi
+
+echo "${YELLOW}Rolling back to generation $GEN_NUM...${NC}"
+sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK nixos-rebuild switch --rollback --switch-generation $GEN_NUM
+
+echo "${GREEN}Rollback complete!${NC}"
+

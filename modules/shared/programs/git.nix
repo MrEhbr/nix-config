@@ -1,11 +1,6 @@
-{ config
-, lib
-, pkgs
-, ...
-}:
+{ lib, pkgs, user, ... }:
 let
   name = "Aleksei Burmistrov";
-  user = "ehbr";
   email = "mr.ehbr@gmail.com";
 in
 {
@@ -25,7 +20,6 @@ in
       "Thumbs.db"
       "*.log"
       "*.tmp"
-      "*.lock"
       "*.swp"
       "*.bak"
       "*.old"
@@ -127,14 +121,12 @@ in
       ".env"
       ".envrc"
       ".direnv/"
+      ".devenv/"
       ".env.*"
     ];
     lfs.enable = true;
 
-    userName = name;
-    userEmail = email;
-
-    includes = [
+    includes = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [
       {
         # use diffrent email & name for work
         path = "/Users/${user}/Work/.gitconfig";
@@ -142,7 +134,16 @@ in
       }
     ];
 
-    extraConfig = {
+    settings = {
+      user = {
+        name = name;
+        email = email;
+      };
+      alias = {
+        # common aliases
+        ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
+        ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
+      };
       init.defaultBranch = "main";
       core = {
         editor = "nvim";
@@ -152,34 +153,27 @@ in
       pull.rebase = true;
       push.autoSetupRemote = true;
       rebase.autoStash = true;
-      url = {
+      url = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         "git@gitlab.mobbtech.com:".insteadOf = "https://gitlab.mobbtech.com/";
+        "git@github.com:".insteadOf = "https://github.com/";
+      };
+      safe = {
+        directory = "/etc/nixos";
+      };
+      merge.ours = {
+        driver = true;
       };
     };
+  };
 
-    delta = {
+  programs.difftastic = {
+    enable = true;
+    git = {
       enable = true;
-      options = {
-        features = "decorations side-by-side";
-        decorations = {
-          commit-decoration-style = "blue ol";
-          commit-style = "raw";
-          file-style = "omit";
-          hunk-header-decoration-style = "blue box";
-          hunk-header-file-style = "red";
-          hunk-header-line-number-style = "#067a00";
-          hunk-header-style = "file line-number syntax";
-        };
-        interactive = {
-          keep-plus-minus-markers = false;
-        };
-      };
+      diffToolMode = true;
     };
-
-    aliases = {
-      # common aliases
-      ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
-      ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
+    options = {
+      # display = "inline";
     };
   };
 }

@@ -1,16 +1,16 @@
-{ config, pkgs, lib, home-manager, ... }:
+{ config, pkgs, pkgsStable, lib, home-manager, user, ... }:
 
 let
-  user = "ehbr";
   sharedFiles = import ../shared/files.nix { inherit user config pkgs; };
-  additionalFiles = import ./files.nix { inherit user config pkgs; };
+  additionalFiles = import ./files.nix { inherit user config pkgs lib; };
 in
 {
   imports = [
     ./dock
+    ./services
+    ./homebrew.nix
   ];
 
-  # It me
   users.users.${user} = {
     name = "${user}";
     home = "/Users/${user}";
@@ -18,44 +18,15 @@ in
     shell = pkgs.fish;
   };
 
-  homebrew = {
-    enable = true;
-    onActivation = {
-      autoUpdate = true;
-      upgrade = true;
-      # 'zap': uninstalls all formulae(and related files) not listed here.
-      # cleanup = "zap";
-    };
-
-
-    casks = pkgs.callPackage ./casks.nix { };
-
-    # These app IDs are from using the mas CLI app
-    # mas = mac app store
-    # https://github.com/mas-cli/mas
-    #
-    # $ nix shell nixpkgs#mas
-    # $ mas search <app name>
-    #
-    masApps = {
-      "1Password for Safari" = 1569813296;
-      Things = 904280696;
-      Hush = 1544743900;
-      Dato = 1470584107;
-    };
-  };
-  environment.shellInit = ''
-    eval "$(${config.homebrew.brewPrefix}/brew shellenv)"
-  '';
-
-  # Enable home-manager
   home-manager = {
     useGlobalPkgs = true;
     backupFileExtension = "backup";
     users.${user} = { pkgs, config, lib, ... }: {
+      _module.args.user = user;
+
       home = {
         enableNixpkgsReleaseCheck = false;
-        packages = pkgs.callPackage ./packages.nix { };
+        packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; };
         file = lib.mkMerge [
           sharedFiles
           additionalFiles
@@ -67,31 +38,60 @@ in
           GOPATH = "$HOME/Go";
           GOBIN = "$HOME/Go/bin";
           BUN_INSTALL = "$HOME/.bun";
-          DIRENV_WARN_TIMEOUT = "5m";
-          DIRENV_LOG_FORMAT = "";
+          RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+          RAINFROG_CONFIG = "$HOME/.config/rainfrog";
         };
 
-        stateVersion = "23.11";
+        stateVersion = "25.05";
       };
-      imports = [ ./programs/alacritty.nix ./programs/wezterm.nix ./programs/tmux.nix ] ++ import ../shared/home-manager.nix;
+
+      imports = [
+        ../shared/home-manager.nix
+        ./programs
+
+      ];
+
+      programs = {
+        tmux.enable = true;
+      };
 
       # Marked broken Oct 20, 2022 check later to remove this
       # https://github.com/nix-community/home-manager/issues/3344
       manual.manpages.enable = false;
     };
+    sharedModules = [
+      (
+        { config, pkgs, ... }:
+        {
+
+          targets.darwin.linkApps.enable = false;
+        }
+      )
+    ];
   };
+
+  system.build.applications = lib.mkForce (
+    pkgs.buildEnv {
+      name = "system-applications";
+      pathsToLink = [ "/Applications" ];
+      paths =
+        config.environment.systemPackages
+        ++ (lib.concatMap (x: x.home.packages) (lib.attrsets.attrValues config.home-manager.users));
+    }
+  );
 
   # Fully declarative dock using the latest from Nix Store
   local = {
     dock = {
       enable = true;
+      username = user;
       entries = [
         { path = "/System/Applications/Mail.app/"; }
         { path = "/System/Applications/Calendar.app/"; }
         { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
         { path = "/System/Applications/Music.app/"; }
         { path = "/Applications/Obsidian.app/"; }
-        { path = "${pkgs.wezterm}/Applications/WezTerm.app/"; }
+        { path = "/Applications/Ghostty.app/"; }
         { path = "/Applications/Telegram.app/"; }
         { path = "/Applications/Slack.app/"; }
         { path = "/System/Applications/System Settings.app/"; }

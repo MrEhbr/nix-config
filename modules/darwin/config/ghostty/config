@@ -1,0 +1,27 @@
+theme = "Kanagawa Wave"
+
+font-family="JetBrains Mono SemiBold"
+font-family-bold="JetBrains Mono ExtraBold"
+font-family-italic="JetBrains Mono SemiBold Italic"
+font-family-bold-italic="JetBrains Mono ExtraBold Italic"
+font-size = 14
+font-style = Bold
+
+adjust-cell-height = 15%
+
+window-decoration = true
+shell-integration = fish
+
+cursor-style = block
+cursor-style-blink = false
+mouse-hide-while-typing = true
+
+clipboard-read = allow
+clipboard-write = allow
+
+macos-titlebar-style = "hidden"
+macos-option-as-alt = true
+
+confirm-close-surface=false
+
+custom-shader = "shaders/cursor_warp.glsl"

@@ -1,0 +1,55 @@
+#!/bin/sh -e
+
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+RED='\033[1;31m'
+NC='\033[0m'
+
+export NIXPKGS_ALLOW_UNFREE=1
+
+# Configuration lock check
+CONFIG_LOCK="$HOME/.nix-darwin-config-lock"
+
+check_config_lock() {
+    local config="$1"
+    
+    if [ -f "$CONFIG_LOCK" ]; then
+        local locked_config=$(cat "$CONFIG_LOCK")
+        if [ "$locked_config" != "$config" ]; then
+            echo "${RED}Configuration locked to '$locked_config'${NC}"
+            echo "${RED}Cannot switch to '$config'${NC}"
+            exit 1
+        fi
+    else
+        echo "$config" > "$CONFIG_LOCK"
+        echo "${YELLOW}Configuration locked to '$config'${NC}"
+    fi
+}
+
+# Accept configuration as argument
+CONFIG="$1"
+
+if [ -z "$CONFIG" ]; then
+    echo "${RED}Usage: nix run .#build-switch <config> [nix-args...]${NC}"
+    AVAILABLE=$(nix --extra-experimental-features 'nix-command flakes' eval --json .#darwinConfigurations --apply builtins.attrNames | jq -r '.[]' | tr '\n' ', ' | sed 's/,$//')
+    echo "${YELLOW}Available configs: $AVAILABLE${NC}"
+    exit 1
+fi
+
+check_config_lock "$CONFIG"
+
+echo "${GREEN}Using configuration: $CONFIG${NC}"
+
+# Shift to pass remaining args to nix
+shift
+
+echo "${YELLOW}Building $CONFIG...${NC}"
+nix --extra-experimental-features 'nix-command flakes' build .#darwinConfigurations.$CONFIG.system "$@"
+
+echo "${YELLOW}Switching...${NC}"
+sudo ./result/sw/bin/darwin-rebuild switch --flake .#$CONFIG "$@"
+
+echo "${YELLOW}Cleaning up...${NC}"
+unlink ./result
+
+echo "${GREEN}Complete!${NC}"

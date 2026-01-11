@@ -1,70 +1,57 @@
-{ agenix, config, pkgs, ... }:
-
-let
-  user = "ehbr";
-  mkSudoTouchIdAuthScript = reattachPath:
-    let
-      file = "/etc/pam.d/sudo";
-      option = "pam-reattach";
-    in
-    ''
-      # Enable sudo Touch ID authentication, if not already enabled
-      if ! grep 'pam_tid.so' ${file} > /dev/null; then
-        /usr/bin/sed -i "" '2i\
-      auth       optional       ${reattachPath}/lib/pam/pam_reattach.so # nix-darwin: ${option} \
-      auth       sufficient     pam_tid.so # nix-darwin: ${option}
-        ' ${file}
-      fi
-    '';
-in
-
+{ agenix, pkgs, user, ... }:
 {
 
   imports = [
     ../../modules/darwin/secrets.nix
     ../../modules/darwin/home-manager.nix
     ../../modules/shared
-    ../../modules/shared/cachix
     agenix.darwinModules.default
   ];
 
-  # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
+  # Enable sudo authentication with Touch ID 
+  environment.etc."pam.d/sudo_local" = {
+    text = ''
+      auth       optional       ${pkgs.pam-reattach}/lib/pam/pam_reattach.so
+      auth       sufficient     pam_tid.so
+    '';
+  };
 
   # Setup user, packages, programs
   nix = {
+    enable = true;
     package = pkgs.nix;
     settings = {
+      download-buffer-size = 524288000;
       trusted-users = [ "@admin" "${user}" ];
       warn-dirty = false;
       auto-optimise-store = false;
+
     };
 
     gc = {
-      user = "root";
       automatic = true;
       interval = { Weekday = 0; Hour = 2; Minute = 0; };
       options = "--delete-older-than 30d";
     };
 
-    # Turn this on to make command line easier
+
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
   };
 
-  # Turn off NIX_PATH warnings now that we're using flakes
-  system.checks.verifyNixPath = false;
 
   environment.variables.SHELL = "${pkgs.fish}/bin/fish";
   environment.shells = [
     pkgs.fish
   ];
-    programs.fish.enable = true;
+
+  programs.fish.enable = true;
 
   # Load configuration that is shared across systems
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     agenix.packages."${pkgs.system}".default
+    pkgs.pam-reattach
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
   # Fonts
@@ -73,36 +60,16 @@ in
       # icon fonts
       material-design-icons
       font-awesome
-
-      # nerdfonts
-      (nerdfonts.override {
-        fonts = [
-          "FiraCode"
-          "JetBrainsMono"
-        ];
-      })
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
     ];
   };
 
   system = {
-    stateVersion = 4;
-
-    # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
-    activationScripts =
-      {
-        postUserActivation.text = ''
-          # activateSettings -u will reload the settings from the database and apply them to the current session,
-          # so we do not need to logout and login again to make the changes take effect.
-          /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-        '';
-        pam.text = ''
-          # PAM settings
-          echo >&2 "setting up pam-reattach..."
-          ${mkSudoTouchIdAuthScript pkgs.pam-reattach}
-        '';
-
-      };
-
+    # Turn off NIX_PATH warnings now that we're using flakes
+    checks.verifyNixPath = false;
+    primaryUser = user;
+    stateVersion = 5;
     defaults = {
       menuExtraClock.Show24Hour = true; # show 24 hour clock
 
@@ -120,7 +87,7 @@ in
         AppleShowAllExtensions = true;
         AppleInterfaceStyle = "Dark"; # dark mode
         AppleKeyboardUIMode = 3; # Mode 3 enables full keyboard control.
-        ApplePressAndHoldEnabled = true; # enable press and hold
+        ApplePressAndHoldEnabled = false; # enable press and hold
 
         # If you press and hold certain keyboard keys when in a text area, the key’s character begins to repeat.
         # This is very useful for vim users, they use `hjkl` to move cursor.
@@ -136,6 +103,7 @@ in
         NSAutomaticSpellingCorrectionEnabled = false; # disable auto spelling correction
         NSNavPanelExpandedStateForSaveMode = true; # expand save panel by default
         NSNavPanelExpandedStateForSaveMode2 = true;
+        NSWindowShouldDragOnGesture = true; # enable drag on gesture
       };
 
       dock = {

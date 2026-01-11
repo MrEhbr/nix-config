@@ -3,21 +3,34 @@
 with pkgs; [
   # General packages for development and system management
   git
-  lazygit
-  act
+  lazydocker
+  act # Github Actions local runner
   bat
-  btop
-  jless
+  procs
+  jless #  pager for JSON (or YAML) data
   coreutils
-  delta
+  difftastic
   wget
-  ansible
-  yai
+  # ansible
   just
-  yazi
+  xh
+  unzip
+  gh
+  tlrc
+  dua
+  dust
+  dua
+  rainfrog # SQL TUI
+  sccache # Compilation cache
+  timg # view images from the terminal
+  imagemagick
+  hyperfine # Benchmarking tool
+  tree-sitter
 
   # Encryption and security tools
   age
+  sops
+  openssl
 
   # Cloud-related tools and SDKs
   docker
@@ -26,33 +39,35 @@ with pkgs; [
 
   # Media-related packages
   ffmpeg
-  fd
   glow
   fzf
 
   # Node.js development tools
-  nodePackages.npm # globally install npm
-  nodejs
+  # nodePackages.npm # globally install npm
+  nodejs_24
+  bun
+  uv
 
   # Common dev tools
   go
+  rustup
   rustc
-  cargo
-  php
-
+  lua5_4
 
   # Text and terminal utilities
   just
   htop
   jq
-  httpie
+  yq-go
   ripgrep
+  fd
+  repgrep
   tree
-  tmux
   eza
   zoxide
   atuin
-  unzip
+  zk
 
-  dev-env # from overlay
+  # Custom tools
+  dev-env
 ]

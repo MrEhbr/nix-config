@@ -7,12 +7,9 @@ in
   ".ssh/id_github.pub" = {
     text = personalPublicKey;
   };
-
-  # my nvim config
-  # ".config/nvim".source = pkgs.fetchFromGitHub {
-  #   owner = "MrEhbr";
-  #   repo = "nvim-config";
-  #   rev = "main";
-  #   sha256 = "V84QQsexxX99RS2Lhu1qH02z7bbWK/0jH56O8LLpBDs=";
-  # };
+  ".config/tlrc/config.toml".text = ''
+    [cache]
+    auto_update = true
+    max_age = 336 # 336 hours = 2 weeks
+  '';
 }
