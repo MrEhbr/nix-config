@@ -15,47 +15,6 @@ in
   programs.git = {
     enable = true;
     ignores = [
-      # General
-      ".DS_Store"
-      "Thumbs.db"
-      "*.log"
-      "*.tmp"
-      "*.swp"
-      "*.bak"
-      "*.old"
-      "*.orig"
-
-      # Compiled source
-      "*.com"
-      "*.class"
-      "*.dll"
-      "*.exe"
-      "*.o"
-      "*.so"
-
-      # Packages
-      "*.7z"
-      "*.dmg"
-      "*.gz"
-      "*.iso"
-      "*.jar"
-      "*.tar"
-      "*.zip"
-
-      # Temporary files
-      "*.cache"
-      "*.tmp"
-      "*.temp"
-      "*.pid"
-      "*.seed"
-      "*~"
-      "*#"
-      ".#*"
-
-      # Logs
-      "logs/"
-      "*.log"
-
       # OS generated files
       ".DS_Store"
       "*.DS_Store"
@@ -68,6 +27,42 @@ in
       "$RECYCLE.BIN/"
       "*.lnk"
 
+      # Temporary files
+      "*.tmp"
+      "*.temp"
+      "*.swp"
+      "*.sw?"
+      "*.bak"
+      "*.old"
+      "*.orig"
+      "*.cache"
+      "*.pid"
+      "*.seed"
+      "*~"
+      "*#"
+      ".#*"
+
+      # Logs
+      "logs/"
+      "*.log"
+
+      # Compiled source
+      "*.com"
+      "*.class"
+      "*.dll"
+      "*.exe"
+      "*.o"
+      "*.so"
+
+      # Packages/archives
+      "*.7z"
+      "*.dmg"
+      "*.gz"
+      "*.iso"
+      "*.jar"
+      "*.tar"
+      "*.zip"
+
       # IDEs and editors
       ".vscode/"
       ".idea/"
@@ -75,49 +70,38 @@ in
       "*.ntvs*"
       "*.njsproj"
       "*.sln"
-      "*.sw?"
       ".project"
       ".classpath"
       ".cproject"
       ".settings/"
-      "out/"
-      "bin/"
-
-      # Dependency directories
-      "node_modules/"
-      "vendor/"
-      ".tmp/"
-      "dist/"
-
-      # Generated files
-      "coverage/"
       "*.iml"
       "*.ipr"
       "*.iws"
       "*.sublime-workspace"
       "*.sublime-project"
       "*.vs/"
-      "*.vscode/"
-      "*.patch"
-      "*.diff"
-      ".tmp/"
-      "dist/"
+
+      # Build outputs
+      "out/"
+      "bin/"
       "build/"
+      "dist/"
       "debug/"
       "release/"
       "target/"
+      "coverage/"
       "*.d.ts"
       "*.js.map"
       "*.tsbuildinfo"
+      "*.patch"
+      "*.diff"
 
-      # System Files
-      "Thumbs.db"
-      "ehthumbs.db"
-      "Desktop.ini"
-      "$RECYCLE.BIN/"
-      "*.lnk"
+      # Dependency directories
+      "node_modules/"
+      "vendor/"
+      ".tmp/"
 
-      # Others
+      # Environment and secrets
       ".env"
       ".envrc"
       ".direnv/"
@@ -128,7 +112,7 @@ in
 
     includes = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [
       {
-        # use diffrent email & name for work
+        # use different email & name for work
         path = "/Users/${user}/Work/.gitconfig";
         condition = "gitdir:/Users/${user}/Work/";
       }

@@ -34,6 +34,7 @@
       options = "--delete-older-than 30d";
     };
 
+    optimise.automatic = true;
 
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -50,7 +51,7 @@
 
   # Load configuration that is shared across systems
   environment.systemPackages = [
-    agenix.packages."${pkgs.system}".default
+    agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgs.pam-reattach
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 

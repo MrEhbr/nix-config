@@ -3,8 +3,14 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
-    agenix.url = "github:ryantm/agenix";
-    home-manager.url = "github:nix-community/home-manager";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     darwin = {
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -45,11 +51,10 @@
             nativeBuildInputs = with pkgs; [
               git
               age
-              nixfmt-classic
+              nixfmt-rfc-style
               statix
               vulnix
               nixd
-              nixpkgs-fmt
             ];
             shellHook = ''
               export EDITOR=vim
@@ -71,6 +76,34 @@
           neovim-nightly-overlay.overlays.default
         ]
       );
+
+      mkDarwinConfig = { user, system ? "aarch64-darwin" }: darwin.lib.darwinSystem {
+        inherit system;
+        specialArgs = inputs // {
+          pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system};
+          inherit user;
+        };
+        modules = [
+          { nixpkgs.overlays = [ overlays.${system} ]; }
+          home-manager.darwinModules.home-manager
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              enable = true;
+              enableRosetta = false;
+              inherit user;
+              taps = {
+                "homebrew/homebrew-core" = homebrew-core;
+                "homebrew/homebrew-cask" = homebrew-cask;
+                "homebrew/homebrew-bundle" = homebrew-bundle;
+              };
+              mutableTaps = true;
+              autoMigrate = true;
+            };
+          }
+          ./hosts/darwin
+        ];
+      };
     in
     {
       overlays = overlays;
@@ -86,66 +119,8 @@
           "switch" = mkApp system osType "switch";
         });
       darwinConfigurations = {
-        ehbr = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = inputs // {
-            pkgsStable = inputs.nixpkgs-stable.legacyPackages."aarch64-darwin";
-            user = "ehbr";
-          };
-          modules = [
-            {
-              nixpkgs.overlays = [ overlays."aarch64-darwin" ];
-            }
-            home-manager.darwinModules.home-manager
-            nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                enable = true;
-                enableRosetta = false;
-                user = "ehbr";
-                taps = {
-                  "homebrew/homebrew-core" = homebrew-core;
-                  "homebrew/homebrew-cask" = homebrew-cask;
-                  "homebrew/homebrew-bundle" = homebrew-bundle;
-                };
-                mutableTaps = true;
-                autoMigrate = true;
-              };
-            }
-            ./hosts/darwin
-          ];
-        };
-        work = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = inputs // {
-            pkgsStable = inputs.nixpkgs-stable.legacyPackages."aarch64-darwin";
-            user = "aleksey.burmistrov";
-          };
-          modules = [
-            {
-              nixpkgs.overlays = [ overlays."aarch64-darwin" ];
-            }
-            home-manager.darwinModules.home-manager
-            nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                enable = true;
-                enableRosetta = false;
-                user = "aleksey.burmistrov";
-                taps = {
-                  "homebrew/homebrew-core" = homebrew-core;
-                  "homebrew/homebrew-cask" = homebrew-cask;
-                  "homebrew/homebrew-bundle" = homebrew-bundle;
-                };
-                mutableTaps = true;
-                autoMigrate = true;
-              };
-            }
-            ./hosts/darwin
-          ];
-        };
-
-
+        ehbr = mkDarwinConfig { user = "ehbr"; };
+        work = mkDarwinConfig { user = "aleksey.burmistrov"; };
       };
 
       nixosConfigurations = nixpkgs.lib.genAttrs linuxSystems (system: nixpkgs.lib.nixosSystem {

@@ -2,13 +2,6 @@
 
 let
   keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxk1quGRSKZkYR6tLHTFTLUJ+nyu+037Vzbjj7ZCZIq mr.ehbr@gmail.com" ];
-  olderNixpkgs = import
-    (fetchTarball {
-      url = "https://github.com/NixOS/nixpkgs/archive/5fc58c6b7a27f7705453643254ec1a090bfe649b.tar.gz";
-      sha256 = "1w7jixmzsw4h4z6ah0jxnbr29yqdkyjpmhrwf43ckjv5akzb1as8";
-    })
-    { system = "${pkgs.system}"; };
-
 in
 {
   imports = [
@@ -139,7 +132,7 @@ in
   # Turn on flag for proprietary software
   nix = {
     nixPath = [ "nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos" ];
-    settings.allowed-users = [ "${user}" ];
+    settings.allowed-users = [ user ];
     package = pkgs.nix;
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -226,7 +219,7 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    agenix.packages."${pkgs.system}".default # "x86_64-linux"
+    agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     gitFull
     inetutils
   ];

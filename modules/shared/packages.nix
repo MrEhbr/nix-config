@@ -12,14 +12,12 @@ with pkgs; [
   difftastic
   wget
   # ansible
-  just
   xh
   unzip
   gh
   tlrc
   dua
   dust
-  dua
   rainfrog # SQL TUI
   sccache # Compilation cache
   timg # view images from the terminal

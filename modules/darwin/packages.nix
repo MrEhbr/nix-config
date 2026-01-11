@@ -14,9 +14,6 @@ shared-packages ++ (with pkgs; [
   # Networking
   tailscale
 
-  # Security 
-  sops
-
   # Kubernetes 
   k9s
   kubectl
@@ -43,7 +40,6 @@ shared-packages ++ (with pkgs; [
 
   # graphics
   iina
-  imagemagick
   luajitPackages.magick
   kickstart
 

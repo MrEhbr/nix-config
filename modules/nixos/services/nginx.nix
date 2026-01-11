@@ -6,6 +6,39 @@
 let
   email = "mr.ehbr@gmail.com";
   domain = "ehbr.cloud";
+
+  # Helper function to create a virtual host with SSL and reverse proxy
+  mkVhost = port: {
+    forceSSL = true;
+    useACMEHost = domain;
+    locations."/" = {
+      proxyPass = "http://localhost:${toString port}";
+      proxyWebsockets = true;
+    };
+  };
+
+  # Service subdomain to port mapping
+  services = {
+    atuin = 5000;
+    prometheus = 8428;
+    grafana = 3100;
+    logs = 9428;
+    adguard = 3000;
+    transmission = 9091;
+    jellyfin = 8096;
+    sonarr = 8989;
+    radarr = 7878;
+    prowlarr = 9696;
+    uptime = 4000;
+    ntfy = 6780;
+    homebridge = 8581;
+    zigbee2mqtt = 8072;
+  };
+
+  # Generate virtual hosts from services map
+  serviceVhosts = lib.mapAttrs'
+    (name: port: lib.nameValuePair "${name}.${domain}" (mkVhost port))
+    services;
 in
 {
   security.acme = {
@@ -26,16 +59,15 @@ in
 
   services.nginx = {
     enable = true;
-    # Enable the NGINX status page
     statusPage = true;
 
-    # Use recommended settings
     recommendedGzipSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
 
     virtualHosts = {
+      # Root domain uses enableACME instead of useACMEHost
       "${domain}" = {
         forceSSL = true;
         enableACME = true;
@@ -44,119 +76,7 @@ in
           proxyWebsockets = true;
         };
       };
-      "atuin.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:5000";
-          proxyWebsockets = true;
-        };
-      };
-      "prometheus.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:8428";
-          proxyWebsockets = true;
-        };
-      };
-      "grafana.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:3100";
-          proxyWebsockets = true;
-        };
-      };
-      "logs.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:9428";
-          proxyWebsockets = true;
-        };
-      };
-      "adguard.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:3000";
-          proxyWebsockets = true;
-        };
-      };
-      "transmission.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:9091";
-          proxyWebsockets = true;
-        };
-      };
-      "jellyfin.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:8096";
-          proxyWebsockets = true;
-        };
-      };
-      "sonarr.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:8989";
-          proxyWebsockets = true;
-        };
-      };
-      "radarr.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:7878";
-          proxyWebsockets = true;
-        };
-      };
-      "prowlarr.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:9696";
-          proxyWebsockets = true;
-        };
-      };
-      "uptime.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:4000";
-          proxyWebsockets = true;
-        };
-      };
-      "ntfy.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:6780";
-          proxyWebsockets = true;
-        };
-      };
-      "homebridge.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:8581";
-          proxyWebsockets = true;
-        };
-      };
-      "zigbee2mqtt.${domain}" = {
-        forceSSL = true;
-        useACMEHost = domain;
-        locations."/" = {
-          proxyPass = "http://localhost:8072";
-          proxyWebsockets = true;
-        };
-      };
-    };
+    } // serviceVhosts;
   };
 
   networking.firewall = {
