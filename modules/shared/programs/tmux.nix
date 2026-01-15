@@ -1,10 +1,12 @@
 { pkgs, ... }:
 let
   floatingCloseScript = pkgs.writeShellScript "floating-close" ''
-    session_name=$1
     ${pkgs.tmux}/bin/tmux wait -L pane_wait
-    if ${pkgs.tmux}/bin/tmux has-session -t "$session_name" 2>/dev/null; then
-      ${pkgs.tmux}/bin/tmux kill-session -t "$session_name"
+    hook_pane=$1
+    # Parent pane exited - clean up its floating session if exists
+    if [[ -n "$hook_pane" ]]; then
+      floating_name="floating_pane_$hook_pane"
+      ${pkgs.tmux}/bin/tmux kill-session -t "$floating_name" 2>/dev/null
     fi
     ${pkgs.tmux}/bin/tmux wait -U pane_wait
   '';
@@ -18,7 +20,7 @@ let
     if [ "$2" = "full" ]; then
       echo "$path"
     else
-      IFS='/' read -ra parts <<< "$path"
+      IFS='/' read -ra parts <<<"$path"
       count=''${#parts[@]}
       if [ "$count" -gt 4 ]; then
         echo "…/''${parts[-3]}/''${parts[-2]}/''${parts[-1]}"
@@ -150,12 +152,12 @@ in
       #-----------------------------------------------------------
       # Floating Window Hooks & Toggle
       #-----------------------------------------------------------
-      set-hook -g pane-died 'run-shell "${floatingCloseScript} floating_pane_#{hook_pane}"'
-      set-hook -g pane-exited 'run-shell "${floatingCloseScript} floating_pane_#{hook_pane}"'
+      set-hook -g pane-died 'run-shell "${floatingCloseScript} #{hook_pane}"'
+      set-hook -g pane-exited 'run-shell "${floatingCloseScript} #{hook_pane}"'
       bind-key -n -N 'Toggle floating window' M-i if-shell -F '#{m:floating_pane_*,#{session_name}}' {
           detach-client
       } {
-          display-popup -d "#{pane_current_path}" -xC -yC -w 80% -h 75% -E "tmux new-session -e TMUX_POPUP=1 -A -s floating_pane_#{pane_id} 'tmux set status off; exec $SHELL'"
+          display-popup -d "#{pane_current_path}" -xC -yC -w 80% -h 75% -E "tmux new-session -e TMUX_POPUP=1 -A -s \$(tmux display-message -p 'floating_pane_#{pane_id}') 'tmux set status off; exec \$SHELL'"
       }
       unbind z
       bind -n M-z resize-pane -Z
