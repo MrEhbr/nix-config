@@ -61,6 +61,8 @@
       fish_add_path -g $HOME/.flutter/bin
       fish_add_path -g $HOME/.pub-cache/bin
       fish_add_path -g $HOME/.bun/bin
+      fish_add_path -g $HOME/.local/bin
+      fish_add_path -g $HOME/.opencode/bin
 
       if type -q tmux
         if not set -q TMUX
