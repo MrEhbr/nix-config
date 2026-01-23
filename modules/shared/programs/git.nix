@@ -147,6 +147,24 @@ in
       merge.ours = {
         driver = true;
       };
+      rerere.enabled = true;
+      fetch.prune = true;
+      fetch.pruneTags = true;
+      branch.sort = "-committerdate";
+      column.ui = "auto";
+      diff.algorithm = "histogram";
+
+      # Delta configuration
+      delta = {
+        navigate = true;
+        line-numbers = true;
+        side-by-side = false;
+        syntax-theme = "kanagawa";
+        file-style = "bold yellow ul";
+        file-decoration-style = "yellow ol";
+        hunk-header-style = "file line-number syntax";
+        hunk-header-decoration-style = "blue box";
+      };
     };
   };
 
@@ -154,10 +172,12 @@ in
     enable = true;
     git = {
       enable = true;
-      diffToolMode = true;
+      diffToolMode = false;
     };
     options = {
-      # display = "inline";
+      background = "dark";
+      display = "side-by-side-show-both";
+      syntax-highlight = "on";
     };
   };
 }
