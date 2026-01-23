@@ -166,6 +166,9 @@ in
       background = "dark";
       display = "side-by-side-show-both";
       syntax-highlight = "on";
+      tab-width = "4";
+      context = "3";
+      skip-unchanged = "true";
     };
   };
 }
