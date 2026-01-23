@@ -31,7 +31,7 @@ shared-packages ++ (with pkgs; [
   # AI assistants
   # claude-code # usefull updates ships to quickly
   # codex
-  github-copilot-cli
+  # github-copilot-cli
 
   # API / HTTP clients
   # bruno
@@ -46,7 +46,6 @@ shared-packages ++ (with pkgs; [
   # Data 
   csvlens
   tabiew
-  sqlit-tui
 
   # Productivity 
   timewarrior

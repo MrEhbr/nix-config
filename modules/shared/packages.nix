@@ -9,7 +9,6 @@ with pkgs; [
   procs
   jless #  pager for JSON (or YAML) data
   coreutils
-  difftastic
   wget
   # ansible
   xh
@@ -53,6 +52,7 @@ with pkgs; [
   lua5_4
 
   # Text and terminal utilities
+  delta
   just
   htop
   jq
