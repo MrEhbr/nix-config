@@ -168,7 +168,6 @@ in
       syntax-highlight = "on";
       tab-width = "4";
       context = "3";
-      skip-unchanged = "true";
     };
   };
 }
