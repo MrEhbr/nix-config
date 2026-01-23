@@ -153,18 +153,6 @@ in
       branch.sort = "-committerdate";
       column.ui = "auto";
       diff.algorithm = "histogram";
-
-      # Delta configuration
-      delta = {
-        navigate = true;
-        line-numbers = true;
-        side-by-side = false;
-        syntax-theme = "kanagawa";
-        file-style = "bold yellow ul";
-        file-decoration-style = "yellow ol";
-        hunk-header-style = "file line-number syntax";
-        hunk-header-decoration-style = "blue box";
-      };
     };
   };
 
@@ -172,7 +160,7 @@ in
     enable = true;
     git = {
       enable = true;
-      diffToolMode = false;
+      diffToolMode = true;
     };
     options = {
       background = "dark";

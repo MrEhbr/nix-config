@@ -52,7 +52,7 @@ with pkgs; [
   lua5_4
 
   # Text and terminal utilities
-  delta
+  difftastic
   just
   htop
   jq
