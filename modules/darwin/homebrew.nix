@@ -11,7 +11,17 @@
 
 
     taps = [ ];
-    brews = [ "openssl@3" "luajit" "luarocks" "code2prompt" "colima" "gonzo" "openjdk" "mcat" "mole" ];
+    brews = [
+      "openssl@3"
+      "luajit"
+      "luarocks"
+      "colima"
+      "gonzo"
+      "openjdk"
+      "mcat"
+      "mole"
+      "gitlogue"
+    ];
     casks = [
       "1password"
       "1password-cli"
