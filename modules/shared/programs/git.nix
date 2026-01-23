@@ -164,7 +164,7 @@ in
     };
     options = {
       background = "dark";
-      display = "side-by-side-show-both";
+      display = "inline";
       syntax-highlight = "on";
       tab-width = "4";
       context = "3";
