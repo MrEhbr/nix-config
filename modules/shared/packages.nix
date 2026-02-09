@@ -6,6 +6,7 @@ with pkgs; [
   lazydocker
   act # Github Actions local runner
   bat
+  d2
   procs
   jless #  pager for JSON (or YAML) data
   coreutils
