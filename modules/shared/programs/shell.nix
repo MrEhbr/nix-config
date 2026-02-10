@@ -64,11 +64,10 @@
       fish_add_path -g $HOME/.local/bin
       fish_add_path -g $HOME/.opencode/bin
 
-      if type -q tmux
-        if not set -q TMUX
-          set -g TMUX tmux new-session -d -s base
-          eval $TMUX
-          tmux attach-session -d -t base
+      if type -q tmux; and not set -q TMUX; and not set -q NOTMUX
+        if not set -q SSH_CONNECTION
+          tmux new-session -d -s base 2>/dev/null
+          exec tmux attach-session -t base
         end
       end
       ${pkgs.any-nix-shell}/bin/any-nix-shell fish | source
