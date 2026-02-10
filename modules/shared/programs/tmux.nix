@@ -165,6 +165,22 @@ in
       # Navigation: Shift arrow keys and Alt-vim keys for window switching
       bind -n S-Left  previous-window
       bind -n S-Right next-window
+
+      #-----------------------------------------------------------
+      # Nested Session Toggle (F12)
+      #-----------------------------------------------------------
+      # F12 suspends outer tmux so all keys pass to inner (e.g. SSH'd remote tmux)
+      bind -T root F12 \
+        set prefix None \;\
+        set key-table off \;\
+        set status-style "fg=colour245,bg=colour238" \;\
+        refresh-client -S
+
+      bind -T off F12 \
+        set -u prefix \;\
+        set -u key-table \;\
+        set -u status-style \;\
+        refresh-client -S
     '';
   };
 }
