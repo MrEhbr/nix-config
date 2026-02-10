@@ -54,6 +54,4 @@ shared-packages ++ (with pkgs; [
   # Custom packages
   macism
 ]) ++ (with pkgsStable; [
-  # Presentation
-  presenterm
 ]) 

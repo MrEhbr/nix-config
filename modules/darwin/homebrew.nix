@@ -21,6 +21,7 @@
       "mcat"
       "mole"
       "gitlogue"
+      "presenterm"
     ];
     casks = [
       "1password"
