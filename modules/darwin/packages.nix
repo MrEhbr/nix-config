@@ -43,8 +43,9 @@ shared-packages ++ (with pkgs; [
   luajitPackages.magick
   kickstart
 
-  # Data 
+  # Data
   csvlens
+  sqlit-tui
   tabiew
 
   # Productivity 

@@ -149,6 +149,13 @@ in
       # Open lazygit popup with key 'g'
       bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w95% -h95% -E lazygit
 
+      # Toggle sqlit popup with key 'S' (persistent session)
+      bind -N "Toggle sqlit popup" S if-shell -F '#{==:#{session_name},sqlit}' {
+          detach-client
+      } {
+          display-popup -w95% -h95% -E "tmux new-session -A -s sqlit sqlit ';' set detach-on-destroy on"
+      }
+
       #-----------------------------------------------------------
       # Floating Window Hooks & Toggle
       #-----------------------------------------------------------
