@@ -22,19 +22,18 @@
       "mole"
       "gitlogue"
       "presenterm"
+      "sqruff"
     ];
     casks = [
       "1password"
       "1password-cli"
       # Development Tools
       "zed"
-      "visual-studio-code"
       "datagrip"
       "chatgpt"
       "claude"
       "container"
       # "ghostty"
-      "yaak"
       "bruno"
 
       # Communication Tools
