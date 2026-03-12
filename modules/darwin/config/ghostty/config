@@ -1,27 +1,40 @@
-theme = "Kanagawa Wave"
-
-font-family="JetBrains Mono SemiBold"
-font-family-bold="JetBrains Mono ExtraBold"
-font-family-italic="JetBrains Mono SemiBold Italic"
-font-family-bold-italic="JetBrains Mono ExtraBold Italic"
-font-size = 14
-font-style = Bold
-
-adjust-cell-height = 15%
-
-window-decoration = true
+# Terminal & Shell
 shell-integration = fish
 
-cursor-style = block
+# Theme & Appearance
+theme = "Kanagawa Wave"
+bold-is-bright = false
+window-colorspace = display-p3
+custom-shader = "shaders/cursor_warp.glsl"
+
+# Font
+font-family = "JetBrains Mono SemiBold"
+font-family-bold = "JetBrains Mono ExtraBold"
+font-family-italic = "JetBrains Mono SemiBold Italic"
+font-family-bold-italic = "JetBrains Mono ExtraBold Italic"
+font-size = 16
+font-thicken = true
+adjust-cell-height = 15%
+adjust-cell-width = -4%
+
+# Cursor & Input
+cursor-style = bar
 cursor-style-blink = false
+adjust-cursor-thickness = 175%
 mouse-hide-while-typing = true
 
+# Clipboard
 clipboard-read = allow
 clipboard-write = allow
+copy-on-select = true
 
+# Window
+window-padding-balance = true
+window-save-state = always
+resize-overlay = never
+confirm-close-surface = false
+
+# macOS
+macos-non-native-fullscreen = true
 macos-titlebar-style = "hidden"
-macos-option-as-alt = true
-
-confirm-close-surface=false
-
-custom-shader = "shaders/cursor_warp.glsl"
+macos-option-as-alt = left

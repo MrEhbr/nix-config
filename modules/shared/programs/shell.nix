@@ -23,7 +23,6 @@
       rg = "rg -p --glob '!node_modules/*' --color=auto";
       shell = "nix-shell -p";
       exit = "exit_fn";
-      cc_serena = "command claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)";
       claude = "claude --mcp-config $HOME/.claude/.mcp.json";
       btop = "btop --preset 1";
     };
