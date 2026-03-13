@@ -24,7 +24,7 @@ shared-packages ++ (with pkgs; [
   # gonzo
 
   # code tooling
-  # ast-grep
+  ast-grep
   glab
   plantuml
 

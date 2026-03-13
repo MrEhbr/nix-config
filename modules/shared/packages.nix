@@ -54,6 +54,7 @@ with pkgs; [
 
   # Text and terminal utilities
   difftastic
+  delta
   just
   htop
   jq
