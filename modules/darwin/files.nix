@@ -1,7 +1,8 @@
 { user, config, pkgs, lib, ... }:
 
 let
-  workPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKEBRZAUmRU+tJGKeU3MQZ/7WzxckXnHDUaPV1kf1qTq aleksey.burmistrov@quadcode.com";
+  workGitlabPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKEBRZAUmRU+tJGKeU3MQZ/7WzxckXnHDUaPV1kf1qTq aleksey.burmistrov@quadcode.com";
+  workPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFnf2VEhtghNB/3Ry7+uwL/0rs8WRT4LKfg6b/HeKiY2 aleksey.burmistrov@quadcode.com";
 
   ghosttyCursorShaders = pkgs.fetchFromGitHub {
     owner = "sahaj-b";
@@ -13,6 +14,10 @@ in
 {
   ".ssh/id_work.pub" = {
     text = workPublicKey;
+  };
+
+  ".ssh/id_work_gitlab.pub" = {
+    text = workGitlabPublicKey;
   };
 
   ".config/ghostty" = {

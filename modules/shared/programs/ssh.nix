@@ -52,10 +52,10 @@
               identitiesOnly = true;
               identityFile = [
                 (lib.mkIf pkgs.stdenv.hostPlatform.isLinux
-                  "/home/${user}/.ssh/id_work"
+                  "/home/${user}/.ssh/id_work_gitlab"
                 )
                 (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-                  "/Users/${user}/.ssh/id_work"
+                  "/Users/${user}/.ssh/id_work_gitlab"
                 )
               ];
             };

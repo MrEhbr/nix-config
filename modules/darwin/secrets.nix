@@ -22,6 +22,14 @@
         owner = "${user}";
         group = "staff";
       };
+      "work-gitlab-ssh-key" = {
+        symlink = false;
+        path = "/Users/${user}/.ssh/id_work_gitlab";
+        file = "${secrets}/work-ssh-key-gitlab.age";
+        mode = "600";
+        owner = "${user}";
+        group = "staff";
+      };
     };
   };
 }
