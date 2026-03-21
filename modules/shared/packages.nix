@@ -24,6 +24,8 @@ with pkgs; [
   imagemagick
   hyperfine # Benchmarking tool
   tree-sitter
+  gum
+  yazi
 
   # Encryption and security tools
   age
@@ -70,4 +72,5 @@ with pkgs; [
 
   # Custom tools
   dev-env
+  wtp
 ]

@@ -101,7 +101,7 @@ in
       setw -g window-status-activity-style fg=yellow
       setw -g window-status-bell-style     fg=red
       setw -g window-status-format         "#[fg=yellow]#I: #[fg=white]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
-      setw -g window-status-current-format "#[fg=brightyellow,bold,underscore]#I: #[fg=brightwhite,bold,underscore]#{b:pane_current_path} #W#{?window_zoomed_flag, , }"
+      setw -g window-status-current-format "#[fg=brightyellow,bold,underscore]#I: #[fg=brightwhite,bold,underscore]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
       setw -g window-status-separator      "#[fg=brightwhite,bold]  "
 
       # Pane Border: Format with path, command and zoom indicator
@@ -168,10 +168,16 @@ in
       }
       unbind z
       bind -n M-z resize-pane -Z
-
-      # Navigation: Shift arrow keys and Alt-vim keys for window switching
+      
+      # Navigation: Shift arrow keys for window switching
       bind -n S-Left  previous-window
       bind -n S-Right next-window
+
+      #-----------------------------------------------------------
+      # Sesh: Smart Session Management
+      #-----------------------------------------------------------
+      bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' tv sesh
+      bind -N 'Sesh: last session' L run-shell "sesh last"
     '';
   };
 }
