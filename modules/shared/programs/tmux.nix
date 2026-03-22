@@ -178,6 +178,8 @@ in
       #-----------------------------------------------------------
       bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' tv sesh
       bind -N 'Sesh: last session' L run-shell "sesh last"
+      bind -N 'Sesh: root session' 9 run-shell "sesh connect --root \$(pwd)"
+      bind -N 'Sesh: root filter' M-r display-popup -E -w 80% -h 70% -T 'Sesh (root)' "tv sesh --input \"\$(sesh root)\""
     '';
   };
 }

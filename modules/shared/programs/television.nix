@@ -17,7 +17,6 @@
             "sesh list -t --icons"
             "sesh list -c --icons"
             "sesh list -z --icons"
-            "fd -H -d 2 -t d -E .Trash . ~"
           ];
           ansi = true;
           output = "{strip_ansi|split: :1..|join: }";
