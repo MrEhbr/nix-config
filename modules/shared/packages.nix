@@ -14,7 +14,6 @@ with pkgs; [
   # ansible
   xh
   unzip
-  gh
   tlrc
   dua
   dust
