@@ -49,10 +49,6 @@
       end
       ${pkgs.any-nix-shell}/bin/any-nix-shell fish | source
       ${pkgs.atuin}/bin/atuin init fish | sed 's/-k up/up/' | source
-      ${pkgs.wtp}/bin/wtp shell-init fish | source
-
-      abbr --add wa 'wtp add'
-      abbr --add --set-cursor --function _wtp_add_branch_abbr -- wab
 
       # Kanagawa Fish shell theme
       # A template was taken and modified from Tokyonight:

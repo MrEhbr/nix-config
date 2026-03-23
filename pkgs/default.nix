@@ -6,5 +6,4 @@
   homebridge-config-ui-x = pkgs.callPackage ./homebridge-ui-x { };
   speedtest-exporter = pkgs.callPackage ./speedtest-exporter { };
   sqlit-tui = pkgs.callPackage ./sqlit-tui { };
-  wtp = pkgs.callPackage ./wtp { };
 }

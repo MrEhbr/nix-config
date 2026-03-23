@@ -72,5 +72,4 @@ with pkgs; [
 
   # Custom tools
   dev-env
-  wtp
 ]
