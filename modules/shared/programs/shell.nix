@@ -96,6 +96,7 @@
     options = [ "--cmd cd" ];
   };
 
+
   programs.atuin = {
     enable = true;
     enableFishIntegration = false;

@@ -11,6 +11,20 @@ let
     ${pkgs.tmux}/bin/tmux wait -U pane_wait
   '';
 
+  seshPicker = pkgs.writeShellScript "sesh-picker" ''
+    result=$(sesh list -tdc --icons | fzf \
+      --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
+      --header '  ^a all ^t tmux ^g zoxide ^d tmux kill' \
+      --bind 'tab:down,btab:up' \
+      --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list -tdc --icons)' \
+      --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -td --icons)' \
+      --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -zd --icons)' \
+      --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list --icons)' \
+      --preview-window 'right:55%' \
+      --preview 'sesh preview {}')
+    [ -n "$result" ] && sesh connect "$result"
+  '';
+
   # Abbreviate path: replace $HOME with ~, optionally truncate deep paths
   # Usage: abbreviate-path <path> [full]
   # If second arg is "full", shows complete path (no truncation)
@@ -168,7 +182,7 @@ in
       }
       unbind z
       bind -n M-z resize-pane -Z
-      
+
       # Navigation: Shift arrow keys for window switching
       bind -n S-Left  previous-window
       bind -n S-Right next-window
@@ -176,10 +190,8 @@ in
       #-----------------------------------------------------------
       # Sesh: Smart Session Management
       #-----------------------------------------------------------
-      bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' tv sesh
+      bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' "${seshPicker}"
       bind -N 'Sesh: last session' L run-shell "sesh last"
-      bind -N 'Sesh: root session' 9 run-shell "sesh connect --root \$(pwd)"
-      bind -N 'Sesh: root filter' M-r display-popup -E -w 80% -h 70% -T 'Sesh (root)' "tv sesh --input \"\$(sesh root)\""
     '';
   };
 }
