@@ -15,7 +15,7 @@
       "openssl@3"
       "luajit"
       "luarocks"
-      "colima"
+
       "gonzo"
       "openjdk"
       "mcat"
