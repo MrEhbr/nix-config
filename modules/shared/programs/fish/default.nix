@@ -19,6 +19,7 @@
       shell = "nix-shell -p";
       exit = "exit_fn";
       claude = "claude --mcp-config $HOME/.claude/.mcp.json";
+      "claude-work" = "CLAUDE_CONFIG_DIR=~/.claude-work claude --mcp-config $HOME/.claude/.mcp.json";
       btop = "btop --preset 1";
     };
 
