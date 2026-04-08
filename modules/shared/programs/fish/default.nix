@@ -42,6 +42,10 @@
       fish_add_path -g $HOME/.local/bin
       fish_add_path -g $HOME/.opencode/bin
 
+      if test -n "$TMUX_POPUP"; and not set -q TMUX_POPUP_OWNER
+        set -gx TMUX_POPUP_OWNER $fish_pid
+      end
+
       if type -q tmux; and not set -q TMUX; and not set -q NOTMUX
         if not set -q SSH_CONNECTION
           tmux new-session -d -s base 2>/dev/null

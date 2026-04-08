@@ -1,7 +1,7 @@
 {
   programs.fish.functions = {
     exit_fn = ''
-      if test -n "$TMUX_POPUP"
+      if test -n "$TMUX_POPUP_OWNER"; and test "$fish_pid" = "$TMUX_POPUP_OWNER"
         set -l session_name (tmux display-message -p '#S')
         set -l pane_count (tmux list-panes | wc -l)
         if test $pane_count -eq 1
