@@ -10,7 +10,7 @@
     global.brewfile = true;
 
 
-    taps = [ ];
+    taps = [ "umputun/apps" ];
     brews = [
       "openssl@3"
       "luajit"
@@ -23,6 +23,7 @@
       "gitlogue"
       "presenterm"
       "sqruff"
+      "umputun/apps/revdiff"
     ];
     casks = [
       "1password"
