@@ -8,6 +8,7 @@
       cleanup = "zap";
     };
     global.brewfile = true;
+    global.autoUpdate = true;
 
 
     taps = [ "umputun/apps" ];
@@ -60,7 +61,7 @@
       "firefox@developer-edition"
       # "google-chrome"
 
-      "bambu-studio"
+      # "bambu-studio"
     ];
 
     # These app IDs are from using the mas CLI app
