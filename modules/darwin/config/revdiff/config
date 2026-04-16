@@ -1,0 +1,17 @@
+[Application Options]
+; allow [ and ] to jump across file boundaries
+cross-file-hunks = true
+
+; show line numbers in diff gutter
+line-numbers = true
+
+; highlight intra-line word-level changes in paired add/remove lines
+word-diff = true
+
+; load theme from themes directory
+theme = kanagawa
+
+; exclude files matching prefix (may be repeated)
+exclude = mocks
+exclude = internal/mocks
+

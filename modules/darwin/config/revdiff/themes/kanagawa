@@ -1,0 +1,26 @@
+# name: kanagawa
+# description: wave purple accent, muted warm tones on deep ink background
+# author: aleksey.burmistrov
+
+chroma-style = tokyonight-night
+color-accent = #7E9CD8
+color-border = #2D4F67
+color-normal = #DCD7BA
+color-muted = #727169
+color-selected-fg = #C8C093
+color-selected-bg = #2D4F67
+color-annotation = #E6C384
+color-cursor-fg = #C8C093
+color-cursor-bg = #1D202F
+color-add-fg = #76946A
+color-add-bg = #2B3328
+color-remove-fg = #C34043
+color-remove-bg = #43242B
+color-modify-fg = #C0A36E
+color-modify-bg = #49443C
+color-tree-bg = #1F1F28
+color-diff-bg = #1F1F28
+color-status-fg = #C8C093
+color-status-bg = #090618
+color-search-fg = #1F1F28
+color-search-bg = #E6C384

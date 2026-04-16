@@ -29,4 +29,12 @@ in
     source = ghosttyCursorShaders;
     recursive = true;
   };
+
+  ".config/revdiff/config" = {
+    source = ./config/revdiff/config;
+  };
+
+  ".config/revdiff/themes/kanagawa" = {
+    source = ./config/revdiff/themes/kanagawa;
+  };
 }
