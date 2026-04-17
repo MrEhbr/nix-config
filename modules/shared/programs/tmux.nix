@@ -83,9 +83,11 @@ in
       set -g renumber-windows on
       set -g set-titles on
       set -g detach-on-destroy off
-      set -g bell-action none
+      set -g bell-action other
       set -g visual-bell off
       set -g visual-activity off
+      setw -g monitor-bell on
+      setw -g monitor-activity on
       set -g allow-passthrough on
       set -ga update-environment TERM
       set -ga update-environment TERM_PROGRAM
@@ -112,8 +114,9 @@ in
       set -g status-right-length 150
 
       # Window Status: Format with pane path and zoom indicator
-      setw -g window-status-activity-style fg=yellow
-      setw -g window-status-bell-style     fg=red
+      # Kanagawa Wave palette for background-window alerts
+      setw -g window-status-activity-style 'bg=#49443C'
+      setw -g window-status-bell-style     'bg=#43242B,bold'
       setw -g window-status-format         "#[fg=yellow]#I: #[fg=white]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
       setw -g window-status-current-format "#[fg=brightyellow,bold,underscore]#I: #[fg=brightwhite,bold,underscore]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
       setw -g window-status-separator      "#[fg=brightwhite,bold]  "
@@ -192,6 +195,11 @@ in
       #-----------------------------------------------------------
       bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' "${seshPicker}"
       bind -N 'Sesh: last session' L run-shell "sesh last"
+
+      #-----------------------------------------------------------
+      # Optional local overrides (not managed by nix)
+      #-----------------------------------------------------------
+      if-shell "[ -f ~/.config/tmux/tmux.local.conf ]" "source-file ~/.config/tmux/tmux.local.conf"
     '';
   };
 }
