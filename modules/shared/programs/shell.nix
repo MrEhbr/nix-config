@@ -6,8 +6,9 @@
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;
-    withRuby = false;
     withPython3 = false;
+    withRuby = false;
+    sideloadInitLua = true;
   };
 
   programs.starship = {

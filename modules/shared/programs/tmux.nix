@@ -83,11 +83,11 @@ in
       set -g renumber-windows on
       set -g set-titles on
       set -g detach-on-destroy off
-      set -g bell-action other
+      set -g bell-action off
       set -g visual-bell off
       set -g visual-activity off
-      setw -g monitor-bell on
-      setw -g monitor-activity on
+      setw -g monitor-bell off
+      setw -g monitor-activity off
       set -g allow-passthrough on
       set -ga update-environment TERM
       set -ga update-environment TERM_PROGRAM

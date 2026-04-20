@@ -23,17 +23,17 @@ let
 
   sesh-latest = pkgs.buildGoModule rec {
     pname = "sesh";
-    version = "2.24.2";
+    version = "2.25.0";
     src = pkgs.fetchFromGitHub {
       owner = "joshmedeski";
       repo = "sesh";
       rev = "v${version}";
-      hash = "sha256-iisAIn4km/uFw2DohA2mjoYmKgDQ3lYUH284Le3xQD0=";
+      hash = "sha256-azs1tf9eR4MVSdjMdd3U/xdPAANn1Kyamf0TwFrBSTU=";
     };
     nativeBuildInputs = [ pkgs.go-mockery ];
     preBuild = "mockery";
     proxyVendor = true;
-    vendorHash = "sha256-Jm0JNrJpnKns2pokbBwHps4Q3EYPyzAVCKbyNj6tcnA=";
+    vendorHash = "sha256-VRRjmcjEyCFq+omxOeONCL+6HEBQySHK69r4TrkyuDQ=";
     ldflags = [ "-s" "-w" "-X main.version=${version}" ];
     meta.mainProgram = "sesh";
   };
