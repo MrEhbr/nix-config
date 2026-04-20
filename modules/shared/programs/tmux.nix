@@ -83,7 +83,7 @@ in
       set -g renumber-windows on
       set -g set-titles on
       set -g detach-on-destroy off
-      set -g bell-action off
+      set -g bell-action none
       set -g visual-bell off
       set -g visual-activity off
       setw -g monitor-bell off

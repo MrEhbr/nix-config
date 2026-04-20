@@ -17,8 +17,19 @@ let
       exit 0
     fi
 
-    printf '\n[[session]]\nname = "%s"\npath = "%s"\n' "$name" "$path" >> "$config"
+    printf '\n[[session]]\nname = "%s"\npath = "%s"\n' "$name" "$path" >>"$config"
     echo "Added: $name ($path)"
+  '';
+
+  # Preview a sesh target: onefetch for git repos, eza tree otherwise.
+  # Usage: sesh-preview <path>
+  sesh-preview = pkgs.writeShellScriptBin "sesh-preview" ''
+    target="''${1:-.}"
+    ${pkgs.onefetch}/bin/onefetch "$target" \
+      --no-art --no-color-palette \
+      -d version -d created -d dependencies -d churn -d size -d url -d contributors \
+      2>/dev/null && exit 0
+    exec ${pkgs.eza}/bin/eza --tree --color=always --icons -L 2 "$target"
   '';
 
   sesh-latest = pkgs.buildGoModule rec {
@@ -39,7 +50,7 @@ let
   };
 in
 {
-  home.packages = [ sesh-add ];
+  home.packages = [ sesh-add sesh-preview ];
 
   programs.sesh = {
     enable = true;
@@ -51,14 +62,15 @@ in
       dir_length = 2;
       blacklist = [ "floating_pane_*" ];
       import = [ localToml ];
+      default_session = {
+        preview_command = "sesh-preview {}";
+      };
       session = [
         {
-          name = "claude-code-config";
-          path = "~/.claude";
-        }
-        {
-          name = "nvim-config";
-          path = "~/.config/nvim";
+          name = "config/sesh";
+          path = "~/.config/sesh";
+          startup_command = "nvim local.toml";
+          preview_command = "bat --color=always ${localToml}";
         }
       ];
     };

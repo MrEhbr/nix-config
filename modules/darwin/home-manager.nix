@@ -39,6 +39,7 @@ in
           GOBIN = "$HOME/Go/bin";
           BUN_INSTALL = "$HOME/.bun";
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+          SCCACHE_DIR = "$HOME/.cache/sccache";
           RAINFROG_CONFIG = "$HOME/.config/rainfrog";
         };
 

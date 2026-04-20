@@ -65,6 +65,7 @@ with pkgs; [
   repgrep
   tree
   eza
+  onefetch
   zoxide
   atuin
   zk
