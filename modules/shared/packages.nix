@@ -39,7 +39,6 @@ with pkgs; [
   # Media-related packages
   ffmpeg
   glow
-  fzf
 
   # Node.js development tools
   # nodePackages.npm # globally install npm

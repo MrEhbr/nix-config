@@ -123,6 +123,9 @@ in
         name = name;
         email = email;
       };
+      log = {
+        mailmap = true;
+      };
       alias = {
         # common aliases
         ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";

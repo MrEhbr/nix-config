@@ -15,6 +15,9 @@ let
     result=$(sesh list -tdc -H --icons | fzf \
       --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
       --header '  ^a all ^t tmux ^g zoxide ^d tmux kill' \
+      --list-border \
+      --input-border \
+      --header-border \
       --bind 'tab:down,btab:up' \
       --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list -tdc -H --icons)' \
       --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -td -H --icons)' \

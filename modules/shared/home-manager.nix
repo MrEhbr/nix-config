@@ -10,5 +10,6 @@
     ./programs/kitty.nix
     ./programs/sesh.nix
     ./programs/television.nix
+    ./programs/fzf.nix
   ];
 }
