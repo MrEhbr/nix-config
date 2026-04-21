@@ -14,16 +14,13 @@ let
   seshPicker = pkgs.writeShellScript "sesh-picker" ''
     result=$(sesh list -tdc -H --icons | fzf \
       --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
-      --header '  ^a all ^t tmux ^g zoxide ^d tmux kill' \
-      --list-border \
-      --input-border \
-      --header-border \
+      --header '^a all  ^t tmux  ^g zoxide  ^d tmux kill' \
       --bind 'tab:down,btab:up' \
       --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list -tdc -H --icons)' \
       --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -td -H --icons)' \
       --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -zd -H --icons)' \
       --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list -tdc -H --icons)' \
-      --preview-window 'right:55%' \
+      --preview-window 'right:60%:border-left' \
       --preview 'sesh preview {}')
     [ -n "$result" ] && sesh connect "$result"
   '';
@@ -196,7 +193,7 @@ in
       #-----------------------------------------------------------
       # Sesh: Smart Session Management
       #-----------------------------------------------------------
-      bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 80% -h 70% -d '#{pane_current_path}' -T 'Sesh' "${seshPicker}"
+      bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 85% -h 80% -d '#{pane_current_path}' -T 'Sesh' "${seshPicker}"
       bind -N 'Sesh: last session' L run-shell "sesh last"
 
       #-----------------------------------------------------------

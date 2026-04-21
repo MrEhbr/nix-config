@@ -5,16 +5,12 @@
     enable = true;
     enableFishIntegration = true;
     defaultOptions = [
-      "--layout=reverse"
-      "--info=hidden"
+      "--style=minimal"
       "--ansi"
-      "--pointer=👉"
-      "--gutter= "
-      "--color=current-bg:-1,current-fg:blue,gutter:-1"
-      "--color=header-bg:-1,header-border:cyan"
-      "--color=hl+:yellow,hl:yellow"
-      "--color=input-border:yellow,list-border:blue"
-      "--color=pointer:blue,preview-border:cyan"
+      "--color=current-bg:-1,current-fg:yellow:bold,gutter:-1"
+      "--color=hl:cyan,hl+:cyan:bold"
+      "--color=pointer:yellow,marker:yellow,prompt:magenta"
+      "--color=info:blue:dim,separator:blue:dim,preview-border:blue:dim"
     ];
   };
 }
