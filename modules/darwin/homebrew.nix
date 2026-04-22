@@ -11,7 +11,6 @@
     global.autoUpdate = true;
 
 
-    taps = [ "umputun/apps" ];
     brews = [
       "openssl@3"
       "luajit"
