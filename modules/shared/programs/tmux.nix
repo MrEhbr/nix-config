@@ -28,6 +28,13 @@ let
   # Abbreviate path: replace $HOME with ~, optionally truncate deep paths
   # Usage: abbreviate-path <path> [full]
   # If second arg is "full", shows complete path (no truncation)
+  revdiffPopup = pkgs.writeShellScript "revdiff-popup" ''
+    tmp=$(mktemp)
+    revdiff -o "$tmp"
+    [ -s "$tmp" ] && "''${EDITOR:-nvim}" "$tmp"
+    rm -f "$tmp"
+  '';
+
   abbreviatePath = pkgs.writeShellScript "abbreviate-path" ''
     path="$1"
     path="''${path/#$HOME/\~}"
@@ -165,6 +172,9 @@ in
 
       # Open lazygit popup with key 'g'
       bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w95% -h95% -E lazygit
+
+      # Open revdiff popup with Alt+r; annotations on exit open in $EDITOR
+      bind -n -N "Open revdiff popup" M-r display-popup -d '#{pane_current_path}' -w95% -h95% -E ${revdiffPopup}
 
       # Toggle sqlit popup with key 'S' (persistent session)
       bind -N "Toggle sqlit popup" S if-shell -F '#{==:#{session_name},sqlit}' {
