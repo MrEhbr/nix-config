@@ -123,6 +123,7 @@
 
   programs.direnv = {
     enable = true;
+    package = pkgs.direnv.overrideAttrs (_: { doCheck = false; });
     silent = true;
     nix-direnv.enable = true;
     config = {
