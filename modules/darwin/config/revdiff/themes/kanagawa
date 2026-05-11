@@ -2,7 +2,7 @@
 # description: wave purple accent, muted warm tones on deep ink background
 # author: aleksey.burmistrov
 
-chroma-style = tokyonight-night
+chroma-style = kanagawa-wave
 color-accent = #7E9CD8
 color-border = #2D4F67
 color-normal = #DCD7BA
