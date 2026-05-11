@@ -60,7 +60,7 @@ in
     settings = {
       sort_order = [ "tmux" "config" "zoxide" ];
       dir_length = 2;
-      blacklist = [ "floating_pane_*" ];
+      blacklist = [ "floating_pane_*" "revdiff_*" ];
       import = [ localToml ];
       default_session = {
         preview_command = "sesh-preview {}";

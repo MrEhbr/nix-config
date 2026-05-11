@@ -35,6 +35,26 @@ let
     rm -f "$tmp"
   '';
 
+  revdiffToggle = pkgs.writeShellScript "revdiff-toggle" ''
+    pane_path="$1"
+    current_session="$2"
+
+    repo=$(${pkgs.git}/bin/git -C "$pane_path" rev-parse --show-toplevel 2>/dev/null)
+    if [ -z "$repo" ]; then
+      ${pkgs.tmux}/bin/tmux display-message "revdiff: not in a git repo"
+      exit 0
+    fi
+
+    slug=$(printf '%s' "$repo" | sed 's|[^A-Za-z0-9_-]|_|g')
+    session="revdiff_$slug"
+
+    if [ "$current_session" = "$session" ]; then
+      ${pkgs.tmux}/bin/tmux detach-client
+    else
+      ${pkgs.tmux}/bin/tmux display-popup -d "$repo" -w95% -h95% -E "tmux new-session -A -s $session 'tmux set status off; exec ${revdiffPopup}' ';' set detach-on-destroy on"
+    fi
+  '';
+
   abbreviatePath = pkgs.writeShellScript "abbreviate-path" ''
     path="$1"
     path="''${path/#$HOME/\~}"
@@ -173,14 +193,14 @@ in
       # Open lazygit popup with key 'g'
       bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w95% -h95% -E lazygit
 
-      # Open revdiff popup with Alt+r; annotations on exit open in $EDITOR
-      bind -n -N "Open revdiff popup" M-r display-popup -d '#{pane_current_path}' -w95% -h95% -E ${revdiffPopup}
+      # Toggle revdiff popup with Alt+r (per-repo persistent session); annotations on exit open in $EDITOR
+      bind -n -N "Toggle revdiff popup (per repo)" M-r run-shell -b "${revdiffToggle} '#{pane_current_path}' '#{session_name}'"
 
       # Toggle sqlit popup with key 'S' (persistent session)
       bind -N "Toggle sqlit popup" S if-shell -F '#{==:#{session_name},sqlit}' {
           detach-client
       } {
-          display-popup -w95% -h95% -E "tmux new-session -A -s sqlit sqlit ';' set detach-on-destroy on"
+          display-popup -w95% -h95% -E "tmux new-session -A -s sqlit 'tmux set status off; exec sqlit' ';' set detach-on-destroy on"
       }
 
       #-----------------------------------------------------------
