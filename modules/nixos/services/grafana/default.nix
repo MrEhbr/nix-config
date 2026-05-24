@@ -1,6 +1,7 @@
 { ... }:
 let
   domain = "ehbr.cloud";
+  rendererToken = "kQ3xR7mP9vN2sL5jY8wB4hF6cD1aT0eZ";
 in
 {
   services = {
@@ -16,6 +17,7 @@ in
         org_role = "Editor";
       };
       settings.security.secret_key = "SW2YcwTIb9zpOOhoPsMm";
+      settings.rendering.renderer_token = rendererToken;
 
       provision = {
         enable = true;
@@ -48,6 +50,7 @@ in
       settings.service = {
         metrics.enabled = true;
         port = 3030;
+        security.authToken = rendererToken;
       };
     };
 
