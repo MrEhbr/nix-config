@@ -15,6 +15,7 @@ in
         enabled = true;
         org_role = "Editor";
       };
+      settings.security.secret_key = "SW2YcwTIb9zpOOhoPsMm";
 
       provision = {
         enable = true;
