@@ -16,7 +16,6 @@ shared-packages ++ [
   font-manager
 
   # Testing and development tools
-  direnv
   sqlite
   lazygit
 
