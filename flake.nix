@@ -79,10 +79,11 @@
         '')}/bin/${scriptName}";
       };
       overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
-        nixpkgs.lib.composeManyExtensions [
-          (final: prev: import ./pkgs { pkgs = prev; })
-          neovim-nightly-overlay.overlays.default
-        ]
+        nixpkgs.lib.composeManyExtensions (
+          [ (final: prev: import ./pkgs { pkgs = prev; }) ]
+          ++ nixpkgs.lib.optional (nixpkgs.lib.hasSuffix "darwin" system)
+            neovim-nightly-overlay.overlays.default
+        )
       );
 
       mkDarwinConfig = { user, system ? "aarch64-darwin" }: darwin.lib.darwinSystem {
