@@ -49,7 +49,7 @@ in
       extraDomainNames = [ "*.${domain}" ];
       dnsProvider = "cloudflare";
       dnsPropagationCheck = true;
-      credentialsFile = config.age.secrets.acme.path;
+      environmentFile = config.age.secrets.acme.path;
       webroot = null;
       reloadServices = [ "nginx" ];
     };
