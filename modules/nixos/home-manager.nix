@@ -38,7 +38,7 @@ in
   programs = { gpg.enable = true; };
 
   programs = {
-    tmux.enable = false;
+    tmux.enable = lib.mkForce false;
   };
 
 }
