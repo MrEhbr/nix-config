@@ -138,7 +138,14 @@
         specialArgs = inputs // { user = "ehbr"; }; # You can change this username as needed
         modules = [
           {
-            nixpkgs.overlays = [ overlays.${system} ];
+            nixpkgs.overlays = [
+              overlays.${system}
+              # vector 0.55 in unstable fails to build due to #![deny(warnings)]
+              # tripping on an unstable_name_collisions lint from newer rustc.
+              (_final: _prev: {
+                vector = inputs.nixpkgs-stable.legacyPackages.${system}.vector;
+              })
+            ];
           }
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
