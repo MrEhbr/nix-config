@@ -29,7 +29,7 @@
     '';
     interactiveShellInit = ''
       set fish_greeting
-      set -gx HISTORY_IGNORE "pwd:ls:cd:z:clear"
+      set -gx HISTORY_IGNORE "(^(ls|ll|la|l|cd|z|pwd|clear|c|exit|history|reset|top|htop|btop)(\s.*)?\$)"
 
       fish_add_path -g /usr/local/bin
       fish_add_path -g $HOME/bin

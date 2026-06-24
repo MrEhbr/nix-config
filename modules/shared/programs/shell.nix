@@ -110,6 +110,26 @@
       keymap_mode = "vim-insert";
       sync_address = "https://atuin.ehbr.cloud";
       sync.records = true;
+
+      # Don't persist trivial / sensitive commands.
+      secrets_filter = true;
+      store_failed = false;
+      history_filter = [
+        "^(ls|ll|la|l|cd|z|pwd|clear|c|exit|history|reset|top|htop|btop)(\\s|$)"
+        "--password"
+        "--token"
+        "(API_KEY|SECRET|TOKEN|PASSWORD)="
+      ];
+
+      # UI / search behaviour.
+      style = "compact";
+      inline_height = 25;
+      show_preview = true;
+      show_help = false;
+      filter_mode = "global";
+      search_mode = "fuzzy";
+      filter_mode_shell_up_key_binding = "session";
+      ctrl_n_shortcuts = true;
     };
   };
 

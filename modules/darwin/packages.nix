@@ -17,7 +17,7 @@ shared-packages ++ (with pkgs; [
   # Kubernetes 
   k9s
   kubectl
-  kubernetes-helm
+  # kubernetes-helm
 
   # logs
   tailspin
