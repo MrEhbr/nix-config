@@ -113,7 +113,7 @@
 
       # Don't persist trivial / sensitive commands.
       secrets_filter = true;
-      store_failed = false;
+      store_failed = true;
       history_filter = [
         "^(ls|ll|la|l|cd|z|pwd|clear|c|exit|history|reset|top|htop|btop)(\\s|$)"
         "--password"
@@ -125,10 +125,10 @@
       style = "compact";
       inline_height = 25;
       show_preview = true;
-      show_help = false;
+      show_help = true;
       filter_mode = "global";
       search_mode = "fuzzy";
-      filter_mode_shell_up_key_binding = "session";
+      filter_mode_shell_up_key_binding = "global";
       ctrl_n_shortcuts = true;
     };
   };
