@@ -1,3 +1,5 @@
+config-version = 2
+
 after-login-command = []
 after-startup-command = []
 default-root-container-layout = "accordion"
@@ -8,6 +10,8 @@ exec-on-workspace-change = []
 on-focus-changed = []
 on-focused-monitor-changed = ["move-mouse monitor-lazy-center"]
 start-at-login = false
+
+persistent-workspaces = ["Main", "Web", "Term", "Chat", "Notes", "Dev", "Music", "Game", "Other", "AI"]
 
 accordion-padding = 30
 
@@ -47,7 +51,7 @@ alt-shift-2 = ["move-node-to-workspace Notes", "workspace Notes"]
 alt-shift-d = ["move-node-to-workspace Dev", "workspace Dev"]
 alt-shift-m = ["move-node-to-workspace Music", "workspace Music"]
 alt-shift-g = ["move-node-to-workspace Game", "workspace Game"]
-alt-shift-4 = ["move-node-to-workspace 9", "workspace Other"]
+alt-shift-4 = ["move-node-to-workspace Other", "workspace Other"]
 
 alt-shift-h = "move left"
 alt-shift-l = "move right"
@@ -212,4 +216,5 @@ if.app-id = "com.openai.chat"
 run = ["move-node-to-workspace AI"]
 
 [[on-window-detected]]
+if = 'true'
 run = ["layout floating"]
