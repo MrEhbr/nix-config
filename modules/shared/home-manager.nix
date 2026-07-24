@@ -6,7 +6,7 @@
     ./programs/git.nix
     ./programs/gh.nix
     ./programs/ssh.nix
-    ./programs/tmux.nix
+    ./programs/tmux
     ./programs/kitty.nix
     ./programs/sesh.nix
     ./programs/television.nix

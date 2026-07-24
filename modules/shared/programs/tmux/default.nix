@@ -70,6 +70,44 @@ let
       fi
     fi
   '';
+
+  # Kanagawa Wave palette for agent states; single source for the dot and summary.
+  agentColor = {
+    working = "#7E9CD8";
+    waiting = "#E6C384";
+    idle = "#727169";
+  };
+
+  # Count windows tagged with @agent_state (set by ~/.claude/scripts/tmux-agent-state) and emit a
+  # tmux-styled "N working / N waiting / N idle" segment; groups at zero are
+  # omitted. Waiting blinks.
+  agentSummary = pkgs.writeShellScript "agent-summary" ''
+    set -u
+    command -v tmux >/dev/null 2>&1 || exit 0
+
+    waiting=0
+    working=0
+    idle=0
+    while IFS= read -r s; do
+      case "$s" in
+        waiting) waiting=$((waiting + 1)) ;;
+        working) working=$((working + 1)) ;;
+        idle)    idle=$((idle + 1)) ;;
+      esac
+    done < <(tmux list-windows -a -F '#{@agent_state}' 2>/dev/null)
+
+    out=""
+    sep() { [ -n "$out" ] && out="''${out}  "; }
+    [ "$waiting" -gt 0 ] && { sep; out="''${out}#[fg=${agentColor.waiting},blink]● ''${waiting} waiting#[noblink]"; }
+    [ "$working" -gt 0 ] && { sep; out="''${out}#[fg=${agentColor.working}]● ''${working} working"; }
+    [ "$idle" -gt 0 ]    && { sep; out="''${out}#[fg=${agentColor.idle}]○ ''${idle} idle"; }
+    [ -n "$out" ] && out="''${out}#[default] "
+
+    printf '%s' "$out"
+  '';
+
+  # Per-window dot keyed off @agent_state (set by ~/.claude/scripts/tmux-agent-state).
+  agentDot = "#{?#{==:#{@agent_state},working},#[fg=${agentColor.working}]● ,#{?#{==:#{@agent_state},waiting},#[fg=${agentColor.waiting}#,blink]● #[noblink],#{?#{==:#{@agent_state},idle},#[fg=${agentColor.idle}]○ ,}}}";
 in
 {
   programs.tmux = {
@@ -133,8 +171,9 @@ in
       set -ga status-left '#[bg=default]#{?client_prefix,#[fg=#d65c0d] ,#[fg=default]  }'
       set -g status-left-length 80
 
-      # Status Right: Path, git branch (if available) and time
-      set -g status-right "#[fg=brightblue] #(${abbreviatePath} '#{pane_current_path}') #[fg=gray]|"
+      # Status Right: Agent summary, path, git branch (if available) and time
+      set -g status-right "#(${agentSummary})"
+      set -ga status-right "#[fg=brightblue] #(${abbreviatePath} '#{pane_current_path}') #[fg=gray]|"
       set -ga status-right "#[fg=gray,bold]#{?pane_mode,#[fg=default] #{pane_mode} #[fg=gray]|,}"
       set -ga status-right "#(cd \"#{pane_current_path}\" && git rev-parse --abbrev-ref HEAD 2>/dev/null | sed '/./ s/.*/#[fg=green] & #[fg=default]|/')"
       set -ga status-right " %Y-%m-%d %H:%M "
@@ -144,8 +183,8 @@ in
       # Kanagawa Wave palette for background-window alerts
       setw -g window-status-activity-style 'bg=#49443C'
       setw -g window-status-bell-style     'bg=#43242B,bold'
-      setw -g window-status-format         "#[fg=yellow]#I: #[fg=white]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
-      setw -g window-status-current-format "#[fg=brightyellow,bold,underscore]#I: #[fg=brightwhite,bold,underscore]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
+      setw -g window-status-format         "${agentDot}#[fg=yellow]#I: #[fg=white]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
+      setw -g window-status-current-format "${agentDot}#[fg=brightyellow,bold,underscore]#I: #[fg=brightwhite,bold,underscore]#{?#{==:#W,fish},#{b:pane_current_path},#{b:pane_current_path} #W}#{?window_zoomed_flag, , }"
       setw -g window-status-separator      "#[fg=brightwhite,bold]  "
 
       # Pane Border: Format with path, command and zoom indicator
