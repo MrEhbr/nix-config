@@ -216,5 +216,9 @@ if.app-id = "com.openai.chat"
 run = ["move-node-to-workspace AI"]
 
 [[on-window-detected]]
+if.app-id = "com.openai.codex"
+run = ["move-node-to-workspace AI"]
+
+[[on-window-detected]]
 if = 'true'
 run = ["layout floating"]
