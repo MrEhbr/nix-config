@@ -18,7 +18,7 @@
     nix-homebrew = {
       url = "github:zhaofengli/nix-homebrew";
       inputs.brew-src = {
-        url = "github:Homebrew/brew/6.0.1";
+        url = "github:Homebrew/brew/6.0.13";
         flake = false;
       };
     };
