@@ -163,7 +163,7 @@ in
     enable = true;
     git = {
       enable = true;
-      mode = "difftool";
+      mode = "both";
     };
     options = {
       background = "dark";
