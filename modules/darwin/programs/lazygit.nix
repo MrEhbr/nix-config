@@ -33,12 +33,13 @@
         commit = {
           signOff = true;
         };
-        pagers = [
+        diffRenderers = [
           {
-            externalDiffCommand = "difft --color=always --syntax-highlight on";
+            type = "extDiff";
+            command = "difft --color=always --syntax-highlight on";
           }
           {
-            pager = "delta --paging=never";
+            command = "delta --paging=never";
             colorArg = "always";
           }
         ];
