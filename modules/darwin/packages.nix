@@ -45,7 +45,7 @@ shared-packages ++ (with pkgs; [
 
   # Data
   csvlens
-  sqlit-tui
+  # sqlit-tui
   tabiew
 
   # Productivity 
