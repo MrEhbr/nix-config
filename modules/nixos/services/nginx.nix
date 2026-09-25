@@ -76,6 +76,20 @@ in
           proxyWebsockets = true;
         };
       };
+
+      # llama router on sparrow
+      "llama.${domain}" = {
+        forceSSL = true;
+        useACMEHost = domain;
+        locations."/" = {
+          proxyPass = "http://192.168.1.112:11435";
+          proxyWebsockets = true;
+          extraConfig = ''
+            proxy_buffering off;
+            proxy_read_timeout 600s;
+          '';
+        };
+      };
     } // serviceVhosts;
   };
 

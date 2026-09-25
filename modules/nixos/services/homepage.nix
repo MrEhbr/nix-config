@@ -213,6 +213,18 @@ in
           }
         ];
       }
+      {
+        "AI" = [
+          {
+            Llama = {
+              icon = "mdi-robot-outline";
+              href = "https://llama.${domain}";
+              description = "llama.cpp on sparrow";
+              siteMonitor = "https://llama.${domain}/health";
+            };
+          }
+        ];
+      }
     ];
   };
 
