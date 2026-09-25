@@ -8,7 +8,7 @@ in
   services.homepage-dashboard = {
     enable = true;
     listenPort = homepagePort;
-    environmentFile = config.age.secrets.homepage.path;
+    environmentFiles = [ config.age.secrets.homepage.path ];
     allowedHosts = "localhost:8082,127.0.0.1:8082,${domain}";
     settings = {
       title = "Homepage";
