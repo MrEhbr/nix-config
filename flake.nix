@@ -86,11 +86,13 @@
         )
       );
 
+      constants = import ./lib/constants.nix;
+
       mkDarwin = { host, user, system ? "aarch64-darwin" }: darwin.lib.darwinSystem {
         inherit system;
         specialArgs = inputs // {
           pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system};
-          inherit user;
+          inherit user constants;
         };
         modules = [
           { nixpkgs.overlays = [ overlays.${system} ]; }
@@ -118,7 +120,7 @@
 
       mkNixos = { host, user, system ? "x86_64-linux" }: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = inputs // { inherit user; };
+        specialArgs = inputs // { inherit user constants; };
         modules = [
           {
             nixpkgs.overlays = [

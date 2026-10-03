@@ -1,7 +1,7 @@
-{ config, lib, inputs, pkgs, agenix, user, ... }:
+{ config, lib, inputs, pkgs, agenix, user, constants, ... }:
 
 let
-  keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxk1quGRSKZkYR6tLHTFTLUJ+nyu+037Vzbjj7ZCZIq mr.ehbr@gmail.com" ];
+  keys = [ constants.sshKeys.personal ];
 in
 {
   imports = [

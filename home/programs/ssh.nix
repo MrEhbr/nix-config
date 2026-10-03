@@ -1,4 +1,4 @@
-{ config, pkgs, lib, user, ... }:
+{ config, pkgs, lib, user, constants, ... }:
 let
   home = if pkgs.stdenv.hostPlatform.isDarwin
     then "/Users/${user}"
@@ -23,7 +23,7 @@ in
         };
       }
       {
-        "ehbr.cloud" = {
+        ${constants.domain} = {
           IdentitiesOnly = true;
           IdentityFile = [ "${home}/.ssh/id_github" ];
         };

@@ -1,4 +1,4 @@
-{ user, config, pkgs, ... }:
+{ user, config, pkgs, constants, ... }:
 {
   imports = [
     ./programs/fish
@@ -12,5 +12,5 @@
     ./programs/fzf.nix
   ];
 
-  home.file = import ./files.nix { inherit user config pkgs; };
+  home.file = import ./files.nix { inherit user config pkgs constants; };
 }

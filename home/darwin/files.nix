@@ -1,9 +1,6 @@
-{ user, config, pkgs, lib, ... }:
+{ user, config, pkgs, lib, constants, ... }:
 
 let
-  workGitlabPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKEBRZAUmRU+tJGKeU3MQZ/7WzxckXnHDUaPV1kf1qTq aleksey.burmistrov@quadcode.com";
-  workPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFnf2VEhtghNB/3Ry7+uwL/0rs8WRT4LKfg6b/HeKiY2 aleksey.burmistrov@quadcode.com";
-
   ghosttyCursorShaders = pkgs.fetchFromGitHub {
     owner = "sahaj-b";
     repo = "ghostty-cursor-shaders";
@@ -13,11 +10,11 @@ let
 in
 {
   ".ssh/id_work.pub" = {
-    text = workPublicKey;
+    text = constants.sshKeys.work;
   };
 
   ".ssh/id_work_gitlab.pub" = {
-    text = workGitlabPublicKey;
+    text = constants.sshKeys.workGitlab;
   };
 
   ".config/ghostty" = {

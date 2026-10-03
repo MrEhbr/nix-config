@@ -1,11 +1,12 @@
 { config
 , lib
 , pkgs
+, constants
 , ...
 }:
 let
-  email = "mr.ehbr@gmail.com";
-  domain = "ehbr.cloud";
+  inherit (constants) domain;
+  inherit (constants.git) email;
 
   # Helper function to create a virtual host with SSL and reverse proxy
   mkVhost = port: {

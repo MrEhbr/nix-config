@@ -1,4 +1,4 @@
-{ agenix, user, ... }:
+{ agenix, user, constants, ... }:
 
 {
   imports = [
@@ -13,7 +13,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
-    extraSpecialArgs = { inherit user; };
+    extraSpecialArgs = { inherit user constants; };
     users.${user} = import ../../home/linux;
   };
 }

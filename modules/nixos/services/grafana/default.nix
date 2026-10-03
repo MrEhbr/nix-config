@@ -1,6 +1,6 @@
-{ ... }:
+{ constants, ... }:
 let
-  domain = "ehbr.cloud";
+  inherit (constants) domain;
   rendererToken = "kQ3xR7mP9vN2sL5jY8wB4hF6cD1aT0eZ";
 in
 {

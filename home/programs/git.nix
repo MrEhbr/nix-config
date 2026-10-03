@@ -1,7 +1,6 @@
-{ lib, pkgs, user, ... }:
+{ lib, pkgs, user, constants, ... }:
 let
-  name = "Aleksei Burmistrov";
-  email = "mr.ehbr@gmail.com";
+  inherit (constants.git) name email;
 in
 {
   # `programs.git` will generate the config file: ~/.config/git/config

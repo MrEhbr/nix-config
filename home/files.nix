@@ -1,11 +1,8 @@
-{ user, pkgs, config, ... }:
+{ user, pkgs, config, constants, ... }:
 
-let
-  personalPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILxk1quGRSKZkYR6tLHTFTLUJ+nyu+037Vzbjj7ZCZIq mr.ehbr@gmail.com";
-in
 {
   ".ssh/id_github.pub" = {
-    text = personalPublicKey;
+    text = constants.sshKeys.personal;
   };
   ".config/tlrc/config.toml".text = ''
     [cache]

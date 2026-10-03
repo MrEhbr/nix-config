@@ -1,8 +1,8 @@
-{ options, config, lib, ... }:
+{ options, config, lib, constants, ... }:
 
 let
   homepagePort = 8082;
-  domain = "ehbr.cloud";
+  inherit (constants) domain;
 in
 {
   services.homepage-dashboard = {

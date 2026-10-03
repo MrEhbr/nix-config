@@ -1,7 +1,7 @@
-{ options, config, lib, ... }:
+{ options, config, lib, constants, ... }:
 
 let
-  domain = "ehbr.cloud";
+  inherit (constants) domain;
   ntfyPort = 6780;
   ntfyMetricsPort = 19095;
   ntfyHost = "ntfy.${domain}";

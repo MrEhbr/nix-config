@@ -1,4 +1,4 @@
-{ pkgs, pkgsStable, config, lib, user, ... }:
+{ pkgs, pkgsStable, config, lib, user, constants, ... }:
 
 {
   imports = [
@@ -12,7 +12,7 @@
   home = {
     enableNixpkgsReleaseCheck = false;
     packages = pkgs.callPackage ./packages.nix { pkgsStable = pkgsStable; };
-    file = import ./files.nix { inherit user config pkgs lib; };
+    file = import ./files.nix { inherit user config pkgs lib constants; };
 
     sessionVariables = {
       LC_ALL = "en_US.UTF-8";

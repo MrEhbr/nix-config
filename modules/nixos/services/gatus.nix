@@ -1,6 +1,6 @@
-{ ... }:
+{ constants, ... }:
 let
-  domain = "ehbr.cloud";
+  inherit (constants) domain;
 in
 {
   services.gatus = {

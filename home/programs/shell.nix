@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, lib, ... }:
+{ inputs, config, pkgs, lib, constants, ... }:
 
 {
   programs.neovim = {
@@ -108,7 +108,7 @@
       auto_sync = true;
       auto_sync_interval = "1h";
       keymap_mode = "vim-insert";
-      sync_address = "https://atuin.ehbr.cloud";
+      sync_address = "https://atuin.${constants.domain}";
       sync.records = true;
 
       # Don't persist trivial / sensitive commands.
