@@ -16,7 +16,6 @@ in
       enableRosetta = false;
       inherit user;
       taps = {
-        # "homebrew/homebrew-core" = homebrew-core;
         "homebrew/homebrew-cask" = homebrew-cask;
         "homebrew/homebrew-bundle" = homebrew-bundle;
         "umputun/homebrew-apps" = homebrew-umputun-apps;

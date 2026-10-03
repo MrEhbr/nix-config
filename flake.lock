@@ -151,22 +151,6 @@
         "type": "github"
       }
     },
-    "homebrew-core": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1790844705,
-        "narHash": "sha256-y4VUPekjDUe5JXk6ioy5dzVGjSL3yKHgfjuKrxFlTmA=",
-        "owner": "homebrew",
-        "repo": "homebrew-core",
-        "rev": "56ba2b9381b4358e77f1840f5ff506e629d7d054",
-        "type": "github"
-      },
-      "original": {
-        "owner": "homebrew",
-        "repo": "homebrew-core",
-        "type": "github"
-      }
-    },
     "homebrew-umputun-apps": {
       "flake": false,
       "locked": {
@@ -313,7 +297,6 @@
         "home-manager": "home-manager",
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
-        "homebrew-core": "homebrew-core",
         "homebrew-umputun-apps": "homebrew-umputun-apps",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nix-homebrew": "nix-homebrew",

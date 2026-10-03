@@ -26,10 +26,6 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
     homebrew-cask = {
       url = "github:homebrew/homebrew-cask";
       flake = false;
@@ -62,7 +58,7 @@
             nativeBuildInputs = with pkgs; [
               git
               age
-              nixfmt-rfc-style
+              nixfmt
               statix
               vulnix
               nixd
