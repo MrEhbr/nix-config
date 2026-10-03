@@ -1,4 +1,4 @@
-{ ... }:
+{ config, lib, ... }:
 let
   # Services to collect logs from (without .service suffix)
   monitoredUnits = [
@@ -28,49 +28,52 @@ let
   ];
 in
 {
-  services.victorialogs = {
-    enable = true;
-  };
+  options.my.services.logs.enable = lib.mkEnableOption "logs";
 
-  services.vector = {
-    enable = true;
-    journaldAccess = true;
-    settings = {
-      sources.journald = {
-        type = "journald";
-        current_boot_only = true;
-        include_units = monitoredUnits;
-      };
+  config = lib.mkIf config.my.services.logs.enable {
+    services.victorialogs = {
+      enable = true;
+    };
 
-      transforms.clean = {
-        type = "remap";
-        inputs = [ "journald" ];
-        source = ''
-          . = {
-            "message": .message,
-            "timestamp": .timestamp,
-            "unit": ."_SYSTEMD_UNIT",
-            "priority": .PRIORITY,
-          }
-        '';
-      };
+    services.vector = {
+      enable = true;
+      journaldAccess = true;
+      settings = {
+        sources.journald = {
+          type = "journald";
+          current_boot_only = true;
+          include_units = monitoredUnits;
+        };
 
-      sinks.victorialogs = {
-        type = "http";
-        inputs = [ "clean" ];
-        uri = "http://localhost:9428/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=unit";
-        compression = "gzip";
-        encoding.codec = "json";
-        framing.method = "newline_delimited";
-        healthcheck.enabled = false;
+        transforms.clean = {
+          type = "remap";
+          inputs = [ "journald" ];
+          source = ''
+            . = {
+              "message": .message,
+              "timestamp": .timestamp,
+              "unit": ."_SYSTEMD_UNIT",
+              "priority": .PRIORITY,
+            }
+          '';
+        };
+
+        sinks.victorialogs = {
+          type = "http";
+          inputs = [ "clean" ];
+          uri = "http://localhost:9428/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=unit";
+          compression = "gzip";
+          encoding.codec = "json";
+          framing.method = "newline_delimited";
+          healthcheck.enabled = false;
+        };
       };
     };
-  };
 
-  # Ensure vector starts after VictoriaLogs
-  systemd.services.vector = {
-    after = [ "victorialogs.service" ];
-    requires = [ "victorialogs.service" ];
+    # Ensure vector starts after VictoriaLogs
+    systemd.services.vector = {
+      after = [ "victorialogs.service" ];
+      requires = [ "victorialogs.service" ];
+    };
   };
-
 }

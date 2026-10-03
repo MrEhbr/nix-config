@@ -8,6 +8,29 @@ in
     ./disk-config.nix
   ];
 
+  my = {
+    secrets = {
+      github.enable = true;
+      names = [ "wifi" ];
+    };
+
+    services = {
+      adguard.enable = true;
+      atuin.enable = true;
+      fail2ban.enable = true;
+      gatus.enable = true;
+      grafana.enable = true;
+      homepage.enable = true;
+      logs.enable = true;
+      media.enable = true;
+      metrics.enable = true;
+      nginx.enable = true;
+      ntfy.enable = true;
+      restic.enable = true;
+      tailscale.enable = true;
+    };
+  };
+
   # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
