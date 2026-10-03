@@ -6,6 +6,6 @@ RED='\033[1;31m'
 NC='\033[0m'
 
 echo "${YELLOW}Switching NixOS configuration...${NC}"
-sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK nixos-rebuild switch --flake .#x86_64-linux "$@"
+sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK nixos-rebuild switch --flake .#server "$@"
 
 echo "${GREEN}Switch complete!${NC}"

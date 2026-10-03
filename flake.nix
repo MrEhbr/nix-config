@@ -133,7 +133,7 @@
         work = mkDarwinConfig { user = "aleksey.burmistrov"; };
       };
 
-      nixosConfigurations = nixpkgs.lib.genAttrs linuxSystems (system: nixpkgs.lib.nixosSystem {
+      nixosConfigurations.server = let system = "x86_64-linux"; in nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = inputs // { user = "ehbr"; }; # You can change this username as needed
         modules = [
@@ -160,6 +160,6 @@
           }
           ./hosts/nixos
         ];
-      });
+      };
     };
 }
