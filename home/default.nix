@@ -1,4 +1,4 @@
-{ user, config, pkgs, constants, ... }:
+{ ... }:
 {
   imports = [
     ./packages.nix
@@ -17,10 +17,8 @@
     ./programs/lazygit.nix
     ./programs/ghostty.nix
     ./programs/revdiff.nix
-    ./work.nix
+    ./files.nix
   ];
-
-  home.file = import ./files.nix { inherit user config pkgs constants; };
 
   home.sessionVariables = {
     LC_ALL = "en_US.UTF-8";
