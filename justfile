@@ -1,19 +1,25 @@
-[macos]
-rebuild := "darwin-rebuild"
-
-[linux]
-rebuild := "nixos-rebuild"
-
 default:
     @just --list
 
 # Build HOST without activating it
+[macos]
 build host:
-    {{ rebuild }} build --flake .#{{ host }}
+    darwin-rebuild build --flake .#{{ host }}
+
+# Build HOST without activating it
+[linux]
+build host:
+    nixos-rebuild build --flake .#{{ host }}
 
 # Build and activate HOST
+[macos]
 switch host:
-    sudo {{ rebuild }} switch --flake .#{{ host }}
+    sudo darwin-rebuild switch --flake .#{{ host }}
+
+# Build and activate HOST
+[linux]
+switch host:
+    sudo nixos-rebuild switch --flake .#{{ host }}
 
 # Activate the previous generation
 [macos]
