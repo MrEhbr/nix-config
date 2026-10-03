@@ -49,11 +49,10 @@
 
   programs.fish.enable = true;
 
-  # Load configuration that is shared across systems
   environment.systemPackages = [
     agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgs.pam-reattach
-  ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
+  ];
 
   # Fonts
   fonts = {
