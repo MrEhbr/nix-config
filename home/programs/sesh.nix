@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
   localToml = "~/.config/sesh/local.toml";
 
@@ -50,29 +50,33 @@ let
   };
 in
 {
-  home.packages = [ sesh-add sesh-preview ];
+  options.my.programs.sesh.enable = lib.mkEnableOption "sesh";
 
-  programs.sesh = {
-    enable = true;
-    package = sesh-latest;
-    enableTmuxIntegration = false;
-    enableAlias = false;
-    settings = {
-      sort_order = [ "tmux" "config" "zoxide" ];
-      dir_length = 2;
-      blacklist = [ "floating_pane_*" "revdiff_*" ];
-      import = [ localToml ];
-      default_session = {
-        preview_command = "sesh-preview {}";
+  config = lib.mkIf config.my.programs.sesh.enable {
+    home.packages = [ sesh-add sesh-preview ];
+
+    programs.sesh = {
+      enable = true;
+      package = sesh-latest;
+      enableTmuxIntegration = false;
+      enableAlias = false;
+      settings = {
+        sort_order = [ "tmux" "config" "zoxide" ];
+        dir_length = 2;
+        blacklist = [ "floating_pane_*" "revdiff_*" ];
+        import = [ localToml ];
+        default_session = {
+          preview_command = "sesh-preview {}";
+        };
+        session = [
+          {
+            name = "config/sesh";
+            path = "~/.config/sesh";
+            startup_command = "nvim local.toml";
+            preview_command = "bat --color=always ${localToml}";
+          }
+        ];
       };
-      session = [
-        {
-          name = "config/sesh";
-          path = "~/.config/sesh";
-          startup_command = "nvim local.toml";
-          preview_command = "bat --color=always ${localToml}";
-        }
-      ];
     };
   };
 }

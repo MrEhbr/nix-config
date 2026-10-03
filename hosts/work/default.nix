@@ -1,6 +1,8 @@
 { user, ... }:
 
 {
+  home-manager.users.${user}.imports = [ ./home.nix ];
+
   my = {
     aerospace.enable = true;
 

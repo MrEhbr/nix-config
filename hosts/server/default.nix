@@ -8,6 +8,8 @@ in
     ./disk-config.nix
   ];
 
+  home-manager.users.${user}.imports = [ ./home.nix ];
+
   my = {
     secrets = {
       github.enable = true;

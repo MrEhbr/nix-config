@@ -1,29 +1,33 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 {
-  services.colima = {
-    enable = true;
+  options.my.programs.colima.enable = lib.mkEnableOption "colima";
 
-    profiles.default = {
-      isService = true;
-      isActive = true;
-      setDockerHost = true;
+  config = lib.mkIf config.my.programs.colima.enable {
+    services.colima = {
+      enable = true;
 
-      settings = {
-        cpu = 4;
-        memory = 8;
-        disk = 100;
-        arch = "aarch64";
-        runtime = "docker";
-        vmType = "vz";
-        mountType = "virtiofs";
-        mountInotify = true;
-        autoActivate = true;
-        forwardAgent = false;
-        rosetta = false;
-        binfmt = true;
-        nestedVirtualization = false;
-        portForwarder = "ssh";
-        sshConfig = true;
+      profiles.default = {
+        isService = true;
+        isActive = true;
+        setDockerHost = true;
+
+        settings = {
+          cpu = 4;
+          memory = 8;
+          disk = 100;
+          arch = "aarch64";
+          runtime = "docker";
+          vmType = "vz";
+          mountType = "virtiofs";
+          mountInotify = true;
+          autoActivate = true;
+          forwardAgent = false;
+          rosetta = false;
+          binfmt = true;
+          nestedVirtualization = false;
+          portForwarder = "ssh";
+          sshConfig = true;
+        };
       };
     };
   };

@@ -1,5 +1,6 @@
+{ config, lib, ... }:
 {
-  programs.fish.functions = {
+  programs.fish.functions = lib.mkIf config.my.programs.fish.enable {
     exit_fn = ''
       if test -n "$TMUX_POPUP_OWNER"; and test "$fish_pid" = "$TMUX_POPUP_OWNER"
         set -l session_name (tmux display-message -p '#S')

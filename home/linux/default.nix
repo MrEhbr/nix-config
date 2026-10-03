@@ -31,8 +31,5 @@
 
   programs = { gpg.enable = true; };
 
-  programs = {
-    tmux.enable = lib.mkForce false;
-  };
 
 }

@@ -1,195 +1,225 @@
 { inputs, config, pkgs, lib, constants, ... }:
-
+let
+  cfg = config.my.programs;
+in
 {
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-    defaultEditor = true;
-    withPython3 = false;
-    withRuby = false;
-    sideloadInitLua = true;
+  options.my.programs = {
+    neovim.enable = lib.mkEnableOption "neovim";
+    starship.enable = lib.mkEnableOption "starship";
+    zoxide.enable = lib.mkEnableOption "zoxide";
+    atuin.enable = lib.mkEnableOption "atuin";
+    eza.enable = lib.mkEnableOption "eza";
+    direnv.enable = lib.mkEnableOption "direnv";
+    bat.enable = lib.mkEnableOption "bat";
+    btop.enable = lib.mkEnableOption "btop";
   };
 
-  programs.starship = {
-    enable = true;
-
-    enableFishIntegration = true;
-
-    settings = {
-      add_newline = true;
-
-      format = lib.concatStrings [
-        "$username"
-        "$hostname"
-        "$directory"
-        "$nix_shell"
-        "$git_branch"
-        "$git_state"
-        "$git_status"
-        "$line_break"
-        "$character"
-      ];
-      right_format = "$cmd_duration $status";
-
-      character = {
-        success_symbol = "[❯](purple)";
-        error_symbol = "[❯](red)";
-        vimcmd_symbol = "[❮](green)";
+  config = lib.mkMerge [
+    (lib.mkIf cfg.neovim.enable {
+      programs.neovim = {
+        enable = true;
+        viAlias = true;
+        vimAlias = true;
+        defaultEditor = true;
+        withPython3 = false;
+        withRuby = false;
+        sideloadInitLua = true;
       };
+    })
 
-      status = {
-        disabled = false;
-        format = "[$symbol $status]($style)";
-        symbol = "✗";
-        map_symbol = true;
-      };
+    (lib.mkIf cfg.starship.enable {
+      programs.starship = {
+        enable = true;
 
-      directory = { style = "blue"; };
-      nix_shell = {
-        style = "bold blue";
-        symbol = "nix ";
-        format = "via [$symbol]($style)";
-      };
-      git_branch = {
-        format = "[$branch ]($style)";
-        style = "bright-black";
-      };
-      git_state = {
-        format = "([$state( $progress_current/$progress_total)]($style)) ";
-        style = "bright-black";
-      };
-      cmd_duration = {
-        format = "[$duration]($style) ";
-        style = "yellow";
-      };
-      docker_context = {
-        format = "[$symbol $context]($style)";
-        symbol = " ";
-        detect_folders = [ ".docker" "docker" ];
-      };
-      aws = {
-        disabled = true;
-        format = "on [$symbol($profile )]($style)";
-        style = "bold blue";
-        symbol = "🅰 ";
-      };
-      kubernetes = {
-        format = "on [⛵$context \($namespace\)]($style) ";
-        disabled = true;
-        contexts = [
-          {
-            context_pattern = ".*INT.*";
-            style = "dimmed green";
-            context_alias = "INT";
-          }
-          {
-            context_pattern = ".*PROD.*";
-            style = "dimmed red";
-            context_alias = "PROD";
-          }
-        ];
-      };
-    };
-  };
+        enableFishIntegration = true;
 
-  programs.zoxide = {
-    enable = true;
-    enableFishIntegration = true;
-    options = [ "--cmd cd" ];
-  };
+        settings = {
+          add_newline = true;
 
+          format = lib.concatStrings [
+            "$username"
+            "$hostname"
+            "$directory"
+            "$nix_shell"
+            "$git_branch"
+            "$git_state"
+            "$git_status"
+            "$line_break"
+            "$character"
+          ];
+          right_format = "$cmd_duration $status";
 
-  programs.atuin = {
-    enable = true;
-    enableFishIntegration = false;
-    settings = {
-      enter_accept = false;
-      auto_sync = true;
-      auto_sync_interval = "1h";
-      keymap_mode = "vim-insert";
-      sync_address = "https://atuin.${constants.domain}";
-      sync.records = true;
+          character = {
+            success_symbol = "[❯](purple)";
+            error_symbol = "[❯](red)";
+            vimcmd_symbol = "[❮](green)";
+          };
 
-      # Don't persist trivial / sensitive commands.
-      secrets_filter = true;
-      store_failed = true;
-      history_filter = [
-        "^(ls|ll|la|l|cd|z|pwd|clear|c|exit|history|reset|top|htop|btop)(\\s|$)"
-        "--password"
-        "--token"
-        "(API_KEY|SECRET|TOKEN|PASSWORD)="
-      ];
+          status = {
+            disabled = false;
+            format = "[$symbol $status]($style)";
+            symbol = "✗";
+            map_symbol = true;
+          };
 
-      # UI / search behaviour.
-      style = "compact";
-      inline_height = 25;
-      show_preview = true;
-      show_help = true;
-      filter_mode = "global";
-      search_mode = "fuzzy";
-      filter_mode_shell_up_key_binding = "global";
-      ctrl_n_shortcuts = true;
-    };
-  };
-
-  programs.eza = {
-    enable = true;
-    enableFishIntegration = true;
-    extraOptions = [ "--group-directories-first" "-g" ];
-    icons = "auto";
-    git = true;
-  };
-
-  programs.direnv = {
-    enable = true;
-    package = pkgs.direnv.overrideAttrs (_: { doCheck = false; });
-    silent = true;
-    nix-direnv.enable = true;
-    config = {
-      global = {
-        warn_timeout = "5m";
-        log_format = "-";
-      };
-    };
-    stdlib = ''
-      declare -A direnv_layout_dirs
-        direnv_layout_dir() {
-          echo "''${direnv_layout_dirs[$PWD]:=$(
-          echo -n "${config.xdg.cacheHome}"/direnv/layouts/
-          echo -n "$PWD" | shasum | cut -d ' ' -f 1
-        )}"
-      }
-    '';
-  };
-
-  programs.bat = {
-    enable = true;
-    themes = {
-      kanagawa = {
-        src = pkgs.fetchFromGitHub {
-          owner = "rebelot";
-          repo = "kanagawa.nvim";
-          rev = "7b411f9e66c6f4f6bd9771f3e5affdc468bcbbd2";
-          sha256 = "sha256-kV+hNZ9tgC8bQi4pbVWRcNyQib0+seQrrFnsg7UMdBE=";
+          directory = { style = "blue"; };
+          nix_shell = {
+            style = "bold blue";
+            symbol = "nix ";
+            format = "via [$symbol]($style)";
+          };
+          git_branch = {
+            format = "[$branch ]($style)";
+            style = "bright-black";
+          };
+          git_state = {
+            format = "([$state( $progress_current/$progress_total)]($style)) ";
+            style = "bright-black";
+          };
+          cmd_duration = {
+            format = "[$duration]($style) ";
+            style = "yellow";
+          };
+          docker_context = {
+            format = "[$symbol $context]($style)";
+            symbol = " ";
+            detect_folders = [ ".docker" "docker" ];
+          };
+          aws = {
+            disabled = true;
+            format = "on [$symbol($profile )]($style)";
+            style = "bold blue";
+            symbol = "🅰 ";
+          };
+          kubernetes = {
+            format = "on [⛵$context \($namespace\)]($style) ";
+            disabled = true;
+            contexts = [
+              {
+                context_pattern = ".*INT.*";
+                style = "dimmed green";
+                context_alias = "INT";
+              }
+              {
+                context_pattern = ".*PROD.*";
+                style = "dimmed red";
+                context_alias = "PROD";
+              }
+            ];
+          };
         };
-        file = "/extras/kanagawa.tmTheme";
       };
-    };
+    })
 
-    config = {
-      theme = "kanagawa";
-      pager = "less -FR";
-    };
-  };
+    (lib.mkIf cfg.zoxide.enable {
+      programs.zoxide = {
+        enable = true;
+        enableFishIntegration = true;
+        options = [ "--cmd cd" ];
+      };
+    })
 
-  programs.btop = {
-    enable = true;
-    settings = {
-      color_theme = "kanagawa-wave";
-      vim_keys = true;
-      proc_tree = true;
-      presets = "cpu:0:default,proc:1:default cpu:0:default,mem:0:tty,proc:1:default";
-    };
-  };
+    (lib.mkIf cfg.atuin.enable {
+      programs.atuin = {
+        enable = true;
+        enableFishIntegration = false;
+        settings = {
+          enter_accept = false;
+          auto_sync = true;
+          auto_sync_interval = "1h";
+          keymap_mode = "vim-insert";
+          sync_address = "https://atuin.${constants.domain}";
+          sync.records = true;
+
+          # Don't persist trivial / sensitive commands.
+          secrets_filter = true;
+          store_failed = true;
+          history_filter = [
+            "^(ls|ll|la|l|cd|z|pwd|clear|c|exit|history|reset|top|htop|btop)(\\s|$)"
+            "--password"
+            "--token"
+            "(API_KEY|SECRET|TOKEN|PASSWORD)="
+          ];
+
+          # UI / search behaviour.
+          style = "compact";
+          inline_height = 25;
+          show_preview = true;
+          show_help = true;
+          filter_mode = "global";
+          search_mode = "fuzzy";
+          filter_mode_shell_up_key_binding = "global";
+          ctrl_n_shortcuts = true;
+        };
+      };
+    })
+
+    (lib.mkIf cfg.eza.enable {
+      programs.eza = {
+        enable = true;
+        enableFishIntegration = true;
+        extraOptions = [ "--group-directories-first" "-g" ];
+        icons = "auto";
+        git = true;
+      };
+    })
+
+    (lib.mkIf cfg.direnv.enable {
+      programs.direnv = {
+        enable = true;
+        package = pkgs.direnv.overrideAttrs (_: { doCheck = false; });
+        silent = true;
+        nix-direnv.enable = true;
+        config = {
+          global = {
+            warn_timeout = "5m";
+            log_format = "-";
+          };
+        };
+        stdlib = ''
+          declare -A direnv_layout_dirs
+            direnv_layout_dir() {
+              echo "''${direnv_layout_dirs[$PWD]:=$(
+              echo -n "${config.xdg.cacheHome}"/direnv/layouts/
+              echo -n "$PWD" | shasum | cut -d ' ' -f 1
+            )}"
+          }
+        '';
+      };
+    })
+
+    (lib.mkIf cfg.bat.enable {
+      programs.bat = {
+        enable = true;
+        themes = {
+          kanagawa = {
+            src = pkgs.fetchFromGitHub {
+              owner = "rebelot";
+              repo = "kanagawa.nvim";
+              rev = "7b411f9e66c6f4f6bd9771f3e5affdc468bcbbd2";
+              sha256 = "sha256-kV+hNZ9tgC8bQi4pbVWRcNyQib0+seQrrFnsg7UMdBE=";
+            };
+            file = "/extras/kanagawa.tmTheme";
+          };
+        };
+
+        config = {
+          theme = "kanagawa";
+          pager = "less -FR";
+        };
+      };
+    })
+
+    (lib.mkIf cfg.btop.enable {
+      programs.btop = {
+        enable = true;
+        settings = {
+          color_theme = "kanagawa-wave";
+          vim_keys = true;
+          proc_tree = true;
+          presets = "cpu:0:default,proc:1:default cpu:0:default,mem:0:tty,proc:1:default";
+        };
+      };
+    })
+  ];
 }

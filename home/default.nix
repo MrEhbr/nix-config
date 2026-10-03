@@ -10,6 +10,13 @@
     ./programs/kitty.nix
     ./programs/sesh.nix
     ./programs/fzf.nix
+    ./programs/colima.nix
+    ./programs/k9s.nix
+    ./programs/zk.nix
+    ./programs/lazygit.nix
+    ./programs/ghostty.nix
+    ./programs/revdiff.nix
+    ./work.nix
   ];
 
   home.file = import ./files.nix { inherit user config pkgs constants; };
