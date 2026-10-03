@@ -7,6 +7,7 @@ let
     "sonarr"
     "radarr"
     "prowlarr"
+    "seerr"
     "transmission"
     # Monitoring
     "victorialogs"

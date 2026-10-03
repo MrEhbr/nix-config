@@ -74,6 +74,13 @@ in
           interval = "60s";
           conditions = [ "[STATUS] == 200" ];
         }
+        {
+          name = "Seerr";
+          group = "Media";
+          url = "https://seerr.${domain}/api/v1/status";
+          interval = "60s";
+          conditions = [ "[STATUS] == 200" ];
+        }
 
         # Networking
         {

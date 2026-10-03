@@ -29,6 +29,7 @@ let
     sonarr = 8989;
     radarr = 7878;
     prowlarr = 9696;
+    seerr = 5055;
     uptime = 4000;
     ntfy = 6780;
     homebridge = 8581;

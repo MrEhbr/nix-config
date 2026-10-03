@@ -98,8 +98,14 @@ in
     cacheDir = "${mediaDir}/services/jellyfin/cache";
   };
 
+  services.seerr = {
+    enable = true;
+    stateRevision = 1;
+  };
+
   services.restic.backups.homelab.paths = [
     "/var/lib/prowlarr"
+    "/var/lib/private/seerr"
     config.services.jellyfin.dataDir
     config.services.jellyfin.configDir
     config.services.sonarr.dataDir

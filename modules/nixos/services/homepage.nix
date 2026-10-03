@@ -186,6 +186,13 @@ in
               };
             };
           }
+          {
+            Seerr = {
+              icon = "jellyseerr";
+              href = "https://seerr.${domain}";
+              description = "Requests";
+            };
+          }
         ];
       }
       {
