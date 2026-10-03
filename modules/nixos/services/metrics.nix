@@ -124,34 +124,14 @@ in
       };
     };
 
-    # Custom exporters
-    systemd.services = {
-      "adguard-exporter" = {
-        enable = true;
-        description = "AdGuard metric exporter";
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          ExecStart = "${pkgs.adguard-exporter}/bin/adguard-exporter -adguard_hostname 127.0.0.1 -adguard_port 3000 -log_limit 10000";
-          Restart = "on-failure";
-          RestartSec = 5;
-          NoNewPrivileges = true;
-          User = "root";
-          Group = "root";
-        };
-      };
-      "speedtest-exporter" = {
-        enable = true;
-        description = "Speedtest Prometheus Exporter";
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          ExecStart = "${pkgs.speedtest-exporter}/bin/speedtest_exporter -port 9862";
-          Restart = "on-failure";
-          RestartSec = 5;
-          NoNewPrivileges = true;
-          User = "root";
-          Group = "root";
-        };
-      };
+    services.adguard-exporter = {
+      enable = true;
+      extraFlags = [ "-log_limit" "10000" ];
+    };
+
+    services.speedtest-exporter = {
+      enable = true;
+      port = 9862;
     };
 
     my.nginx.vhosts = {

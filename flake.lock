@@ -285,6 +285,26 @@
         "type": "github"
       }
     },
+    "nur-packages": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791021996,
+        "narHash": "sha256-CFbRo3ItYMIQQveYZTPQYJ4PebcICf10Nmem/1IpA5E=",
+        "owner": "MrEhbr",
+        "repo": "nur-packages",
+        "rev": "b5f5fea8953a66e1a07c8f4e3ad77d6366a6a576",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MrEhbr",
+        "repo": "nur-packages",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -299,6 +319,7 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable",
+        "nur-packages": "nur-packages",
         "secrets": "secrets"
       }
     },

@@ -43,12 +43,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    nur-packages = {
+      url = "github:MrEhbr/nur-packages";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     secrets = {
       url = "git+ssh://git@github.com/MrEhbr/nix-secrets.git";
       flake = false;
     };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-umputun-apps, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, neovim-nightly-overlay, ... } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-umputun-apps, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, neovim-nightly-overlay, nur-packages, ... } @inputs:
     let
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
       darwinSystems = [ "aarch64-darwin" "x86_64-darwin" ];
@@ -80,7 +84,10 @@
       };
       overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
         nixpkgs.lib.composeManyExtensions (
-          [ (final: prev: import ./pkgs { pkgs = prev; }) ]
+          [
+            (final: prev: builtins.removeAttrs (import nur-packages { pkgs = prev; }) [ "nixosModules" ])
+            (final: prev: import ./pkgs { pkgs = prev; })
+          ]
           ++ nixpkgs.lib.optional (nixpkgs.lib.hasSuffix "darwin" system)
             neovim-nightly-overlay.overlays.default
         )
@@ -130,6 +137,7 @@
             ];
           }
           disko.nixosModules.disko
+          { imports = builtins.attrValues nur-packages.nixosModules; }
           home-manager.nixosModules.home-manager
           ./modules/nixos
           ./hosts/${host}
