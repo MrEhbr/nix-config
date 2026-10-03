@@ -32,5 +32,31 @@ in
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
       homelab.paths = [ "/var/lib/ntfy-sh/user.db" "/var/lib/ntfy-sh/attachments" "/var/lib/ntfy-sh/cache-file.db" ];
     };
+
+    my.nginx.vhosts = {
+      ntfy = ntfyPort;
+    };
+
+    services.gatus.settings.endpoints = [
+      {
+        name = "ntfy";
+        group = "Home";
+        url = "https://ntfy.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+    ];
+
+    my.homepage.services."Home Automation" = [
+      {
+        ntfy = {
+          icon = "ntfy";
+          href = "https://ntfy.${domain}";
+          description = "Notifications";
+        };
+      }
+    ];
+
+    services.vector.settings.sources.journald.include_units = [ "ntfy-sh" ];
   };
 }

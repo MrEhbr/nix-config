@@ -3,9 +3,20 @@
 let
   homepagePort = 8082;
   inherit (constants) domain;
+  cfg = config.my.homepage;
+
+  groupOrder = [ "Networking" "Monitoring" "Downloaders" "Media" "Home Automation" "AI" ];
+  groups = builtins.filter (g: cfg.services ? ${g}) groupOrder
+    ++ builtins.filter (g: !(builtins.elem g groupOrder)) (builtins.attrNames cfg.services);
 in
 {
   options.my.services.homepage.enable = lib.mkEnableOption "homepage";
+
+  options.my.homepage.services = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.listOf lib.types.attrs);
+    default = { };
+    description = "Homepage tiles by group.";
+  };
 
   config = lib.mkIf config.my.services.homepage.enable {
     my.secrets.names = [ "homepage" ];
@@ -76,168 +87,23 @@ in
           };
         }
       ];
-      services = [
-        {
-          "Networking" = [
-            {
-              AdGuard = {
-                icon = "adguard-home";
-                href = "https://adguard.${domain}";
-                description = "DNS-level Ad Blocking";
-                widget = {
-                  type = "adguard";
-                  url = "https://adguard.${domain}";
-                };
-              };
-            }
-          ];
-        }
-        {
-          "Monitoring" = [
-            {
-              Grafana = {
-                icon = "grafana";
-                href = "https://grafana.${domain}";
-                description = "Metrics dashboards";
-              };
-            }
-            {
-              Prometheus = {
-                icon = "victoriametrics";
-                href = "https://prometheus.${domain}";
-                description = "Metrics (VictoriaMetrics)";
-                widget = {
-                  type = "prometheus";
-                  url = "https://prometheus.${domain}";
-                };
-              };
-            }
-            {
-              VictoriaLogs = {
-                icon = "victoriametrics";
-                href = "https://logs.${domain}/select/vmui";
-                description = "Logs";
-              };
-            }
-            {
-              Gatus = {
-                icon = "gatus";
-                href = "https://uptime.${domain}";
-                description = "Status page";
-                widget = {
-                  type = "gatus";
-                  url = "https://uptime.${domain}";
-                };
-              };
-            }
-          ];
-        }
-        {
-          "Downloaders" = [
-            {
-              Transmission = {
-                icon = "transmission";
-                href = "https://transmission.${domain}";
-                description = "Torrent client";
-                widget = {
-                  type = "transmission";
-                  url = "https://transmission.${domain}";
-                };
-              };
-            }
-          ];
-        }
-        {
-          "Media" = [
-            {
-              Jellyfin = {
-                icon = "jellyfin";
-                href = "https://jellyfin.${domain}";
-                description = "Media server";
-                widget = {
-                  type = "jellyfin";
-                  url = "https://jellyfin.${domain}";
-                  key = "{{HOMEPAGE_VAR_JELLYFIN_API_KEY}}";
-                  enableBlocks = true;
-                  enableNowPlaying = false;
-                };
-              };
-            }
-            {
-              Sonarr = {
-                icon = "sonarr";
-                href = "https://sonarr.${domain}";
-                description = "TV Shows";
-                widget = {
-                  type = "sonarr";
-                  url = "https://sonarr.${domain}";
-                  key = "{{HOMEPAGE_VAR_SONARR_API_KEY}}";
-                  enableBlocks = true;
-                  showEpisodeNumber = true;
-                };
-              };
-            }
-            {
-              Radarr = {
-                icon = "radarr";
-                href = "https://radarr.${domain}";
-                description = "Movies";
-                widget = {
-                  type = "radarr";
-                  url = "https://radarr.${domain}";
-                  key = "{{HOMEPAGE_VAR_RADARR_API_KEY}}";
-                  enableBlocks = true;
-                  showEpisodeNumber = true;
-                };
-              };
-            }
-            {
-              Seerr = {
-                icon = "jellyseerr";
-                href = "https://seerr.${domain}";
-                description = "Requests";
-              };
-            }
-          ];
-        }
-        {
-          "Home Automation" = [
-            {
-              ntfy = {
-                icon = "ntfy";
-                href = "https://ntfy.${domain}";
-                description = "Notifications";
-              };
-            }
-            {
-              "Homebridge" = {
-                icon = "homebridge";
-                href = "https://homebridge.${domain}";
-                description = "HomeKit";
-              };
-            }
-            {
-              "Zigbee2MQTT" = {
-                icon = "zigbee2mqtt";
-                href = "https://zigbee2mqtt.${domain}";
-                description = "Zigbee";
-              };
-            }
-          ];
-        }
-        {
-          "AI" = [
-            {
-              Llama = {
-                icon = "mdi-robot-outline";
-                href = "https://llama.${domain}";
-                description = "llama.cpp on sparrow";
-                siteMonitor = "https://llama.${domain}/health";
-              };
-            }
-          ];
-        }
-      ];
+      services = map (group: { ${group} = cfg.services.${group}; }) groups;
+    };
+
+    my.homepage.services."AI" = [
+      {
+        Llama = {
+          icon = "mdi-robot-outline";
+          href = "https://llama.${domain}";
+          description = "llama.cpp on sparrow";
+          siteMonitor = "https://llama.${domain}/health";
+        };
+      }
+    ];
+
+    services.nginx.virtualHosts.${domain}.locations."/" = {
+      proxyPass = "http://localhost:${toString homepagePort}";
+      proxyWebsockets = true;
     };
 
     environment.systemPackages = [ config.services.homepage-dashboard.package ];

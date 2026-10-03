@@ -24,5 +24,10 @@
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
       homelab.paths = [ "/var/lib/atuin/atuin.db" ];
     };
+
+    my.nginx.vhosts = {
+      atuin = config.services.atuin.port;
+    };
+    services.vector.settings.sources.journald.include_units = [ "atuin" ];
   };
 }

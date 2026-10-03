@@ -1,31 +1,6 @@
-{ config, lib, ... }:
+{ config, lib, constants, ... }:
 let
-  # Services to collect logs from (without .service suffix)
-  monitoredUnits = [
-    # Media
-    "jellyfin"
-    "sonarr"
-    "radarr"
-    "prowlarr"
-    "seerr"
-    "transmission"
-    # Monitoring
-    "victorialogs"
-    "victoriametrics"
-    "grafana"
-    "gatus"
-    # Networking
-    "nginx"
-    "adguardhome"
-    "fail2ban"
-    "tailscaled"
-    # Home Automation
-    "ntfy-sh"
-    # Backup
-    "restic-backups-homelab"
-    # Shell
-    "atuin"
-  ];
+  inherit (constants) domain;
 in
 {
   options.my.services.logs.enable = lib.mkEnableOption "logs";
@@ -42,7 +17,6 @@ in
         sources.journald = {
           type = "journald";
           current_boot_only = true;
-          include_units = monitoredUnits;
         };
 
         transforms.clean = {
@@ -75,5 +49,31 @@ in
       after = [ "victorialogs.service" ];
       requires = [ "victorialogs.service" ];
     };
+
+    my.nginx.vhosts = {
+      logs = 9428;
+    };
+
+    services.gatus.settings.endpoints = [
+      {
+        name = "Logs (VictoriaLogs)";
+        group = "Monitoring";
+        url = "https://logs.${domain}/health";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+    ];
+
+    my.homepage.services."Monitoring" = [
+      {
+        VictoriaLogs = {
+          icon = "victoriametrics";
+          href = "https://logs.${domain}/select/vmui";
+          description = "Logs";
+        };
+      }
+    ];
+
+    services.vector.settings.sources.journald.include_units = [ "victorialogs" ];
   };
 }

@@ -63,5 +63,7 @@
         # };
       };
     };
+
+    services.vector.settings.sources.journald.include_units = [ "fail2ban" ];
   };
 }

@@ -1,5 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, constants, ... }:
 let
+  inherit (constants) domain;
   user = "media";
   group = "storage";
   mediaDir = "/media";
@@ -116,5 +117,127 @@ in
         config.services.radarr.dataDir
       ];
     };
+
+    my.nginx.vhosts = {
+      transmission = 9091;
+      jellyfin = 8096;
+      sonarr = 8989;
+      radarr = 7878;
+      prowlarr = 9696;
+      seerr = 5055;
+    };
+
+    services.gatus.settings.endpoints = [
+      {
+        name = "Jellyfin";
+        group = "Media";
+        url = "https://jellyfin.${domain}/health";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+      {
+        name = "Sonarr";
+        group = "Media";
+        url = "https://sonarr.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+      {
+        name = "Radarr";
+        group = "Media";
+        url = "https://radarr.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+      {
+        name = "Prowlarr";
+        group = "Media";
+        url = "https://prowlarr.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+      {
+        name = "Seerr";
+        group = "Media";
+        url = "https://seerr.${domain}/api/v1/status";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+      {
+        name = "Transmission";
+        group = "Downloads";
+        url = "https://transmission.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" "[RESPONSE_TIME] < 2000" ];
+      }
+    ];
+
+    my.homepage.services."Downloaders" = [
+      {
+        Transmission = {
+          icon = "transmission";
+          href = "https://transmission.${domain}";
+          description = "Torrent client";
+          widget = {
+            type = "transmission";
+            url = "https://transmission.${domain}";
+          };
+        };
+      }
+    ];
+
+    my.homepage.services."Media" = [
+      {
+        Jellyfin = {
+          icon = "jellyfin";
+          href = "https://jellyfin.${domain}";
+          description = "Media server";
+          widget = {
+            type = "jellyfin";
+            url = "https://jellyfin.${domain}";
+            key = "{{HOMEPAGE_VAR_JELLYFIN_API_KEY}}";
+            enableBlocks = true;
+            enableNowPlaying = false;
+          };
+        };
+      }
+      {
+        Sonarr = {
+          icon = "sonarr";
+          href = "https://sonarr.${domain}";
+          description = "TV Shows";
+          widget = {
+            type = "sonarr";
+            url = "https://sonarr.${domain}";
+            key = "{{HOMEPAGE_VAR_SONARR_API_KEY}}";
+            enableBlocks = true;
+            showEpisodeNumber = true;
+          };
+        };
+      }
+      {
+        Radarr = {
+          icon = "radarr";
+          href = "https://radarr.${domain}";
+          description = "Movies";
+          widget = {
+            type = "radarr";
+            url = "https://radarr.${domain}";
+            key = "{{HOMEPAGE_VAR_RADARR_API_KEY}}";
+            enableBlocks = true;
+            showEpisodeNumber = true;
+          };
+        };
+      }
+      {
+        Seerr = {
+          icon = "jellyseerr";
+          href = "https://seerr.${domain}";
+          description = "Requests";
+        };
+      }
+    ];
+
+    services.vector.settings.sources.journald.include_units = [ "jellyfin" "sonarr" "radarr" "prowlarr" "seerr" "transmission" ];
   };
 }

@@ -68,5 +68,31 @@ in
         }
       )
       (builtins.readDir ./dashboards);
+
+    my.nginx.vhosts = {
+      grafana = config.services.grafana.settings.server.http_port;
+    };
+
+    services.gatus.settings.endpoints = [
+      {
+        name = "Grafana";
+        group = "Monitoring";
+        url = "https://grafana.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+    ];
+
+    my.homepage.services."Monitoring" = [
+      {
+        Grafana = {
+          icon = "grafana";
+          href = "https://grafana.${domain}";
+          description = "Metrics dashboards";
+        };
+      }
+    ];
+
+    services.vector.settings.sources.journald.include_units = [ "grafana" ];
   };
 }

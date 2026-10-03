@@ -1,7 +1,8 @@
-{ options, config, lib, pkgs, ... }:
+{ options, config, lib, pkgs, constants, ... }:
 
 with lib;
 let
+  inherit (constants) domain;
   # AdGuard Home uses port 53 for DNS by default
   adguardDNSPort = 53;
 in
@@ -39,5 +40,35 @@ in
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
       homelab.paths = [ "/var/lib/AdGuardHome/AdGuardHome.yaml" ];
     };
+
+    my.nginx.vhosts = {
+      adguard = config.services.adguardhome.port;
+    };
+
+    services.gatus.settings.endpoints = [
+      {
+        name = "AdGuard";
+        group = "Networking";
+        url = "https://adguard.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+    ];
+
+    my.homepage.services."Networking" = [
+      {
+        AdGuard = {
+          icon = "adguard-home";
+          href = "https://adguard.${domain}";
+          description = "DNS-level Ad Blocking";
+          widget = {
+            type = "adguard";
+            url = "https://adguard.${domain}";
+          };
+        };
+      }
+    ];
+
+    services.vector.settings.sources.journald.include_units = [ "adguardhome" ];
   };
 }

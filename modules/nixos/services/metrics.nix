@@ -1,4 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, constants, ... }:
+let
+  inherit (constants) domain;
+in
 {
   options.my.services.metrics.enable = lib.mkEnableOption "metrics";
 
@@ -150,5 +153,35 @@
         };
       };
     };
+
+    my.nginx.vhosts = {
+      prometheus = 8428;
+    };
+
+    services.gatus.settings.endpoints = [
+      {
+        name = "Prometheus (VictoriaMetrics)";
+        group = "Monitoring";
+        url = "https://prometheus.${domain}";
+        interval = "60s";
+        conditions = [ "[STATUS] == 200" ];
+      }
+    ];
+
+    my.homepage.services."Monitoring" = [
+      {
+        Prometheus = {
+          icon = "victoriametrics";
+          href = "https://prometheus.${domain}";
+          description = "Metrics (VictoriaMetrics)";
+          widget = {
+            type = "prometheus";
+            url = "https://prometheus.${domain}";
+          };
+        };
+      }
+    ];
+
+    services.vector.settings.sources.journald.include_units = [ "victoriametrics" ];
   };
 }

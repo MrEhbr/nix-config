@@ -27,5 +27,7 @@
       restic
       rclone
     ];
+
+    services.vector.settings.sources.journald.include_units = [ "restic-backups-homelab" ];
   };
 }

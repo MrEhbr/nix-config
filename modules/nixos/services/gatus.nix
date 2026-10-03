@@ -24,94 +24,6 @@ in
           header = "Service Status";
         };
 
-        endpoints = [
-          # Monitoring
-          {
-            name = "Grafana";
-            group = "Monitoring";
-            url = "https://grafana.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-          {
-            name = "Prometheus (VictoriaMetrics)";
-            group = "Monitoring";
-            url = "https://prometheus.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-          {
-            name = "Logs (VictoriaLogs)";
-            group = "Monitoring";
-            url = "https://logs.${domain}/health";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-
-          # Media
-          {
-            name = "Jellyfin";
-            group = "Media";
-            url = "https://jellyfin.${domain}/health";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-          {
-            name = "Sonarr";
-            group = "Media";
-            url = "https://sonarr.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-          {
-            name = "Radarr";
-            group = "Media";
-            url = "https://radarr.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-          {
-            name = "Prowlarr";
-            group = "Media";
-            url = "https://prowlarr.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-          {
-            name = "Seerr";
-            group = "Media";
-            url = "https://seerr.${domain}/api/v1/status";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-
-          # Networking
-          {
-            name = "AdGuard";
-            group = "Networking";
-            url = "https://adguard.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-
-          # Downloads
-          {
-            name = "Transmission";
-            group = "Downloads";
-            url = "https://transmission.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" "[RESPONSE_TIME] < 2000" ];
-          }
-
-          # Home Automation
-          {
-            name = "ntfy";
-            group = "Home";
-            url = "https://ntfy.${domain}";
-            interval = "60s";
-            conditions = [ "[STATUS] == 200" ];
-          }
-        ];
       };
     };
 
@@ -119,5 +31,25 @@ in
     systemd.services.gatus.serviceConfig = {
       StateDirectory = "gatus";
     };
+
+    my.nginx.vhosts = {
+      uptime = config.services.gatus.settings.web.port;
+    };
+
+    my.homepage.services."Monitoring" = lib.mkAfter [
+      {
+        Gatus = {
+          icon = "gatus";
+          href = "https://uptime.${domain}";
+          description = "Status page";
+          widget = {
+            type = "gatus";
+            url = "https://uptime.${domain}";
+          };
+        };
+      }
+    ];
+
+    services.vector.settings.sources.journald.include_units = [ "gatus" ];
   };
 }

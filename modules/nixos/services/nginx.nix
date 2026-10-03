@@ -13,32 +13,18 @@ let
     };
   };
 
-  # Service subdomain to port mapping
-  services = {
-    atuin = 5000;
-    prometheus = 8428;
-    grafana = 3100;
-    logs = 9428;
-    adguard = 3000;
-    transmission = 9091;
-    jellyfin = 8096;
-    sonarr = 8989;
-    radarr = 7878;
-    prowlarr = 9696;
-    seerr = 5055;
-    uptime = 4000;
-    ntfy = 6780;
-    homebridge = 8581;
-    zigbee2mqtt = 8072;
-  };
-
-  # Generate virtual hosts from services map
   serviceVhosts = lib.mapAttrs'
     (name: port: lib.nameValuePair "${name}.${domain}" (mkVhost port))
-    services;
+    config.my.nginx.vhosts;
 in
 {
   options.my.services.nginx.enable = lib.mkEnableOption "nginx";
+
+  options.my.nginx.vhosts = lib.mkOption {
+    type = lib.types.attrsOf lib.types.port;
+    default = { };
+    description = "Subdomains of the domain reverse-proxied to a local port.";
+  };
 
   config = lib.mkIf config.my.services.nginx.enable {
     my.secrets.names = [ "acme" ];
@@ -73,10 +59,6 @@ in
         "${domain}" = {
           forceSSL = true;
           enableACME = true;
-          locations."/" = {
-            proxyPass = "http://localhost:8082";
-            proxyWebsockets = true;
-          };
         };
 
         # llama router on sparrow
@@ -99,5 +81,7 @@ in
       allowedTCPPorts = [ 80 443 ];
       allowedUDPPorts = [ 80 443 ];
     };
+
+    services.vector.settings.sources.journald.include_units = [ "nginx" ];
   };
 }

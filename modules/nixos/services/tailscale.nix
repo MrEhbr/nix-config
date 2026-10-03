@@ -25,5 +25,7 @@
       trustedInterfaces = [ "tailscale0" ];
       allowedUDPPorts = [ config.services.tailscale.port ];
     };
+
+    services.vector.settings.sources.journald.include_units = [ "tailscaled" ];
   };
 }
