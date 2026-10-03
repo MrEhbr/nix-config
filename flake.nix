@@ -1,5 +1,5 @@
 {
-  description = "Starter Configuration with secrets for MacOS and NixOS";
+  description = "Darwin and NixOS configuration";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -52,11 +52,10 @@
       flake = false;
     };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-umputun-apps, home-manager, nixpkgs, nixpkgs-stable, disko, agenix, secrets, neovim-nightly-overlay, nur-packages, ... } @inputs:
+  outputs = { nixpkgs, ... } @inputs:
     let
-      linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
-      darwinSystems = [ "aarch64-darwin" "x86_64-darwin" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) f;
+      lib = import ./lib { inherit inputs; };
+
       devShell = system:
         let pkgs = nixpkgs.legacyPackages.${system}; in {
           default = with pkgs; mkShell {
@@ -73,80 +72,19 @@
             '';
           };
         };
-
-      overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
-        nixpkgs.lib.composeManyExtensions (
-          [
-            (final: prev: builtins.removeAttrs (import nur-packages { pkgs = prev; }) [ "nixosModules" ])
-            (final: prev: import ./pkgs { pkgs = prev; })
-          ]
-          ++ nixpkgs.lib.optional (nixpkgs.lib.hasSuffix "darwin" system)
-            neovim-nightly-overlay.overlays.default
-        )
-      );
-
-      constants = import ./lib/constants.nix;
-
-      mkDarwin = { host, user, system ? "aarch64-darwin" }: darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = inputs // { inherit user constants; };
-        modules = [
-          { nixpkgs.overlays = [ overlays.${system} ]; }
-          home-manager.darwinModules.home-manager
-          nix-homebrew.darwinModules.nix-homebrew
-          {
-            nix-homebrew = {
-              enable = true;
-              enableRosetta = false;
-              inherit user;
-              taps = {
-                # "homebrew/homebrew-core" = homebrew-core;
-                "homebrew/homebrew-cask" = homebrew-cask;
-                "homebrew/homebrew-bundle" = homebrew-bundle;
-                "umputun/homebrew-apps" = homebrew-umputun-apps;
-              };
-              mutableTaps = true;
-              autoMigrate = true;
-            };
-          }
-          ./modules/darwin
-          ./hosts/${host}
-        ];
-      };
-
-      mkNixos = { host, user, system ? "x86_64-linux" }: nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = inputs // { inherit user constants; };
-        modules = [
-          {
-            nixpkgs.overlays = [
-              overlays.${system}
-              # vector 0.55 in unstable fails to build due to #![deny(warnings)]
-              # tripping on an unstable_name_collisions lint from newer rustc.
-              (_final: _prev: {
-                vector = inputs.nixpkgs-stable.legacyPackages.${system}.vector;
-              })
-            ];
-          }
-          disko.nixosModules.disko
-          { imports = builtins.attrValues nur-packages.nixosModules; }
-          home-manager.nixosModules.home-manager
-          ./modules/nixos
-          ./hosts/${host}
-        ];
-      };
     in
     {
-      overlays = overlays;
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-      devShells = forAllSystems devShell;
+      inherit (lib) overlays;
+      packages = lib.forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+      devShells = lib.forAllSystems devShell;
+
       darwinConfigurations = {
-        ehbr = mkDarwin { host = "ehbr"; user = "ehbr"; };
-        work = mkDarwin { host = "work"; user = "aleksey.burmistrov"; };
+        ehbr = lib.mkDarwin { host = "ehbr"; user = "ehbr"; };
+        work = lib.mkDarwin { host = "work"; user = "aleksey.burmistrov"; };
       };
 
       nixosConfigurations = {
-        server = mkNixos { host = "server"; user = "ehbr"; };
+        server = lib.mkNixos { host = "server"; user = "ehbr"; };
       };
     };
 }

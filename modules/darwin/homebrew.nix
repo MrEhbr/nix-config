@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, user, homebrew-cask, homebrew-bundle, homebrew-umputun-apps, ... }:
 let
   cfg = config.my.homebrew;
   inherit (cfg) casks;
@@ -11,6 +11,20 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    nix-homebrew = {
+      enable = true;
+      enableRosetta = false;
+      inherit user;
+      taps = {
+        # "homebrew/homebrew-core" = homebrew-core;
+        "homebrew/homebrew-cask" = homebrew-cask;
+        "homebrew/homebrew-bundle" = homebrew-bundle;
+        "umputun/homebrew-apps" = homebrew-umputun-apps;
+      };
+      mutableTaps = true;
+      autoMigrate = true;
+    };
+
     homebrew = {
       enable = true;
       onActivation = {
