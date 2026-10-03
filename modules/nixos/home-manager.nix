@@ -15,7 +15,7 @@ in
     username = "${user}";
     homeDirectory = "/home/${user}";
     packages = pkgs.callPackage ./packages.nix { };
-    file = shared-files // import ./files.nix { inherit user pkgs; };
+    file = shared-files;
     stateVersion = "25.05";
     sessionVariables = {
       LC_ALL = "en_US.UTF-8";
