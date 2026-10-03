@@ -131,7 +131,6 @@ in
 
   # Turn on flag for proprietary software
   nix = {
-    nixPath = [ "nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos" ];
     settings.allowed-users = [ user ];
     package = pkgs.nix;
     extraOptions = ''
