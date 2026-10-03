@@ -1,4 +1,10 @@
 {
+  my.packages = {
+    cli.enable = true;
+    dev.enable = true;
+    docker.enable = true;
+  };
+
   my.programs = {
     fish.enable = true;
     neovim.enable = true;

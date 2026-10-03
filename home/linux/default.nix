@@ -12,11 +12,6 @@
     packages = pkgs.callPackage ./packages.nix { };
     stateVersion = "25.05";
     sessionVariables = {
-      LC_ALL = "en_US.UTF-8";
-      EDITOR = "nvim";
-      GOPATH = "$HOME/Go";
-      GOBIN = "$HOME/Go/bin";
-      BUN_INSTALL = "$HOME/.bun";
       DIRENV_WARN_TIMEOUT = "5m";
       DIRENV_LOG_FORMAT = "";
     };

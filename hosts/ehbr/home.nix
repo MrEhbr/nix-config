@@ -1,4 +1,13 @@
 {
+  my.packages = {
+    cli.enable = true;
+    dev.enable = true;
+    docker.enable = true;
+    k8s.enable = true;
+    tools.enable = true;
+    gui.enable = true;
+  };
+
   my.work.enable = true;
 
   my.programs = {

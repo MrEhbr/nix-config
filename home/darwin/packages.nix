@@ -1,9 +1,6 @@
-{ pkgs, pkgsStable, ... }:
+{ pkgs, ... }:
 
-let
-  shared-packages = import ../packages.nix { inherit pkgs; };
-in
-shared-packages ++ (with pkgs; [
+with pkgs; [
   # system integration
   darwin.libiconv
   darwin.trash
@@ -11,48 +8,6 @@ shared-packages ++ (with pkgs; [
   pngpaste
   reattach-to-user-namespace
 
-  # Networking
-  tailscale
-
-  # Kubernetes 
-  k9s
-  kubectl
-  # kubernetes-helm
-
-  # logs
-  tailspin
-  # gonzo
-
-  # code tooling
-  ast-grep
-  glab
-  plantuml
-
-  # AI assistants
-  # claude-code # usefull updates ships to quickly
-  # codex
-  # github-copilot-cli
-
-  # API / HTTP clients
-  # bruno
-  # bruno-cli
-  postman
-
-  # graphics
-  iina
-  luajitPackages.magick
-  kickstart
-
-  # Data
-  csvlens
-  # sqlit-tui
-  tabiew
-
-  # Productivity 
-  timewarrior
-
-  # chromium
   # Custom packages
   macism
-]) ++ (with pkgsStable; [
-]) 
+]

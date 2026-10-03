@@ -1,6 +1,7 @@
 { user, config, pkgs, constants, ... }:
 {
   imports = [
+    ./packages.nix
     ./programs/fish
     ./programs/shell.nix
     ./programs/git.nix
@@ -20,4 +21,12 @@
   ];
 
   home.file = import ./files.nix { inherit user config pkgs constants; };
+
+  home.sessionVariables = {
+    LC_ALL = "en_US.UTF-8";
+    EDITOR = "nvim";
+    GOPATH = "$HOME/Go";
+    GOBIN = "$HOME/Go/bin";
+    BUN_INSTALL = "$HOME/.bun";
+  };
 }
