@@ -1,4 +1,9 @@
-{ config, lib, constants, ... }:
+{
+  config,
+  lib,
+  constants,
+  ...
+}:
 let
   inherit (constants) domain;
   rendererToken = "kQ3xR7mP9vN2sL5jY8wB4hF6cD1aT0eZ";
@@ -26,7 +31,10 @@ in
           enable = true;
           datasources.settings = {
             deleteDatasources = [
-              { name = "VictoriaMetrics"; orgId = 1; }
+              {
+                name = "VictoriaMetrics";
+                orgId = 1;
+              }
             ];
             datasources = [
               {
@@ -60,14 +68,10 @@ in
     };
 
     # Provision each dashboard in /etc/dashboard
-    environment.etc = builtins.mapAttrs
-      (
-        name: _: {
-          target = "dashboards/${name}";
-          source = ./. + "/dashboards/${name}";
-        }
-      )
-      (builtins.readDir ./dashboards);
+    environment.etc = builtins.mapAttrs (name: _: {
+      target = "dashboards/${name}";
+      source = ./. + "/dashboards/${name}";
+    }) (builtins.readDir ./dashboards);
 
     my.nginx.vhosts = {
       grafana = config.services.grafana.settings.server.http_port;

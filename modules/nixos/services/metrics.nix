@@ -1,6 +1,12 @@
-{ config, lib, pkgs, constants, ... }:
+{
+  config,
+  lib,
+  homelab,
+  ...
+}:
 let
-  inherit (constants) domain;
+  port = 8428;
+  url = homelab.url "prometheus";
 in
 {
   options.my.services.metrics.enable = lib.mkEnableOption "metrics";
@@ -8,73 +14,30 @@ in
   config = lib.mkIf config.my.services.metrics.enable {
     services.victoriametrics = {
       enable = true;
-      prometheusConfig = {
-        scrape_configs = [
-          {
-            job_name = "node";
-            static_configs = [{
-              targets = [ "127.0.0.1:9100" ];
-            }];
-          }
-          {
-            job_name = "systemd";
-            static_configs = [{
-              targets = [ "127.0.0.1:9558" ];
-            }];
-          }
-          {
-            job_name = "smartctl";
-            static_configs = [{
-              targets = [ "127.0.0.1:9633" ];
-            }];
-          }
-          {
-            job_name = "nginx";
-            static_configs = [{
-              targets = [ "127.0.0.1:9113" ];
-            }];
-          }
-          {
-            job_name = "ntfy";
-            static_configs = [{
-              targets = [ "127.0.0.1:19095" ];
-            }];
-          }
-          {
-            job_name = "adguard";
-            static_configs = [{
-              targets = [ "127.0.0.1:9617" ];
-            }];
-          }
-          {
-            job_name = "process-exporter";
-            scrape_interval = "15s";
-            static_configs = [{
-              targets = [ "localhost:9256" ];
-            }];
-          }
-          {
-            job_name = "speedtest";
+      listenAddress = ":${toString port}";
+      prometheusConfig.scrape_configs = with config.services.prometheus.exporters; [
+        (homelab.scrape "node" node.port)
+        (homelab.scrape "systemd" systemd.port)
+        (homelab.scrape "smartctl" smartctl.port)
+        (homelab.scrape "nginx" nginx.port)
+        {
+          job_name = "process-exporter";
+          scrape_interval = "15s";
+          static_configs = [
+            {
+              targets = [ "localhost:${toString process.port}" ];
+            }
+          ];
+        }
+        (
+          (homelab.scrape "speedtest" config.services.speedtest-exporter.port)
+          // {
             scrape_timeout = "30s";
             scrape_interval = "1h";
-            static_configs = [{
-              targets = [ "127.0.0.1:9862" ];
-            }];
           }
-          {
-            job_name = "victorialogs";
-            static_configs = [{
-              targets = [ "127.0.0.1:9428" ];
-            }];
-          }
-          {
-            job_name = "victoriametrics";
-            static_configs = [{
-              targets = [ "127.0.0.1:8428" ];
-            }];
-          }
-        ];
-      };
+        )
+        (homelab.scrape "victoriametrics" port)
+      ];
     };
 
     # Prometheus exporters (compatible with VictoriaMetrics)
@@ -106,11 +69,6 @@ in
         port = 9558;
       };
 
-      statsd = {
-        enable = true;
-        port = 9102;
-      };
-
       smartctl = {
         enable = true;
         user = "root";
@@ -124,39 +82,32 @@ in
       };
     };
 
-    services.adguard-exporter = {
-      enable = true;
-      extraFlags = [ "-log_limit" "10000" ];
-    };
-
     services.speedtest-exporter = {
       enable = true;
       port = 9862;
     };
 
     my.nginx.vhosts = {
-      prometheus = 8428;
+      prometheus = port;
     };
 
     services.gatus.settings.endpoints = [
-      {
+      (homelab.endpoint {
         name = "Prometheus (VictoriaMetrics)";
         group = "Monitoring";
-        url = "https://prometheus.${domain}";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
-      }
+        inherit url;
+      })
     ];
 
     my.homepage.services."Monitoring" = [
       {
         Prometheus = {
           icon = "victoriametrics";
-          href = "https://prometheus.${domain}";
+          href = url;
           description = "Metrics (VictoriaMetrics)";
           widget = {
             type = "prometheus";
-            url = "https://prometheus.${domain}";
+            inherit url;
           };
         };
       }

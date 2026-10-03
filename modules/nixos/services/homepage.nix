@@ -1,12 +1,25 @@
-{ options, config, lib, constants, ... }:
+{
+  config,
+  lib,
+  constants,
+  ...
+}:
 
 let
   homepagePort = 8082;
   inherit (constants) domain;
   cfg = config.my.homepage;
 
-  groupOrder = [ "Networking" "Monitoring" "Downloaders" "Media" "Home Automation" "AI" ];
-  groups = builtins.filter (g: cfg.services ? ${g}) groupOrder
+  groupOrder = [
+    "Networking"
+    "Monitoring"
+    "Downloaders"
+    "Media"
+    "Home Automation"
+    "AI"
+  ];
+  groups =
+    builtins.filter (g: cfg.services ? ${g}) groupOrder
     ++ builtins.filter (g: !(builtins.elem g groupOrder)) (builtins.attrNames cfg.services);
 in
 {
@@ -89,17 +102,6 @@ in
       ];
       services = map (group: { ${group} = cfg.services.${group}; }) groups;
     };
-
-    my.homepage.services."AI" = [
-      {
-        Llama = {
-          icon = "mdi-robot-outline";
-          href = "https://llama.${domain}";
-          description = "llama.cpp on sparrow";
-          siteMonitor = "https://llama.${domain}/health";
-        };
-      }
-    ];
 
     services.nginx.virtualHosts.${domain}.locations."/" = {
       proxyPass = "http://localhost:${toString homepagePort}";

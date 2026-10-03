@@ -1,5 +1,6 @@
-_: {
+{ constants, ... }:
 
+{
   imports = [
     ./homepage.nix
     ./adguard.nix
@@ -14,5 +15,8 @@ _: {
     ./tailscale.nix
     ./restic.nix
     ./atuin.nix
+    ./llama.nix
   ];
+
+  _module.args.homelab = import ./lib.nix { inherit (constants) domain; };
 }

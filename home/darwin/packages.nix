@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
-with pkgs; [
+with pkgs;
+[
   # system integration
   darwin.libiconv
   darwin.trash

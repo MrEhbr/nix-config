@@ -1,21 +1,17 @@
-{ config, options, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   options.my.services.fail2ban.enable = lib.mkEnableOption "fail2ban";
 
   config = lib.mkIf config.my.services.fail2ban.enable {
-    environment.etc = {
-      # Define an action that will trigger a Ntfy push notification upon the issue of every new ban
-      "fail2ban/action.d/ntfy.conf".text = ''
-        [Definition]
-        # Needed to avoid receiving a new notification after every restart
-        norestored = true
-        actionban = curl -H "Title: <ip> has been banned" -d "<name> jail has banned <ip> from accessing $(hostname) after <failures> attempts of hacking the system." https://ntfy.sh/JamFail2banNotifications
-      '';
-      "fail2ban/filter.d/nginx-probing.conf".text = ''
-        [Definition]
-        failregex = ^<HOST>.*GET.*(matrix/server|\.php|admin|wp\-).* HTTP/\d.\d\" 404.*$
-      '';
-    };
+    environment.etc."fail2ban/filter.d/nginx-probing.conf".text = ''
+      [Definition]
+      failregex = ^<HOST>.*GET.*(matrix/server|\.php|admin|wp\-).* HTTP/\d.\d\" 404.*$
+    '';
 
     services.fail2ban = {
       enable = true;
@@ -27,9 +23,9 @@
       ignoreIP = [
         # Whitelist some subnets
         # Local subnet
-        "192.168.0.0/24"
+        "192.168.2.0/24"
         # Tailscale subnet
-        "100.94.0.0/24"
+        "100.64.0.0/10"
       ];
       # Ban IPs for one hour on the first ban
       bantime = "1h";
@@ -52,15 +48,6 @@
           maxretry = 5
           findtime = 600
         '';
-        # nginx-req-limit.settings = {
-        #   enabled = true;
-        #   filter = "nginx-req-limit";
-        #   action = ''iptables-multiport[name=ReqLimit, port="http,https", protocol=tcp]'';
-        #   logpath = "/var/log/nginx/*error.log";
-        #   findtime = 600;
-        #   bantime = 600;
-        #   maxretry = 5;
-        # };
       };
     };
 

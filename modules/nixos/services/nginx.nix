@@ -1,4 +1,9 @@
-{ config, lib, pkgs, constants, ... }:
+{
+  config,
+  lib,
+  constants,
+  ...
+}:
 let
   inherit (constants) domain;
   inherit (constants.git) email;
@@ -13,9 +18,9 @@ let
     };
   };
 
-  serviceVhosts = lib.mapAttrs'
-    (name: port: lib.nameValuePair "${name}.${domain}" (mkVhost port))
-    config.my.nginx.vhosts;
+  serviceVhosts = lib.mapAttrs' (
+    name: port: lib.nameValuePair "${name}.${domain}" (mkVhost port)
+  ) config.my.nginx.vhosts;
 in
 {
   options.my.services.nginx.enable = lib.mkEnableOption "nginx";
@@ -60,26 +65,19 @@ in
           forceSSL = true;
           enableACME = true;
         };
-
-        # llama router on sparrow
-        "llama.${domain}" = {
-          forceSSL = true;
-          useACMEHost = domain;
-          locations."/" = {
-            proxyPass = "http://192.168.1.112:11435";
-            proxyWebsockets = true;
-            extraConfig = ''
-              proxy_buffering off;
-              proxy_read_timeout 600s;
-            '';
-          };
-        };
-      } // serviceVhosts;
+      }
+      // serviceVhosts;
     };
 
     networking.firewall = {
-      allowedTCPPorts = [ 80 443 ];
-      allowedUDPPorts = [ 80 443 ];
+      allowedTCPPorts = [
+        80
+        443
+      ];
+      allowedUDPPorts = [
+        80
+        443
+      ];
     };
 
     services.vector.settings.sources.journald.include_units = [ "nginx" ];

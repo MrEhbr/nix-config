@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 {
   options.my.programs.colima.enable = lib.mkEnableOption "colima";
 

@@ -1,6 +1,7 @@
 { pkgs }:
 
-with pkgs; [
+with pkgs;
+[
   # App and package management
   gnumake
   libgcc
@@ -15,12 +16,9 @@ with pkgs; [
 
   # Testing and development tools
   sqlite
-  lazygit
 
   # Text and terminal utilities
-  tree
   rename
-  dust
   unixtools.ifconfig
   unixtools.netstat
 

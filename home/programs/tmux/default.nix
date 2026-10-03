@@ -1,75 +1,25 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  floatingCloseScript = pkgs.writeShellScript "floating-close" ''
-    ${pkgs.tmux}/bin/tmux wait -L pane_wait
-    hook_pane=$1
-    # Parent pane exited - clean up its floating session if exists
-    if [[ -n "$hook_pane" ]]; then
-      floating_name="floating_pane_$hook_pane"
-      ${pkgs.tmux}/bin/tmux kill-session -t "$floating_name" 2>/dev/null
-    fi
-    ${pkgs.tmux}/bin/tmux wait -U pane_wait
+  script =
+    name: runtimeInputs: prelude:
+    pkgs.writeShellApplication {
+      inherit name runtimeInputs;
+      bashOptions = [ ];
+      text = prelude + builtins.readFile ./scripts/${name}.sh;
+    };
+
+  floatingClose = script "floating-close" [ pkgs.tmux ] "";
+  seshPicker = script "sesh-picker" [ config.programs.sesh.package pkgs.fzf pkgs.tmux ] "";
+  revdiffPopup = script "revdiff-popup" [ ] "";
+  revdiffToggle = script "revdiff-toggle" [ pkgs.git pkgs.tmux ] ''
+    revdiff_popup=${lib.getExe revdiffPopup}
   '';
-
-  seshPicker = pkgs.writeShellScript "sesh-picker" ''
-    result=$(sesh list -tdc -H --icons | fzf \
-      --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
-      --header '^a all  ^t tmux  ^g zoxide  ^d tmux kill' \
-      --bind 'tab:down,btab:up' \
-      --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list -tdc -H --icons)' \
-      --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -td -H --icons)' \
-      --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -zd -H --icons)' \
-      --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list -tdc -H --icons)' \
-      --preview-window 'right:60%:border-left' \
-      --preview 'sesh preview {}')
-    [ -n "$result" ] && sesh connect "$result"
-  '';
-
-  # Abbreviate path: replace $HOME with ~, optionally truncate deep paths
-  # Usage: abbreviate-path <path> [full]
-  # If second arg is "full", shows complete path (no truncation)
-  revdiffPopup = pkgs.writeShellScript "revdiff-popup" ''
-    tmp=$(mktemp)
-    revdiff -o "$tmp"
-    [ -s "$tmp" ] && "''${EDITOR:-nvim}" "$tmp"
-    rm -f "$tmp"
-  '';
-
-  revdiffToggle = pkgs.writeShellScript "revdiff-toggle" ''
-    pane_path="$1"
-    current_session="$2"
-
-    repo=$(${pkgs.git}/bin/git -C "$pane_path" rev-parse --show-toplevel 2>/dev/null)
-    if [ -z "$repo" ]; then
-      ${pkgs.tmux}/bin/tmux display-message "revdiff: not in a git repo"
-      exit 0
-    fi
-
-    slug=$(printf '%s' "$repo" | sed 's|[^A-Za-z0-9_-]|_|g')
-    session="revdiff_$slug"
-
-    if [ "$current_session" = "$session" ]; then
-      ${pkgs.tmux}/bin/tmux detach-client
-    else
-      ${pkgs.tmux}/bin/tmux display-popup -d "$repo" -w95% -h95% -E "tmux new-session -A -s $session 'tmux set status off; exec ${revdiffPopup}' ';' set detach-on-destroy on"
-    fi
-  '';
-
-  abbreviatePath = pkgs.writeShellScript "abbreviate-path" ''
-    path="$1"
-    path="''${path/#$HOME/\~}"
-    if [ "$2" = "full" ]; then
-      echo "$path"
-    else
-      IFS='/' read -ra parts <<<"$path"
-      count=''${#parts[@]}
-      if [ "$count" -gt 4 ]; then
-        echo "…/''${parts[-3]}/''${parts[-2]}/''${parts[-1]}"
-      else
-        echo "$path"
-      fi
-    fi
-  '';
+  abbreviatePath = script "abbreviate-path" [ ] "";
 
   # Kanagawa Wave palette for agent states; single source for the dot and summary.
   agentColor = {
@@ -78,32 +28,10 @@ let
     idle = "#727169";
   };
 
-  # Count windows tagged with @agent_state (set by ~/.claude/scripts/tmux-agent-state) and emit a
-  # tmux-styled "N working / N waiting / N idle" segment; groups at zero are
-  # omitted. Waiting blinks.
-  agentSummary = pkgs.writeShellScript "agent-summary" ''
-    set -u
-    command -v tmux >/dev/null 2>&1 || exit 0
-
-    waiting=0
-    working=0
-    idle=0
-    while IFS= read -r s; do
-      case "$s" in
-        waiting) waiting=$((waiting + 1)) ;;
-        working) working=$((working + 1)) ;;
-        idle)    idle=$((idle + 1)) ;;
-      esac
-    done < <(tmux list-windows -a -F '#{@agent_state}' 2>/dev/null)
-
-    out=""
-    sep() { [ -n "$out" ] && out="''${out}  "; }
-    [ "$waiting" -gt 0 ] && { sep; out="''${out}#[fg=${agentColor.waiting},blink]● ''${waiting} waiting#[noblink]"; }
-    [ "$working" -gt 0 ] && { sep; out="''${out}#[fg=${agentColor.working}]● ''${working} working"; }
-    [ "$idle" -gt 0 ]    && { sep; out="''${out}#[fg=${agentColor.idle}]○ ''${idle} idle"; }
-    [ -n "$out" ] && out="''${out}#[default] "
-
-    printf '%s' "$out"
+  agentSummary = script "agent-summary" [ ] ''
+    color_working="${agentColor.working}"
+    color_waiting="${agentColor.waiting}"
+    color_idle="${agentColor.idle}"
   '';
 
   # Per-window dot keyed off @agent_state (set by ~/.claude/scripts/tmux-agent-state).
@@ -175,8 +103,8 @@ in
         set -g status-left-length 80
 
         # Status Right: Agent summary, path, git branch (if available) and time
-        set -g status-right "#(${agentSummary})"
-        set -ga status-right "#[fg=brightblue] #(${abbreviatePath} '#{pane_current_path}') #[fg=gray]|"
+        set -g status-right "#(${lib.getExe agentSummary})"
+        set -ga status-right "#[fg=brightblue] #(${lib.getExe abbreviatePath} '#{pane_current_path}') #[fg=gray]|"
         set -ga status-right "#[fg=gray,bold]#{?pane_mode,#[fg=default] #{pane_mode} #[fg=gray]|,}"
         set -ga status-right "#(cd \"#{pane_current_path}\" && git rev-parse --abbrev-ref HEAD 2>/dev/null | sed '/./ s/.*/#[fg=green] & #[fg=default]|/')"
         set -ga status-right " %Y-%m-%d %H:%M "
@@ -194,7 +122,7 @@ in
         set -g pane-border-status top
         set -gF pane-border-style '#{?pane_synchronized,fg=red,fg=white}'
         set -gF pane-active-border-style '#{?pane_synchronized,fg=brightred,fg=green}'
-        set -g pane-border-format " #(${abbreviatePath} '#{pane_current_path}' full)#{?#{!=:#W,fish}, → #{pane_current_command},}#{?window_zoomed_flag, (), } "
+        set -g pane-border-format " #(${lib.getExe abbreviatePath} '#{pane_current_path}' full)#{?#{!=:#W,fish}, → #{pane_current_command},}#{?window_zoomed_flag, (), } "
 
         #-----------------------------------------------------------
         # Keybindings
@@ -236,7 +164,7 @@ in
         bind -N "Open lazygit popup" g display-popup -d '#{pane_current_path}' -w95% -h95% -E lazygit
 
         # Toggle revdiff popup with Alt+r (per-repo persistent session); annotations on exit open in $EDITOR
-        bind -n -N "Toggle revdiff popup (per repo)" M-r run-shell -b "${revdiffToggle} '#{pane_current_path}' '#{session_name}'"
+        bind -n -N "Toggle revdiff popup (per repo)" M-r run-shell -b "${lib.getExe revdiffToggle} '#{pane_current_path}' '#{session_name}'"
 
         # Toggle sqlit popup with key 'S' (persistent session)
         bind -N "Toggle sqlit popup" S if-shell -F '#{==:#{session_name},sqlit}' {
@@ -248,8 +176,8 @@ in
         #-----------------------------------------------------------
         # Floating Window Hooks & Toggle
         #-----------------------------------------------------------
-        set-hook -g pane-died 'run-shell "${floatingCloseScript} #{hook_pane}"'
-        set-hook -g pane-exited 'run-shell "${floatingCloseScript} #{hook_pane}"'
+        set-hook -g pane-died 'run-shell "${lib.getExe floatingClose} #{hook_pane}"'
+        set-hook -g pane-exited 'run-shell "${lib.getExe floatingClose} #{hook_pane}"'
         bind-key -n -N 'Toggle floating window' M-i if-shell -F '#{m:floating_pane_*,#{session_name}}' {
             detach-client
         } {
@@ -265,7 +193,7 @@ in
         #-----------------------------------------------------------
         # Sesh: Smart Session Management
         #-----------------------------------------------------------
-        bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 85% -h 80% -d '#{pane_current_path}' -T 'Sesh' "${seshPicker}"
+        bind-key -n -N 'Sesh: session picker' M-t display-popup -E -w 85% -h 80% -d '#{pane_current_path}' -T 'Sesh' "${lib.getExe seshPicker}"
         bind -N 'Sesh: last session' L run-shell "sesh last"
 
         #-----------------------------------------------------------

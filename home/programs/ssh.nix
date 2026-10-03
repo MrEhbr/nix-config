@@ -1,8 +1,11 @@
-{ config, pkgs, lib, user, constants, ... }:
+{
+  config,
+  lib,
+  constants,
+  ...
+}:
 let
-  home = if pkgs.stdenv.hostPlatform.isDarwin
-    then "/Users/${user}"
-    else "/home/${user}";
+  home = config.home.homeDirectory;
 in
 {
   options.my.programs.ssh.enable = lib.mkEnableOption "ssh";
@@ -16,7 +19,7 @@ in
         {
           "*" = {
             AddKeysToAgent = "yes";
-            ForwardAgent = true;
+            ForwardAgent = false;
           };
         }
         {
@@ -27,17 +30,11 @@ in
         }
         {
           ${constants.domain} = {
+            ForwardAgent = true;
             IdentitiesOnly = true;
             IdentityFile = [ "${home}/.ssh/id_github" ];
           };
         }
-
-        (lib.mkIf config.my.work.enable {
-          "gitlab.mobbtech.com" = {
-            IdentitiesOnly = true;
-            IdentityFile = [ "${home}/.ssh/id_work_gitlab" ];
-          };
-        })
       ];
     };
   };

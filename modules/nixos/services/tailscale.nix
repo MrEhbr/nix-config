@@ -1,4 +1,4 @@
-{ pkgs, options, config, lib, ... }:
+{ config, lib, ... }:
 {
   options.my.services.tailscale.enable = lib.mkEnableOption "tailscale";
 

@@ -1,28 +1,28 @@
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 
 # Original source: https://gist.github.com/antifuchs/10138c4d838a63c0a05e725ccd7bccdd
 
-with lib;
 let
-  cfg = config.local.dock;
+  cfg = config.my.dock;
   inherit (pkgs) stdenv dockutil;
 in
 {
-  options = {
-    local.dock.enable = mkOption {
+  options.my.dock = {
+    enable = lib.mkOption {
       description = "Enable dock";
       default = stdenv.isDarwin;
       example = false;
     };
 
-    local.dock.entries = mkOption {
+    entries = lib.mkOption {
       description = "Entries on the Dock";
       type =
-        with types;
+        with lib.types;
         listOf (submodule {
           options = {
             path = lib.mkOption { type = str; };
@@ -38,16 +38,17 @@ in
         });
       readOnly = true;
     };
-    local.dock.username = mkOption {
+
+    username = lib.mkOption {
       description = "Username to apply the dock settings to";
       default = config.system.primaryUser;
-      type = types.str;
+      type = lib.types.str;
     };
   };
 
-  config = mkIf cfg.enable (
+  config = lib.mkIf cfg.enable (
     let
-      normalize = path: if hasSuffix ".app" path then path + "/" else path;
+      normalize = path: if lib.hasSuffix ".app" path then path + "/" else path;
       entryURI =
         path:
         "file://"
@@ -78,13 +79,11 @@ in
           ]
           (normalize path)
         );
-      wantURIs = concatMapStrings (entry: "${entryURI entry.path}\n") cfg.entries;
-      createEntries = concatMapStrings
-        (
-          entry:
-          "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n"
-        )
-        cfg.entries;
+      wantURIs = lib.concatMapStrings (entry: "${entryURI entry.path}\n") cfg.entries;
+      createEntries = lib.concatMapStrings (
+        entry:
+        "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n"
+      ) cfg.entries;
     in
     {
       system.activationScripts.postActivation.text = ''

@@ -1,11 +1,17 @@
-{ config, lib, secrets, user, ... }:
+{
+  config,
+  lib,
+  inputs,
+  user,
+  ...
+}:
 let
   cfg = config.my.secrets;
 
   sshKey = file: path: {
     symlink = false;
     inherit path;
-    file = "${secrets}/${file}";
+    file = "${inputs.secrets}/${file}";
     mode = "600";
     owner = "${user}";
     group = "staff";

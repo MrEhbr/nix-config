@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   localToml = "~/.config/sesh/local.toml";
 
@@ -32,38 +37,31 @@ let
     exec ${pkgs.eza}/bin/eza --tree --color=always --icons -L 2 "$target"
   '';
 
-  sesh-latest = pkgs.buildGoModule rec {
-    pname = "sesh";
-    version = "2.25.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "joshmedeski";
-      repo = "sesh";
-      rev = "v${version}";
-      hash = "sha256-azs1tf9eR4MVSdjMdd3U/xdPAANn1Kyamf0TwFrBSTU=";
-    };
-    nativeBuildInputs = [ pkgs.go-mockery ];
-    preBuild = "mockery";
-    proxyVendor = true;
-    vendorHash = "sha256-VRRjmcjEyCFq+omxOeONCL+6HEBQySHK69r4TrkyuDQ=";
-    ldflags = [ "-s" "-w" "-X main.version=${version}" ];
-    meta.mainProgram = "sesh";
-  };
 in
 {
   options.my.programs.sesh.enable = lib.mkEnableOption "sesh";
 
   config = lib.mkIf config.my.programs.sesh.enable {
-    home.packages = [ sesh-add sesh-preview ];
+    home.packages = [
+      sesh-add
+      sesh-preview
+    ];
 
     programs.sesh = {
       enable = true;
-      package = sesh-latest;
       enableTmuxIntegration = false;
       enableAlias = false;
       settings = {
-        sort_order = [ "tmux" "config" "zoxide" ];
+        sort_order = [
+          "tmux"
+          "config"
+          "zoxide"
+        ];
         dir_length = 2;
-        blacklist = [ "floating_pane_*" "revdiff_*" ];
+        blacklist = [
+          "floating_pane_*"
+          "revdiff_*"
+        ];
         import = [ localToml ];
         default_session = {
           preview_command = "sesh-preview {}";

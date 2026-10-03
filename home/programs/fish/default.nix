@@ -1,5 +1,13 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
+let
+  atuinInit = lib.optionalString config.programs.atuin.enable "${lib.getExe config.programs.atuin.package} init fish | sed 's/-k up/up/' | source";
+in
 {
   imports = [ ./functions.nix ];
 
@@ -56,7 +64,7 @@
           end
         end
         ${pkgs.any-nix-shell}/bin/any-nix-shell fish | source
-        ${pkgs.atuin}/bin/atuin init fish | sed 's/-k up/up/' | source
+        ${atuinInit}
 
         # Kanagawa Fish shell theme
         # A template was taken and modified from Tokyonight:

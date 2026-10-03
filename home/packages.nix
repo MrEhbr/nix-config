@@ -1,13 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.my.packages;
 
   groups = with pkgs; {
     cli = [
-      git
-      bat
       procs
-      jless #  pager for JSON (or YAML) data
+      jless # pager for JSON (or YAML) data
       coreutils
       wget
       xh
@@ -40,11 +43,7 @@ let
       fd
       repgrep
       tree
-      eza
       onefetch
-      zoxide
-      atuin
-      zk
 
       # Custom tools
       dev-env
@@ -54,11 +53,8 @@ let
       act # Github Actions local runner
       rainfrog # SQL TUI
       sccache # Compilation cache
-      # d2
-      # ansible
 
       # Node.js development tools
-      # nodePackages.npm # globally install npm
       nodejs_24
       bun
       uv
@@ -77,9 +73,7 @@ let
     ];
 
     k8s = [
-      k9s
       kubectl
-      # kubernetes-helm
     ];
 
     tools = [
@@ -87,7 +81,6 @@ let
 
       # logs
       tailspin
-      # gonzo
 
       # code tooling
       ast-grep
@@ -95,14 +88,8 @@ let
       plantuml
       luajitPackages.magick
 
-      # AI assistants
-      # claude-code # usefull updates ships to quickly
-      # codex
-      # github-copilot-cli
-
       # Data
       csvlens
-      # sqlit-tui
       tabiew
 
       # Productivity
@@ -111,16 +98,25 @@ let
     ];
 
     gui = [
-      # bruno
-      # bruno-cli
       postman
       iina
-      # chromium
     ];
   };
 in
 {
-  options.my.packages = lib.mapAttrs (name: _: { enable = lib.mkEnableOption "${name} packages"; }) groups;
+  options.my.packages = lib.mapAttrs (name: _: {
+    enable = lib.mkEnableOption "${name} packages";
+  }) groups;
 
-  config.home.packages = lib.concatLists (lib.mapAttrsToList (name: pkgs: lib.optionals cfg.${name}.enable pkgs) groups);
+  config.home = {
+    packages = lib.concatLists (
+      lib.mapAttrsToList (name: pkgs: lib.optionals cfg.${name}.enable pkgs) groups
+    );
+
+    sessionVariables = lib.mkIf cfg.dev.enable {
+      RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+      SCCACHE_DIR = "$HOME/.cache/sccache";
+      RAINFROG_CONFIG = "$HOME/.config/rainfrog";
+    };
+  };
 }

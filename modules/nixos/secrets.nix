@@ -1,4 +1,10 @@
-{ config, lib, secrets, user, ... }:
+{
+  config,
+  lib,
+  inputs,
+  user,
+  ...
+}:
 let
   cfg = config.my.secrets;
 in
@@ -20,7 +26,7 @@ in
 
     age.secrets = lib.mkMerge [
       (lib.genAttrs cfg.names (name: {
-        file = "${secrets}/${name}.age";
+        file = "${inputs.secrets}/${name}.age";
         mode = "600";
         owner = user;
         group = "wheel";
@@ -30,7 +36,7 @@ in
         "github-ssh-key" = {
           symlink = false;
           path = "/home/${user}/.ssh/id_github";
-          file = "${secrets}/github-ssh-key.age";
+          file = "${inputs.secrets}/github-ssh-key.age";
           mode = "600";
           owner = "${user}";
           group = "wheel";

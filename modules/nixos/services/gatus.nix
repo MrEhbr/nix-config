@@ -1,6 +1,13 @@
-{ config, lib, constants, ... }:
+{
+  config,
+  lib,
+  constants,
+  homelab,
+  ...
+}:
 let
   inherit (constants) domain;
+  url = homelab.url "uptime";
 in
 {
   options.my.services.gatus.enable = lib.mkEnableOption "gatus";
@@ -40,11 +47,11 @@ in
       {
         Gatus = {
           icon = "gatus";
-          href = "https://uptime.${domain}";
+          href = url;
           description = "Status page";
           widget = {
             type = "gatus";
-            url = "https://uptime.${domain}";
+            inherit url;
           };
         };
       }

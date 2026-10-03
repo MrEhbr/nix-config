@@ -1,8 +1,17 @@
-{ lib, pkgs, config, ... }: {
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+{
   options.my.services.restic.enable = lib.mkEnableOption "restic";
 
   config = lib.mkIf config.my.services.restic.enable {
-    my.secrets.names = [ "rclone" "restic" ];
+    my.secrets.names = [
+      "rclone"
+      "restic"
+    ];
 
     services.restic.backups = {
       homelab = {

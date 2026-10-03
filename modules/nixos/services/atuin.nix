@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ config, lib, ... }:
 {
   options.my.services.atuin.enable = lib.mkEnableOption "atuin";
 
@@ -19,7 +19,6 @@
       StateDirectory = "atuin";
       StateDirectoryMode = "0700";
     };
-
 
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
       homelab.paths = [ "/var/lib/atuin/atuin.db" ];

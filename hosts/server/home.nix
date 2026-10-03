@@ -20,5 +20,6 @@
     gh.enable = true;
     ssh.enable = true;
     sesh.enable = true;
+    lazygit.enable = true;
   };
 }

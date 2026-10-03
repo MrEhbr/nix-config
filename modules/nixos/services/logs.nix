@@ -1,6 +1,12 @@
-{ config, lib, constants, ... }:
+{
+  config,
+  lib,
+  homelab,
+  ...
+}:
 let
-  inherit (constants) domain;
+  port = 9428;
+  url = homelab.url "logs";
 in
 {
   options.my.services.logs.enable = lib.mkEnableOption "logs";
@@ -8,6 +14,7 @@ in
   config = lib.mkIf config.my.services.logs.enable {
     services.victorialogs = {
       enable = true;
+      listenAddress = ":${toString port}";
     };
 
     services.vector = {
@@ -35,7 +42,7 @@ in
         sinks.victorialogs = {
           type = "http";
           inputs = [ "clean" ];
-          uri = "http://localhost:9428/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=unit";
+          uri = "http://localhost:${toString port}/insert/jsonline?_msg_field=message&_time_field=timestamp&_stream_fields=unit";
           compression = "gzip";
           encoding.codec = "json";
           framing.method = "newline_delimited";
@@ -51,28 +58,32 @@ in
     };
 
     my.nginx.vhosts = {
-      logs = 9428;
+      logs = port;
     };
 
     services.gatus.settings.endpoints = [
-      {
+      (homelab.endpoint {
         name = "Logs (VictoriaLogs)";
         group = "Monitoring";
-        url = "https://logs.${domain}/health";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
-      }
+        url = "${url}/health";
+      })
     ];
 
     my.homepage.services."Monitoring" = [
       {
         VictoriaLogs = {
           icon = "victoriametrics";
-          href = "https://logs.${domain}/select/vmui";
+          href = "${url}/select/vmui";
           description = "Logs";
         };
       }
     ];
+
+    services.victoriametrics.prometheusConfig.scrape_configs =
+      lib.mkIf config.my.services.metrics.enable
+        [
+          (homelab.scrape "victorialogs" port)
+        ];
 
     services.vector.settings.sources.journald.include_units = [ "victorialogs" ];
   };

@@ -1,10 +1,16 @@
-{ options, config, lib, pkgs, constants, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  homelab,
+  ...
+}:
 
-with lib;
 let
-  inherit (constants) domain;
   # AdGuard Home uses port 53 for DNS by default
-  adguardDNSPort = 53;
+  dnsPort = 53;
+  exporterPort = 9617;
+  url = homelab.url "adguard";
 in
 {
   options.my.services.adguard.enable = lib.mkEnableOption "adguard";
@@ -25,8 +31,8 @@ in
     };
 
     networking.firewall = {
-      allowedUDPPorts = [ adguardDNSPort ];
-      allowedTCPPorts = [ adguardDNSPort ];
+      allowedUDPPorts = [ dnsPort ];
+      allowedTCPPorts = [ dnsPort ];
     };
 
     # For troubleshooting DNS
@@ -37,6 +43,20 @@ in
       dnsutils
     ];
 
+    services.adguard-exporter = lib.mkIf config.my.services.metrics.enable {
+      enable = true;
+      extraFlags = [
+        "-log_limit"
+        "10000"
+      ];
+    };
+
+    services.victoriametrics.prometheusConfig.scrape_configs =
+      lib.mkIf config.my.services.metrics.enable
+        [
+          (homelab.scrape "adguard" exporterPort)
+        ];
+
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
       homelab.paths = [ "/var/lib/AdGuardHome/AdGuardHome.yaml" ];
     };
@@ -46,24 +66,22 @@ in
     };
 
     services.gatus.settings.endpoints = [
-      {
+      (homelab.endpoint {
         name = "AdGuard";
         group = "Networking";
-        url = "https://adguard.${domain}";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
-      }
+        inherit url;
+      })
     ];
 
     my.homepage.services."Networking" = [
       {
         AdGuard = {
           icon = "adguard-home";
-          href = "https://adguard.${domain}";
+          href = url;
           description = "DNS-level Ad Blocking";
           widget = {
             type = "adguard";
-            url = "https://adguard.${domain}";
+            inherit url;
           };
         };
       }

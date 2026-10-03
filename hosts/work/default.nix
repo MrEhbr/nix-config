@@ -4,27 +4,15 @@
   home-manager.users.${user}.imports = [ ./home.nix ];
 
   my = {
-    aerospace.enable = true;
-
     secrets = {
       github.enable = true;
       work.enable = true;
     };
 
-    homebrew = {
-      enable = true;
-      casks = {
-        onepassword.enable = true;
-        dev.enable = true;
-        communication.enable = true;
-        utilities.enable = true;
-        productivity.enable = true;
-        browsers.enable = true;
-      };
-    };
+    homebrew.enable = true;
   };
 
-  local.dock = {
+  my.dock = {
     enable = true;
     username = user;
     entries = [

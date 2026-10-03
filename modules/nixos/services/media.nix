@@ -1,6 +1,12 @@
-{ config, pkgs, lib, constants, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  homelab,
+  ...
+}:
 let
-  inherit (constants) domain;
+  inherit (homelab) url;
   user = "media";
   group = "storage";
   mediaDir = "/media";
@@ -11,7 +17,7 @@ in
   config = lib.mkIf config.my.services.media.enable {
     # Create the directories that the services will need with the correct permissions
     systemd.tmpfiles.rules = [
-      "L /mnt/storage/media - - - - ${mediaDir}"
+      "L ${mediaDir} - - - - /mnt/storage/media"
       "d ${mediaDir}/library/Movies 2775 ${user} ${group} -"
       "d ${mediaDir}/library/Cartoons 2775 ${user} ${group} -"
       "d ${mediaDir}/library/Shows 2775 ${user} ${group} -"
@@ -28,21 +34,19 @@ in
       "d ${mediaDir}/services/jellyfin/cache 2775 ${user} ${group} -"
     ];
 
-    users.users =
-      {
-        ${user} = {
-          isSystemUser = true;
-          group = "${group}";
-        };
+    users.users = {
+      ${user} = {
+        isSystemUser = true;
+        group = "${group}";
       };
+    };
 
     services.transmission = {
       enable = true;
       package = pkgs.transmission_4;
       downloadDirPermissions = "0770";
       openPeerPorts = true;
-      user = user;
-      group = group;
+      inherit user group;
       settings = {
         incomplete-dir-enabled = true;
         download-dir = "${mediaDir}/torrents";
@@ -80,22 +84,19 @@ in
 
     services.radarr = {
       enable = true;
-      user = user;
-      group = group;
+      inherit user group;
       dataDir = "${mediaDir}/services/radarr";
     };
 
     services.sonarr = {
       enable = true;
-      user = user;
-      group = group;
+      inherit user group;
       dataDir = "${mediaDir}/services/sonarr";
     };
 
     services.jellyfin = {
       enable = true;
-      user = user;
-      group = group;
+      inherit user group;
       dataDir = "${mediaDir}/services/jellyfin/data";
       logDir = "${mediaDir}/services/jellyfin/log";
       configDir = "${mediaDir}/services/jellyfin";
@@ -127,48 +128,40 @@ in
       seerr = 5055;
     };
 
-    services.gatus.settings.endpoints = [
+    services.gatus.settings.endpoints = map homelab.endpoint [
       {
         name = "Jellyfin";
         group = "Media";
-        url = "https://jellyfin.${domain}/health";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
+        url = "${url "jellyfin"}/health";
       }
       {
         name = "Sonarr";
         group = "Media";
-        url = "https://sonarr.${domain}";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
+        url = url "sonarr";
       }
       {
         name = "Radarr";
         group = "Media";
-        url = "https://radarr.${domain}";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
+        url = url "radarr";
       }
       {
         name = "Prowlarr";
         group = "Media";
-        url = "https://prowlarr.${domain}";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
+        url = url "prowlarr";
       }
       {
         name = "Seerr";
         group = "Media";
-        url = "https://seerr.${domain}/api/v1/status";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
+        url = "${url "seerr"}/api/v1/status";
       }
       {
         name = "Transmission";
-        group = "Downloads";
-        url = "https://transmission.${domain}";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" "[RESPONSE_TIME] < 2000" ];
+        group = "Downloaders";
+        url = url "transmission";
+        conditions = [
+          "[STATUS] == 200"
+          "[RESPONSE_TIME] < 2000"
+        ];
       }
     ];
 
@@ -176,11 +169,11 @@ in
       {
         Transmission = {
           icon = "transmission";
-          href = "https://transmission.${domain}";
+          href = url "transmission";
           description = "Torrent client";
           widget = {
             type = "transmission";
-            url = "https://transmission.${domain}";
+            url = url "transmission";
           };
         };
       }
@@ -190,11 +183,11 @@ in
       {
         Jellyfin = {
           icon = "jellyfin";
-          href = "https://jellyfin.${domain}";
+          href = url "jellyfin";
           description = "Media server";
           widget = {
             type = "jellyfin";
-            url = "https://jellyfin.${domain}";
+            url = url "jellyfin";
             key = "{{HOMEPAGE_VAR_JELLYFIN_API_KEY}}";
             enableBlocks = true;
             enableNowPlaying = false;
@@ -204,11 +197,11 @@ in
       {
         Sonarr = {
           icon = "sonarr";
-          href = "https://sonarr.${domain}";
+          href = url "sonarr";
           description = "TV Shows";
           widget = {
             type = "sonarr";
-            url = "https://sonarr.${domain}";
+            url = url "sonarr";
             key = "{{HOMEPAGE_VAR_SONARR_API_KEY}}";
             enableBlocks = true;
             showEpisodeNumber = true;
@@ -218,11 +211,11 @@ in
       {
         Radarr = {
           icon = "radarr";
-          href = "https://radarr.${domain}";
+          href = url "radarr";
           description = "Movies";
           widget = {
             type = "radarr";
-            url = "https://radarr.${domain}";
+            url = url "radarr";
             key = "{{HOMEPAGE_VAR_RADARR_API_KEY}}";
             enableBlocks = true;
             showEpisodeNumber = true;
@@ -232,12 +225,19 @@ in
       {
         Seerr = {
           icon = "jellyseerr";
-          href = "https://seerr.${domain}";
+          href = url "seerr";
           description = "Requests";
         };
       }
     ];
 
-    services.vector.settings.sources.journald.include_units = [ "jellyfin" "sonarr" "radarr" "prowlarr" "seerr" "transmission" ];
+    services.vector.settings.sources.journald.include_units = [
+      "jellyfin"
+      "sonarr"
+      "radarr"
+      "prowlarr"
+      "seerr"
+      "transmission"
+    ];
   };
 }

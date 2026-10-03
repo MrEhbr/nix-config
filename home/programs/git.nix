@@ -1,4 +1,10 @@
-{ config, lib, pkgs, user, constants, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  constants,
+  ...
+}:
 let
   inherit (constants.git) name email;
 in
@@ -112,18 +118,9 @@ in
       ];
       lfs.enable = true;
 
-      includes = lib.mkIf config.my.work.enable [
-        {
-          # use different email & name for work
-          path = "/Users/${user}/Work/.gitconfig";
-          condition = "gitdir:/Users/${user}/Work/";
-        }
-      ];
-
       settings = {
         user = {
-          name = name;
-          email = email;
+          inherit name email;
         };
         log = {
           mailmap = true;
@@ -142,14 +139,9 @@ in
         pull.rebase = true;
         push.autoSetupRemote = true;
         rebase.autoStash = true;
-        url = lib.mkMerge [
-          (lib.mkIf config.my.work.enable {
-            "git@gitlab.mobbtech.com:".insteadOf = "https://gitlab.mobbtech.com/";
-          })
-          (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-            "git@github.com:".insteadOf = "https://github.com/";
-          })
-        ];
+        url = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+          "git@github.com:".insteadOf = "https://github.com/";
+        };
         safe = {
           directory = "/etc/nixos";
         };

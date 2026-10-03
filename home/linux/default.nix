@@ -1,8 +1,6 @@
-{ config, pkgs, lib, user, ... }:
+{ pkgs, user, ... }:
 
 {
-  _module.args.user = user;
-
   imports = [ ../. ];
 
   home = {
@@ -18,13 +16,8 @@
 
   };
 
-  # Screen lock
-  services = {
-    # Auto mount devices
-    udiskie.enable = true;
+  programs = {
+    gpg.enable = true;
   };
-
-  programs = { gpg.enable = true; };
-
 
 }

@@ -1,10 +1,14 @@
-{ options, config, lib, constants, ... }:
+{
+  config,
+  lib,
+  homelab,
+  ...
+}:
 
 let
-  inherit (constants) domain;
   ntfyPort = 6780;
   ntfyMetricsPort = 19095;
-  ntfyHost = "ntfy.${domain}";
+  url = homelab.url "ntfy";
 in
 {
   options.my.services.ntfy.enable = lib.mkEnableOption "ntfy";
@@ -13,7 +17,7 @@ in
     services.ntfy-sh = {
       enable = true;
       settings = {
-        base-url = "https://${ntfyHost}";
+        base-url = url;
         listen-http = ":${toString ntfyPort}";
         behind-proxy = true;
         auth-default-access = "deny-all";
@@ -30,7 +34,11 @@ in
     environment.systemPackages = [ config.services.ntfy-sh.package ];
 
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
-      homelab.paths = [ "/var/lib/ntfy-sh/user.db" "/var/lib/ntfy-sh/attachments" "/var/lib/ntfy-sh/cache-file.db" ];
+      homelab.paths = [
+        "/var/lib/ntfy-sh/user.db"
+        "/var/lib/ntfy-sh/attachments"
+        "/var/lib/ntfy-sh/cache-file.db"
+      ];
     };
 
     my.nginx.vhosts = {
@@ -38,24 +46,28 @@ in
     };
 
     services.gatus.settings.endpoints = [
-      {
+      (homelab.endpoint {
         name = "ntfy";
-        group = "Home";
-        url = "https://ntfy.${domain}";
-        interval = "60s";
-        conditions = [ "[STATUS] == 200" ];
-      }
+        group = "Home Automation";
+        inherit url;
+      })
     ];
 
     my.homepage.services."Home Automation" = [
       {
         ntfy = {
           icon = "ntfy";
-          href = "https://ntfy.${domain}";
+          href = url;
           description = "Notifications";
         };
       }
     ];
+
+    services.victoriametrics.prometheusConfig.scrape_configs =
+      lib.mkIf config.my.services.metrics.enable
+        [
+          (homelab.scrape "ntfy" ntfyMetricsPort)
+        ];
 
     services.vector.settings.sources.journald.include_units = [ "ntfy-sh" ];
   };

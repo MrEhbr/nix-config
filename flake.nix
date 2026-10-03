@@ -2,7 +2,6 @@
   description = "Darwin and NixOS configuration";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,39 +47,93 @@
       flake = false;
     };
   };
-  outputs = { nixpkgs, ... } @inputs:
+  outputs =
+    { self, nixpkgs, ... }@inputs:
     let
       lib = import ./lib { inherit inputs; };
+      pkgsFor = system: nixpkgs.legacyPackages.${system};
 
-      devShell = system:
-        let pkgs = nixpkgs.legacyPackages.${system}; in {
-          default = with pkgs; mkShell {
+      devShell =
+        system:
+        let
+          pkgs = pkgsFor system;
+        in
+        {
+          default = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [
               git
               age
               nixfmt
               statix
+              deadnix
               vulnix
               nixd
+              just
             ];
             shellHook = ''
               export EDITOR=vim
             '';
           };
         };
+
+      lint =
+        system:
+        let
+          pkgs = pkgsFor system;
+        in
+        pkgs.runCommand "lint"
+          {
+            nativeBuildInputs = with pkgs; [
+              deadnix
+              statix
+              nixfmt
+              findutils
+            ];
+          }
+          ''
+            cd ${self}
+            deadnix --fail .
+            statix check .
+            find . -name '*.nix' -exec nixfmt --check {} +
+            touch $out
+          '';
+
+      hostChecks =
+        system:
+        let
+          darwinHosts = nixpkgs.lib.filterAttrs (
+            _: c: c.pkgs.stdenv.hostPlatform.system == system
+          ) self.darwinConfigurations;
+          nixosHosts = nixpkgs.lib.filterAttrs (
+            _: c: c.pkgs.stdenv.hostPlatform.system == system
+          ) self.nixosConfigurations;
+        in
+        nixpkgs.lib.mapAttrs (_: c: c.system) darwinHosts
+        // nixpkgs.lib.mapAttrs (_: c: c.config.system.build.toplevel) nixosHosts;
     in
     {
-      inherit (lib) overlays;
-      packages = lib.forAllSystems (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+      overlays.default = lib.overlay;
+      packages = lib.forAllSystems (system: import ./pkgs { pkgs = pkgsFor system; });
       devShells = lib.forAllSystems devShell;
+      formatter = lib.forAllSystems (system: (pkgsFor system).nixfmt-tree);
+      checks = lib.forAllSystems (system: { lint = lint system; } // hostChecks system);
 
       darwinConfigurations = {
-        ehbr = lib.mkDarwin { host = "ehbr"; user = "ehbr"; };
-        work = lib.mkDarwin { host = "work"; user = "aleksey.burmistrov"; };
+        ehbr = lib.mkDarwin {
+          host = "ehbr";
+          user = "ehbr";
+        };
+        work = lib.mkDarwin {
+          host = "work";
+          user = "aleksey.burmistrov";
+        };
       };
 
       nixosConfigurations = {
-        server = lib.mkNixos { host = "server"; user = "ehbr"; };
+        server = lib.mkNixos {
+          host = "server";
+          user = "ehbr";
+        };
       };
     };
 }
