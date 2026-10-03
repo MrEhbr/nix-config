@@ -2,9 +2,9 @@
 {
 
   imports = [
-    ../../modules/darwin/secrets.nix
-    ../../modules/darwin/home-manager.nix
-    ../../modules/shared
+    ./secrets.nix
+    ./home-manager.nix
+    ../common
     agenix.darwinModules.default
   ];
 

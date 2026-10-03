@@ -1,7 +1,7 @@
 { pkgs, pkgsStable, ... }:
 
 let
-  shared-packages = import ../shared/packages.nix { inherit pkgs; };
+  shared-packages = import ../packages.nix { inherit pkgs; };
 in
 shared-packages ++ (with pkgs; [
   # system integration

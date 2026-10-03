@@ -86,7 +86,7 @@
         )
       );
 
-      mkDarwinConfig = { user, system ? "aarch64-darwin" }: darwin.lib.darwinSystem {
+      mkDarwin = { host, user, system ? "aarch64-darwin" }: darwin.lib.darwinSystem {
         inherit system;
         specialArgs = inputs // {
           pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system};
@@ -111,7 +111,29 @@
               autoMigrate = true;
             };
           }
-          ./hosts/darwin
+          ./modules/darwin
+          ./hosts/${host}
+        ];
+      };
+
+      mkNixos = { host, user, system ? "x86_64-linux" }: nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = inputs // { inherit user; };
+        modules = [
+          {
+            nixpkgs.overlays = [
+              overlays.${system}
+              # vector 0.55 in unstable fails to build due to #![deny(warnings)]
+              # tripping on an unstable_name_collisions lint from newer rustc.
+              (_final: _prev: {
+                vector = inputs.nixpkgs-stable.legacyPackages.${system}.vector;
+              })
+            ];
+          }
+          disko.nixosModules.disko
+          home-manager.nixosModules.home-manager
+          ./modules/nixos
+          ./hosts/${host}
         ];
       };
     in
@@ -129,37 +151,12 @@
           "switch" = mkApp system osType "switch";
         });
       darwinConfigurations = {
-        ehbr = mkDarwinConfig { user = "ehbr"; };
-        work = mkDarwinConfig { user = "aleksey.burmistrov"; };
+        ehbr = mkDarwin { host = "ehbr"; user = "ehbr"; };
+        work = mkDarwin { host = "work"; user = "aleksey.burmistrov"; };
       };
 
-      nixosConfigurations.server = let system = "x86_64-linux"; in nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = inputs // { user = "ehbr"; }; # You can change this username as needed
-        modules = [
-          {
-            nixpkgs.overlays = [
-              overlays.${system}
-              # vector 0.55 in unstable fails to build due to #![deny(warnings)]
-              # tripping on an unstable_name_collisions lint from newer rustc.
-              (_final: _prev: {
-                vector = inputs.nixpkgs-stable.legacyPackages.${system}.vector;
-              })
-            ];
-          }
-          disko.nixosModules.disko
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "backup";
-              extraSpecialArgs = { user = "ehbr"; }; # You can change this username as needed
-              users.ehbr = import ./modules/nixos/home-manager.nix; # Update this if you change the username
-            };
-          }
-          ./hosts/nixos
-        ];
+      nixosConfigurations = {
+        server = mkNixos { host = "server"; user = "ehbr"; };
       };
     };
 }

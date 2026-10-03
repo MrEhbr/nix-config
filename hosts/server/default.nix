@@ -5,12 +5,7 @@ let
 in
 {
   imports = [
-    ../../services/nixos
-    ../../modules/nixos/secrets.nix
-    ../../modules/nixos/disk-config.nix
-    ../../modules/nixos/services
-    ../../modules/shared
-    agenix.nixosModules.default
+    ./disk-config.nix
   ];
 
   # Use the systemd-boot EFI boot loader.

@@ -1,21 +1,15 @@
 { config, pkgs, lib, user, ... }:
 
-let
-  shared-files = import ../shared/files.nix { inherit user config pkgs; };
-
-in
 {
   _module.args.user = user;
-  
-  imports = [
-    ../shared/home-manager.nix
-  ];
+
+  imports = [ ../. ];
+
   home = {
     enableNixpkgsReleaseCheck = false;
     username = "${user}";
     homeDirectory = "/home/${user}";
     packages = pkgs.callPackage ./packages.nix { };
-    file = shared-files;
     stateVersion = "25.05";
     sessionVariables = {
       LC_ALL = "en_US.UTF-8";

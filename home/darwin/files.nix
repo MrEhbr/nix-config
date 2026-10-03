@@ -21,7 +21,7 @@ in
   };
 
   ".config/ghostty" = {
-    source = ./config/ghostty;
+    source = ../config/ghostty;
     recursive = true;
   };
 
@@ -31,10 +31,10 @@ in
   };
 
   ".config/revdiff/config" = {
-    source = ./config/revdiff/config;
+    source = ../config/revdiff/config;
   };
 
   ".config/revdiff/themes/kanagawa" = {
-    source = ./config/revdiff/themes/kanagawa;
+    source = ../config/revdiff/themes/kanagawa;
   };
 }

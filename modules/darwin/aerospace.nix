@@ -1,6 +1,6 @@
 { pkgs, lib, config, ... }:
 let
-  configPath = ../config/aerospace/aerospace.toml;
+  configPath = ./aerospace.toml;
   cfg = config.services.aerospace;
 in
 {
