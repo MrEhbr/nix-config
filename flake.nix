@@ -74,14 +74,6 @@
           };
         };
 
-      mkApp = system: osType: scriptName: {
-        type = "app";
-        program = "${(nixpkgs.legacyPackages.${system}.writeScriptBin scriptName ''
-          #!/usr/bin/env bash
-          PATH=${nixpkgs.legacyPackages.${system}.git}/bin:$PATH
-          exec ${self}/apps/${osType}/${scriptName} "$@"
-        '')}/bin/${scriptName}";
-      };
       overlays = nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) (system:
         nixpkgs.lib.composeManyExtensions (
           [
@@ -148,15 +140,6 @@
       overlays = overlays;
       packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       devShells = forAllSystems devShell;
-      apps = forAllSystems (system:
-        let
-          osType = if nixpkgs.lib.hasSuffix "darwin" system then "darwin" else "nixos";
-        in
-        {
-          "build-switch" = mkApp system osType "build-switch";
-          "rollback" = mkApp system osType "rollback";
-          "switch" = mkApp system osType "switch";
-        });
       darwinConfigurations = {
         ehbr = mkDarwin { host = "ehbr"; user = "ehbr"; };
         work = mkDarwin { host = "work"; user = "aleksey.burmistrov"; };
