@@ -1,4 +1,4 @@
-{ config, pkgs, pkgsStable, lib, user, constants, ... }:
+{ config, pkgs, lib, user, constants, ... }:
 
 {
   imports = [
@@ -17,7 +17,7 @@
   home-manager = {
     useGlobalPkgs = true;
     backupFileExtension = "backup";
-    extraSpecialArgs = { inherit user pkgsStable constants; };
+    extraSpecialArgs = { inherit user constants; };
     users.${user} = import ../../home/darwin;
     sharedModules = [
       { targets.darwin.linkApps.enable = false; }

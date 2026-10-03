@@ -14,6 +14,5 @@ _: {
     ./tailscale.nix
     ./restic.nix
     ./atuin.nix
-    # ./homebridge.nix
   ];
 }

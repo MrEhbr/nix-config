@@ -90,10 +90,7 @@
 
       mkDarwin = { host, user, system ? "aarch64-darwin" }: darwin.lib.darwinSystem {
         inherit system;
-        specialArgs = inputs // {
-          pkgsStable = inputs.nixpkgs-stable.legacyPackages.${system};
-          inherit user constants;
-        };
+        specialArgs = inputs // { inherit user constants; };
         modules = [
           { nixpkgs.overlays = [ overlays.${system} ]; }
           home-manager.darwinModules.home-manager

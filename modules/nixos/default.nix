@@ -3,7 +3,6 @@
 {
   imports = [
     ../common
-    ../../services/nixos
     ./secrets.nix
     ./services
     agenix.nixosModules.default
