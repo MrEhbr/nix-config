@@ -16,6 +16,7 @@
     ./restic.nix
     ./atuin.nix
     ./llama.nix
+    ./yokoku.nix
   ];
 
   _module.args.homelab = import ./lib.nix { inherit (constants) domain; };

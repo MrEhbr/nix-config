@@ -36,6 +36,7 @@ in
       ntfy.enable = true;
       restic.enable = true;
       tailscale.enable = true;
+      yokoku.enable = true;
     };
   };
 
