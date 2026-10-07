@@ -82,6 +82,14 @@ in
       enable = true;
     };
 
+    services.jackett = {
+      enable = true;
+    };
+
+    services.flaresolverr = {
+      enable = true;
+    };
+
     services.radarr = {
       enable = true;
       inherit user group;
@@ -111,6 +119,7 @@ in
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
       homelab.paths = [
         "/var/lib/prowlarr"
+        config.services.jackett.dataDir
         "/var/lib/private/seerr"
         config.services.jellyfin.dataDir
         config.services.jellyfin.configDir
@@ -125,6 +134,7 @@ in
       sonarr = 8989;
       radarr = 7878;
       prowlarr = 9696;
+      jackett = 9117;
       seerr = 5055;
     };
 
@@ -148,6 +158,11 @@ in
         name = "Prowlarr";
         group = "Media";
         url = url "prowlarr";
+      }
+      {
+        name = "Jackett";
+        group = "Media";
+        url = url "jackett";
       }
       {
         name = "Seerr";
@@ -223,6 +238,18 @@ in
         };
       }
       {
+        Jackett = {
+          icon = "jackett";
+          href = url "jackett";
+          description = "Indexers";
+          widget = {
+            type = "jackett";
+            url = url "jackett";
+            password = "{{HOMEPAGE_VAR_JACKETT_PASSWORD}}";
+          };
+        };
+      }
+      {
         Seerr = {
           icon = "jellyseerr";
           href = url "seerr";
@@ -236,6 +263,8 @@ in
       "sonarr"
       "radarr"
       "prowlarr"
+      "jackett"
+      "flaresolverr"
       "seerr"
       "transmission"
     ];
