@@ -26,8 +26,6 @@ in
       "d ${mediaDir}/library/AnimeMovies 2775 ${user} ${group} -"
       "d ${mediaDir}/torrents 2775 ${user} ${group} -"
       "d ${mediaDir}/torrents/.incomplete 2775 ${user} ${group} -"
-      "d ${mediaDir}/services/radarr 2775 ${user} ${group} -"
-      "d ${mediaDir}/services/sonarr 2775 ${user} ${group} -"
       "d ${mediaDir}/services/jellyfin 2775 ${user} ${group} -"
       "d ${mediaDir}/services/jellyfin/data 2775 ${user} ${group} -"
       "d ${mediaDir}/services/jellyfin/log 2775 ${user} ${group} -"
@@ -78,28 +76,12 @@ in
     # Always prioritize other services wrt. I/O
     systemd.services.transmission.serviceConfig.IOSchedulingPriority = 7;
 
-    services.prowlarr = {
-      enable = true;
-    };
-
     services.jackett = {
       enable = true;
     };
 
     services.flaresolverr = {
       enable = true;
-    };
-
-    services.radarr = {
-      enable = true;
-      inherit user group;
-      dataDir = "${mediaDir}/services/radarr";
-    };
-
-    services.sonarr = {
-      enable = true;
-      inherit user group;
-      dataDir = "${mediaDir}/services/sonarr";
     };
 
     services.jellyfin = {
@@ -111,31 +93,18 @@ in
       cacheDir = "${mediaDir}/services/jellyfin/cache";
     };
 
-    services.seerr = {
-      enable = true;
-      stateRevision = 1;
-    };
-
     services.restic.backups = lib.mkIf config.my.services.restic.enable {
       homelab.paths = [
-        "/var/lib/prowlarr"
         config.services.jackett.dataDir
-        "/var/lib/private/seerr"
         config.services.jellyfin.dataDir
         config.services.jellyfin.configDir
-        config.services.sonarr.dataDir
-        config.services.radarr.dataDir
       ];
     };
 
     my.nginx.vhosts = {
       transmission = 9091;
       jellyfin = 8096;
-      sonarr = 8989;
-      radarr = 7878;
-      prowlarr = 9696;
       jackett = 9117;
-      seerr = 5055;
     };
 
     services.gatus.settings.endpoints = map homelab.endpoint [
@@ -145,29 +114,9 @@ in
         url = "${url "jellyfin"}/health";
       }
       {
-        name = "Sonarr";
-        group = "Media";
-        url = url "sonarr";
-      }
-      {
-        name = "Radarr";
-        group = "Media";
-        url = url "radarr";
-      }
-      {
-        name = "Prowlarr";
-        group = "Media";
-        url = url "prowlarr";
-      }
-      {
         name = "Jackett";
         group = "Media";
         url = url "jackett";
-      }
-      {
-        name = "Seerr";
-        group = "Media";
-        url = "${url "seerr"}/api/v1/status";
       }
       {
         name = "Transmission";
@@ -210,34 +159,6 @@ in
         };
       }
       {
-        Sonarr = {
-          icon = "sonarr";
-          href = url "sonarr";
-          description = "TV Shows";
-          widget = {
-            type = "sonarr";
-            url = url "sonarr";
-            key = "{{HOMEPAGE_VAR_SONARR_API_KEY}}";
-            enableBlocks = true;
-            showEpisodeNumber = true;
-          };
-        };
-      }
-      {
-        Radarr = {
-          icon = "radarr";
-          href = url "radarr";
-          description = "Movies";
-          widget = {
-            type = "radarr";
-            url = url "radarr";
-            key = "{{HOMEPAGE_VAR_RADARR_API_KEY}}";
-            enableBlocks = true;
-            showEpisodeNumber = true;
-          };
-        };
-      }
-      {
         Jackett = {
           icon = "jackett";
           href = url "jackett";
@@ -249,23 +170,12 @@ in
           };
         };
       }
-      {
-        Seerr = {
-          icon = "jellyseerr";
-          href = url "seerr";
-          description = "Requests";
-        };
-      }
     ];
 
     services.vector.settings.sources.journald.include_units = [
       "jellyfin"
-      "sonarr"
-      "radarr"
-      "prowlarr"
       "jackett"
       "flaresolverr"
-      "seerr"
       "transmission"
     ];
   };
