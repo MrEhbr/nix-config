@@ -51,7 +51,7 @@ let
 
     dev = [
       act # Github Actions local runner
-      rainfrog # SQL TUI
+      # sqlit-tui
       sccache # Compilation cache
 
       # Node.js development tools
