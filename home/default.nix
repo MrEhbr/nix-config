@@ -24,6 +24,7 @@
     ./programs/ghostty.nix
     ./programs/revdiff.nix
     ./programs/aerospace.nix
+    ./programs/ai-memory.nix
     ./files.nix
     ./work.nix
   ];

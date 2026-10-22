@@ -20,6 +20,27 @@
         "type": "github"
       }
     },
+    "ai-memory": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs",
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1792693772,
+        "narHash": "sha256-jXzr7oOawfIOZskpov6ZgruH0RR1PXaBRMhq6H1JySU=",
+        "owner": "akitaonrails",
+        "repo": "ai-memory",
+        "rev": "888646aa7bc2841e53deb07c588204a82ce07f8e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "akitaonrails",
+        "ref": "v3.2.1",
+        "repo": "ai-memory",
+        "type": "github"
+      }
+    },
     "brew-src": {
       "flake": false,
       "locked": {
@@ -99,6 +120,25 @@
         "type": "github"
       }
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -171,7 +211,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "neovim-src": "neovim-src",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
         "lastModified": 1791417820,
@@ -223,6 +263,22 @@
     },
     "nixpkgs": {
       "locked": {
+        "lastModified": 1787070829,
+        "narHash": "sha256-vXNVDVtvfiQuXthP0NHPFdNvvMTkGpx0UP8oddIWbNk=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0ae2bc1419c3f345984c2629e72e7a631820fa4d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0ae2bc1419c3f345984c2629e72e7a631820fa4d",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
         "lastModified": 1791336361,
         "narHash": "sha256-o9ZUW4SlEAvFPIyJWnqChhOT/VHpHg8TAvEgmqK1fSI=",
         "owner": "NixOS",
@@ -237,7 +293,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_2": {
+    "nixpkgs_3": {
       "locked": {
         "lastModified": 1791594108,
         "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
@@ -276,6 +332,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "ai-memory": "ai-memory",
         "darwin": "darwin",
         "disko": "disko",
         "home-manager": "home-manager",
@@ -284,25 +341,62 @@
         "homebrew-umputun-apps": "homebrew-umputun-apps",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nix-homebrew": "nix-homebrew",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "nur-packages": "nur-packages",
         "secrets": "secrets"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "ai-memory",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787108576,
+        "narHash": "sha256-WLhxXPMCzbeufsDZxdzkurLGBq74GX+JgLX8fFy6HZs=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "99607a06c2ea1290cd3258c11d1416dde9201f94",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "99607a06c2ea1290cd3258c11d1416dde9201f94",
+        "type": "github"
       }
     },
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1791229120,
-        "narHash": "sha256-+KhtVX/vXAhkFEF9BJHrB30pp12LVQ9MhHDpLGeJVp0=",
+        "lastModified": 1792701948,
+        "narHash": "sha256-0bI068MC8h81I0xMDJWCkczFejvXQojkokWajImhJzA=",
         "ref": "refs/heads/main",
-        "rev": "38724f50a4196d068e8ff514bea0798f1b358041",
-        "revCount": 15,
+        "rev": "69141dd44780563fc6078479ef53d5ed82c91d17",
+        "revCount": 16,
         "type": "git",
         "url": "ssh://git@github.com/MrEhbr/nix-secrets.git"
       },
       "original": {
         "type": "git",
         "url": "ssh://git@github.com/MrEhbr/nix-secrets.git"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
       }
     }
   },

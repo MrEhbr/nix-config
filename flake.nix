@@ -46,6 +46,7 @@
       url = "git+ssh://git@github.com/MrEhbr/nix-secrets.git";
       flake = false;
     };
+    ai-memory.url = "github:akitaonrails/ai-memory/v3.2.1";
   };
   outputs =
     { self, nixpkgs, ... }@inputs:

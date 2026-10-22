@@ -8,6 +8,7 @@ let
     disko
     nur-packages
     neovim-nightly-overlay
+    ai-memory
     ;
   inherit (nixpkgs) lib;
 
@@ -26,6 +27,7 @@ let
   overlay = lib.composeManyExtensions [
     (_final: prev: builtins.removeAttrs (import nur-packages { pkgs = prev; }) [ "nixosModules" ])
     (_final: prev: import ../pkgs { pkgs = prev; })
+    (_final: prev: { ai-memory = ai-memory.packages.${prev.stdenv.hostPlatform.system}.default; })
     (
       final: prev:
       lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin (

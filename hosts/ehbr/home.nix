@@ -33,5 +33,6 @@
     ghostty.enable = true;
     revdiff.enable = true;
     aerospace.enable = true;
+    ai-memory.enable = true;
   };
 }

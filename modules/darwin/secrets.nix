@@ -21,6 +21,7 @@ in
   options.my.secrets = {
     github.enable = lib.mkEnableOption "GitHub ssh key at ~/.ssh/id_github";
     work.enable = lib.mkEnableOption "work ssh keys at ~/.ssh/id_work and ~/.ssh/id_work_gitlab";
+    anthropic.enable = lib.mkEnableOption "Anthropic API key at /run/agenix/anthropic-api-key";
   };
 
   config.age = {
@@ -35,6 +36,14 @@ in
       (lib.mkIf cfg.work.enable {
         "work-ssh-key" = sshKey "work-ssh-key.age" "/Users/${user}/.ssh/id_work";
         "work-gitlab-ssh-key" = sshKey "work-ssh-key-gitlab.age" "/Users/${user}/.ssh/id_work_gitlab";
+      })
+      (lib.mkIf cfg.anthropic.enable {
+        "anthropic-api-key" = {
+          file = "${inputs.secrets}/anthropic-api-key.age";
+          mode = "400";
+          owner = "${user}";
+          group = "staff";
+        };
       })
     ];
   };

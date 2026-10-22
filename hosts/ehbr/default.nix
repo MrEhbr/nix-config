@@ -7,6 +7,7 @@
     secrets = {
       github.enable = true;
       work.enable = true;
+      anthropic.enable = true;
     };
 
     homebrew.enable = true;
