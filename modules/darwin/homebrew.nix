@@ -69,7 +69,6 @@ in
         "the-unarchiver"
         "transmission"
         "obsidian"
-        "reader"
         "firefox@developer-edition"
       ];
     };

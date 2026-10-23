@@ -64,7 +64,6 @@ let
     "dev.zed.Zed" = "Dev";
     "com.usebruno.app" = "Dev";
     "com.todesktop.230313mzl4w4u92" = "Dev";
-    "com.postmanlabs.mac" = "Dev";
     "com.jetbrains.datagrip" = "Dev";
     "com.outerbase.studio" = "Dev";
     "com.mobbtech.Wheels" = "Dev";

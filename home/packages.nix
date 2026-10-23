@@ -98,7 +98,6 @@ let
     ];
 
     gui = [
-      postman
       iina
     ];
   };
