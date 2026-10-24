@@ -9,6 +9,7 @@
 let
   # AdGuard Home uses port 53 for DNS by default
   dnsPort = 53;
+  webPort = 3000;
   exporterPort = 9617;
   url = homelab.url "adguard";
 in
@@ -20,8 +21,8 @@ in
       enable = true;
       mutableSettings = true;
       openFirewall = true;
-      host = "0.0.0.0";
       settings = {
+        http.address = "0.0.0.0:${toString webPort}";
         upstream_dns = [
           "https://dns.quad9.net/dns-query"
           "https://dns.google/dns-query"
@@ -62,7 +63,7 @@ in
     };
 
     my.nginx.vhosts = {
-      adguard = config.services.adguardhome.port;
+      adguard = webPort;
     };
 
     services.gatus.settings.endpoints = [
