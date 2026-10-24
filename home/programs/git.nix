@@ -91,7 +91,7 @@ in
 
         # Build outputs
         "out/"
-        "bin/"
+        "/bin/"
         "build/"
         "dist/"
         "debug/"
