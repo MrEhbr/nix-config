@@ -13,6 +13,16 @@
     inputs.agenix.nixosModules.default
   ];
 
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 14d";
+    };
+
+    optimise.automatic = true;
+  };
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

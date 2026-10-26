@@ -11,7 +11,7 @@
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 42;
+        configurationLimit = 5;
       };
       efi.canTouchEfiVariables = true;
     };
@@ -27,9 +27,7 @@
     kernelModules = [
       "uinput"
       "kvm-intel"
-      "v4l2loopback"
     ];
-    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
